@@ -1,0 +1,10 @@
+
+.build/
+
+tools/GraphTool/.build/
+
+.swiftPM/
+
+ShopApp.xcodeproj/xcuserdata/
+
+
