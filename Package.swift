@@ -40,9 +40,10 @@ let package = Package(
 
         // MARK: - Foundation (no feature deps)
 
-        .target(name: "NetworkFoundation"),
-        .target(name: "DesignSystem"),
-        .target(name: "Common", dependencies: ["NetworkFoundation"]),
+        .target(name: "NetworkFoundation", path: "Core/NetworkFoundation/Framework/Sources"),
+        .target(name: "DesignSystem",       path: "Core/DesignSystem/Framework/Sources"),
+        .target(name: "Common", dependencies: ["NetworkFoundation"],
+                path: "Core/Common/Framework/Sources"),
 
         // MARK: - Feature modules
         //
@@ -57,7 +58,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Store/Framework/Sources"
         ),
         .target(
             name: "Account",
@@ -66,7 +68,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Account/Framework/Sources"
         ),
         .target(
             name: "Search",
@@ -75,7 +78,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Search/Framework/Sources"
         ),
         .target(
             name: "Checkout",
@@ -84,7 +88,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Checkout/Framework/Sources"
         ),
         .target(
             name: "Support",
@@ -93,7 +98,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Support/Framework/Sources"
         ),
         .target(
             name: "Suggestions",
@@ -102,7 +108,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Suggestions/Framework/Sources"
         ),
         .target(
             name: "Promotions",
@@ -111,7 +118,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/Promotions/Framework/Sources"
         ),
         .target(
             name: "PastPurchases",
@@ -120,7 +128,8 @@ let package = Package(
                 "Common",
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
-            ]
+            ],
+            path: "Features/PastPurchases/Framework/Sources"
         ),
 
         // MARK: - Test targets
@@ -130,7 +139,8 @@ let package = Package(
             dependencies: [
                 "Common",
                 "NetworkFoundation",
-            ]
+            ],
+            path: "Core/Common/Tests/Sources"
         ),
         .testTarget(
             name: "AccountTests",
@@ -138,7 +148,8 @@ let package = Package(
                 "Account",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Account/Tests/Sources"
         ),
         .testTarget(
             name: "SearchTests",
@@ -146,14 +157,16 @@ let package = Package(
                 "Search",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Search/Tests/Sources"
         ),
         .testTarget(
             name: "CheckoutTests",
             dependencies: [
                 "Checkout",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Checkout/Tests/Sources"
         ),
         .testTarget(
             name: "StoreTests",
@@ -161,39 +174,44 @@ let package = Package(
                 "Store",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Store/Tests/Sources"
         ),
         .testTarget(
             name: "PromotionsTests",
             dependencies: [
                 "Promotions",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Promotions/Tests/Sources"
         ),
         .testTarget(
             name: "SuggestionsTests",
             dependencies: [
                 "Suggestions",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Suggestions/Tests/Sources"
         ),
         .testTarget(
             name: "SupportTests",
             dependencies: [
                 "Support",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/Support/Tests/Sources"
         ),
         .testTarget(
             name: "PastPurchasesTests",
             dependencies: [
                 "PastPurchases",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-            ]
+            ],
+            path: "Features/PastPurchases/Tests/Sources"
         ),
 
         // MARK: - Micro-app executables (macOS runners)
-        // Each target wraps the corresponding Apps/<Name>/ source files.
+        // Each target wraps the corresponding App/Sources/ files.
         // Run from the command line with: swift run Run<Name>
         // (Prefixed with "Run" so they don't conflict with the Xcode iOS schemes.)
 
@@ -203,42 +221,42 @@ let package = Package(
                 "Store", "Search", "Checkout", "Account",
                 "Promotions", "PastPurchases", "Support", "Suggestions",
             ],
-            path: "Apps/ShopApp"
+            path: "Shop/App/Sources"
         ),
         .executableTarget(
             name: "RunCheckoutApp",
             dependencies: ["Checkout"],
-            path: "Apps/CheckoutApp"
+            path: "Features/Checkout/App/Sources"
         ),
         .executableTarget(
             name: "RunSearchApp",
             dependencies: ["Search"],
-            path: "Apps/SearchApp"
+            path: "Features/Search/App/Sources"
         ),
         .executableTarget(
             name: "RunSuggestionsApp",
             dependencies: ["Suggestions"],
-            path: "Apps/SuggestionsApp"
+            path: "Features/Suggestions/App/Sources"
         ),
         .executableTarget(
             name: "RunSupportApp",
             dependencies: ["Support"],
-            path: "Apps/SupportApp"
+            path: "Features/Support/App/Sources"
         ),
         .executableTarget(
             name: "RunPromotionsApp",
             dependencies: ["Promotions"],
-            path: "Apps/PromotionsApp"
+            path: "Features/Promotions/App/Sources"
         ),
         .executableTarget(
             name: "RunPastPurchasesApp",
             dependencies: ["PastPurchases"],
-            path: "Apps/PastPurchasesApp"
+            path: "Features/PastPurchases/App/Sources"
         ),
         .executableTarget(
             name: "RunDesignSystemApp",
             dependencies: ["DesignSystem"],
-            path: "Apps/DesignSystemApp"
+            path: "Core/DesignSystem/App/Sources"
         ),
     ]
 )

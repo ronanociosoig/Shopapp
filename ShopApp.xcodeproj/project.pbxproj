@@ -7,59 +7,51 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08D2DA4171FA617D8B2B4491 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D036E678FB45A0A588964F33 /* RootView.swift */; };
 		194D2ED485E44321F8A11EFD /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 8B4EF89E6414765AF69FB40C /* Checkout */; };
-		2D382C6EB71B1401F211E8C3 /* DesignSystemApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20507F68529F4A5B8022714 /* DesignSystemApp.swift */; };
+		2545B219033042F01F540A7E /* PromotionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11046F7EA1AAA004621A801 /* PromotionsApp.swift */; };
 		3388C68CCDD8DDC8C6A344DD /* Account in Frameworks */ = {isa = PBXBuildFile; productRef = 74C64115760D62F039D8A416 /* Account */; };
-		3E4123DBAC7C6CDE2344D8FF /* SearchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FBAE4BC7C452F3C94584E52 /* SearchApp.swift */; };
+		33EBB5F024B645FDDD553B44 /* SupportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A358B476A4BE5CEB6DD1C /* SupportApp.swift */; };
 		46F238D1161BD580E0F4CDE4 /* PastPurchases in Frameworks */ = {isa = PBXBuildFile; productRef = BF61BBB1FC7A5824EC870AA1 /* PastPurchases */; };
-		4F6D29FC384163EDFD0766F4 /* SuggestionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9AD0A4BCBE92DD16846408 /* SuggestionsApp.swift */; };
+		509419EDEA53034AE71143C8 /* SearchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04BD09F84664B4BCA4DA364 /* SearchApp.swift */; };
+		52B3036328935F9303AB6719 /* DesignSystemApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DA51EE048AE9DF3B871C3E /* DesignSystemApp.swift */; };
 		5D4D8B33FB64D6F29A8252B8 /* Suggestions in Frameworks */ = {isa = PBXBuildFile; productRef = A903C02E63913CDDC39840CD /* Suggestions */; };
 		63AE96BFB11B3623A7D2F937 /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 9B1AE0B88D9EF0E278FF20EC /* Checkout */; };
+		693C48E8A806032C53FD3645 /* ShopAppMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25036C54ADA54ACF364E9120 /* ShopAppMain.swift */; };
 		6BBDBFA3D16FD32824D6C23D /* Support in Frameworks */ = {isa = PBXBuildFile; productRef = 08E8E82F40BFB32529FA1B9D /* Support */; };
+		71CC1B989FBFD8E8C1F18858 /* SuggestionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614A542CBFDDF6204FE71598 /* SuggestionsApp.swift */; };
+		7AE577EB14B71D53365A28E8 /* CheckoutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */; };
 		83389E374C4C0CF505F9C133 /* Promotions in Frameworks */ = {isa = PBXBuildFile; productRef = AD0B3E75E8B921C1D670326C /* Promotions */; };
 		A2F536E6702D843FD2B94886 /* PastPurchases in Frameworks */ = {isa = PBXBuildFile; productRef = B62DE44C958403AF4368D4A2 /* PastPurchases */; };
-		A71801873B5D217B8648D614 /* ShopAppMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19033ABD222BC08553D5723B /* ShopAppMain.swift */; };
-		B878D83874423B3420811CE2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD70DBBC6CF1384A8DD12B8 /* RootView.swift */; };
 		B96BA1232D76463AAE3823EA /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 3358B6CF875178EF090B7102 /* DesignSystem */; };
 		BCAAF71848390B4A7FBCE430 /* Store in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD96E148992786A05D8500B /* Store */; };
-		BE9BB0C3D957E21F1C3337CE /* PromotionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B05ACAC97ADD2FD22D8905 /* PromotionsApp.swift */; };
-		C105C9CD15BADCC2547666D6 /* SupportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1A3BEF403E5F898241B842 /* SupportApp.swift */; };
-		C5D6E5540820F0633C282026 /* CheckoutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92510626518360443E58FD6 /* CheckoutApp.swift */; };
 		C6B6EDF0466B3F28122C92F9 /* Support in Frameworks */ = {isa = PBXBuildFile; productRef = 6DC73CD2F364D5A7AB863742 /* Support */; };
 		DA09A16717CFE7D0B18BD967 /* Search in Frameworks */ = {isa = PBXBuildFile; productRef = F229C2CC6D4E7A47FFD0B8DF /* Search */; };
+		DAC0E415281914C55081845B /* PastPurchasesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAFB1F87AD9E11E206B75F5 /* PastPurchasesApp.swift */; };
 		DB06D133F912D1B9BA801112 /* Search in Frameworks */ = {isa = PBXBuildFile; productRef = 656D585663E2E8C8CBE72F4D /* Search */; };
 		F25E314E0CBCAF5F8565B719 /* Promotions in Frameworks */ = {isa = PBXBuildFile; productRef = E208CD9E0C09F1123B7F65B1 /* Promotions */; };
-		F52EA862302712EEB25BBD43 /* PastPurchasesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FE1E5BAEE6777D380EE2EE /* PastPurchasesApp.swift */; };
 		F98286DAF92BDDFF8BAC74A8 /* Suggestions in Frameworks */ = {isa = PBXBuildFile; productRef = 47041F172F6957A31FB0ADB2 /* Suggestions */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PastPurchasesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14A2510C199FE28143DA4954 /* SuggestionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SuggestionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		19033ABD222BC08553D5723B /* ShopAppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppMain.swift; sourceTree = "<group>"; };
-		1DB79F1CDB16675EB254F48C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1E36F9E90AC91DB876855A21 /* SearchApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		21FE1E5BAEE6777D380EE2EE /* PastPurchasesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastPurchasesApp.swift; sourceTree = "<group>"; };
+		245A358B476A4BE5CEB6DD1C /* SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportApp.swift; sourceTree = "<group>"; };
+		25036C54ADA54ACF364E9120 /* ShopAppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppMain.swift; sourceTree = "<group>"; };
 		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CheckoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2FBAE4BC7C452F3C94584E52 /* SearchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchApp.swift; sourceTree = "<group>"; };
-		31B05ACAC97ADD2FD22D8905 /* PromotionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionsApp.swift; sourceTree = "<group>"; };
 		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PromotionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DesignSystemApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		510466A867228A7F746D02EF /* ShopApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShopApp; path = .; sourceTree = SOURCE_ROOT; };
-		5BD70DBBC6CF1384A8DD12B8 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		65C949B67B3009C5AF2D5E99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		77CCE53F7363F447D44FDF7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		7E1A3BEF403E5F898241B842 /* SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportApp.swift; sourceTree = "<group>"; };
+		614A542CBFDDF6204FE71598 /* SuggestionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsApp.swift; sourceTree = "<group>"; };
 		874943F7E67E6C5ACB08F55D /* ShopApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9385120A0CFB0198D2A458C9 /* SupportApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SupportApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		960441E9087CE74850BE8143 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		A5CD71E6E5952E0F33FBEE4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		B20507F68529F4A5B8022714 /* DesignSystemApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemApp.swift; sourceTree = "<group>"; };
-		B7CF43096EEDEAEDA5941121 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		B92510626518360443E58FD6 /* CheckoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutApp.swift; sourceTree = "<group>"; };
-		CD9AD0A4BCBE92DD16846408 /* SuggestionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsApp.swift; sourceTree = "<group>"; };
-		CEF9A5E5949760DDC1CF8257 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		E2CCDCCFFFD9D1DFDB78AFBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9EAFB1F87AD9E11E206B75F5 /* PastPurchasesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastPurchasesApp.swift; sourceTree = "<group>"; };
+		D036E678FB45A0A588964F33 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		D04BD09F84664B4BCA4DA364 /* SearchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchApp.swift; sourceTree = "<group>"; };
+		D11046F7EA1AAA004621A801 /* PromotionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionsApp.swift; sourceTree = "<group>"; };
+		D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutApp.swift; sourceTree = "<group>"; };
+		F1DA51EE048AE9DF3B871C3E /* DesignSystemApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,22 +129,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1A687E9C2F6D870F3309A733 /* PromotionsApp */ = {
+		09D112F1E49C507FAA173519 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				B7CF43096EEDEAEDA5941121 /* Info.plist */,
-				31B05ACAC97ADD2FD22D8905 /* PromotionsApp.swift */,
+				F1DA51EE048AE9DF3B871C3E /* DesignSystemApp.swift */,
 			);
-			path = PromotionsApp;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		4A13ACD796F0E77E72D86ACF /* PastPurchasesApp */ = {
+		1211526B8427571D57B17945 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				960441E9087CE74850BE8143 /* Info.plist */,
-				21FE1E5BAEE6777D380EE2EE /* PastPurchasesApp.swift */,
+				D11046F7EA1AAA004621A801 /* PromotionsApp.swift */,
 			);
-			path = PastPurchasesApp;
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		178DD6F65327E74A8404DA2A /* PastPurchases */ = {
+			isa = PBXGroup;
+			children = (
+				FBE9979700374C587C3F04B3 /* App */,
+			);
+			path = PastPurchases;
+			sourceTree = "<group>";
+		};
+		2FA292D08CB4273008ACEF72 /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				EEAB9DBAF521FCD2E6E0C8E0 /* App */,
+			);
+			path = Suggestions;
+			sourceTree = "<group>";
+		};
+		3C6A21AB2BE67DCE0BAF5BA9 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				E90EE5CEA20C1E1A8DA5EFDE /* App */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		47F2EC69DC694FCA94049D74 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				93BD182C5D4408305A66DB15 /* Sources */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 		5063A8D9F24F01C23C90AB4F /* Packages */ = {
@@ -163,48 +185,110 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
-		509945D7B46CE40F7296A693 /* ShopApp */ = {
+		66E6B12A2EA5E7444282C060 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				1DB79F1CDB16675EB254F48C /* Info.plist */,
-				5BD70DBBC6CF1384A8DD12B8 /* RootView.swift */,
-				19033ABD222BC08553D5723B /* ShopAppMain.swift */,
+				245A358B476A4BE5CEB6DD1C /* SupportApp.swift */,
 			);
-			path = ShopApp;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		52606A3632863D16B477E2E8 /* DesignSystemApp */ = {
+		6D551EEA314F81EF558DE595 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				B20507F68529F4A5B8022714 /* DesignSystemApp.swift */,
-				77CCE53F7363F447D44FDF7B /* Info.plist */,
+				9EAFB1F87AD9E11E206B75F5 /* PastPurchasesApp.swift */,
 			);
-			path = DesignSystemApp;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		6A019607A37AD8D10E801144 /* SupportApp */ = {
+		74F3EAF8A2EFCA107EF70F94 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				65C949B67B3009C5AF2D5E99 /* Info.plist */,
-				7E1A3BEF403E5F898241B842 /* SupportApp.swift */,
+				1211526B8427571D57B17945 /* Sources */,
 			);
-			path = SupportApp;
+			path = App;
 			sourceTree = "<group>";
 		};
-		B83639BD53C0BE164AB35B80 /* SuggestionsApp */ = {
+		8CE2816083DCC36DF0E6DD11 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				CEF9A5E5949760DDC1CF8257 /* Info.plist */,
-				CD9AD0A4BCBE92DD16846408 /* SuggestionsApp.swift */,
+				47F2EC69DC694FCA94049D74 /* App */,
 			);
-			path = SuggestionsApp;
+			path = Search;
+			sourceTree = "<group>";
+		};
+		8F1CEDA138CFEAB2046D97C1 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				614A542CBFDDF6204FE71598 /* SuggestionsApp.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		8FF935B9A77A589ED406A399 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A8E942797E4A5F68242F4B31 /* Sources */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		93BD182C5D4408305A66DB15 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				D04BD09F84664B4BCA4DA364 /* SearchApp.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		9791957CC44D42FBF2453AF8 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				09D112F1E49C507FAA173519 /* Sources */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A6450AB653ACB5A961A1E253 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				D036E678FB45A0A588964F33 /* RootView.swift */,
+				25036C54ADA54ACF364E9120 /* ShopAppMain.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		A8B6D3FA212FAA92EDCD9C53 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A6450AB653ACB5A961A1E253 /* Sources */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A8E942797E4A5F68242F4B31 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		AC73267B49CF28CC6CC7BCFA /* Shop */ = {
+			isa = PBXGroup;
+			children = (
+				A8B6D3FA212FAA92EDCD9C53 /* App */,
+			);
+			path = Shop;
 			sourceTree = "<group>";
 		};
 		B8FAAE3A6CF302E7D61C520A = {
 			isa = PBXGroup;
 			children = (
-				E923A3FDA4991D938E2B52C8 /* Apps */,
+				CCD49911BAA672F79146165F /* Core */,
+				CDD558CDDF91E6881B43BB4A /* Features */,
 				5063A8D9F24F01C23C90AB4F /* Packages */,
+				AC73267B49CF28CC6CC7BCFA /* Shop */,
 				BC4A696DFD180FCAD3645D77 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -224,37 +308,73 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C3ABCAC32FE3287ADA4CBA03 /* SearchApp */ = {
+		C8D6774AE48AFB78A5CA80CA /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
-				A5CD71E6E5952E0F33FBEE4A /* Info.plist */,
-				2FBAE4BC7C452F3C94584E52 /* SearchApp.swift */,
+				9791957CC44D42FBF2453AF8 /* App */,
 			);
-			path = SearchApp;
+			path = DesignSystem;
 			sourceTree = "<group>";
 		};
-		E923A3FDA4991D938E2B52C8 /* Apps */ = {
+		CCD49911BAA672F79146165F /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				F1BAF47A9293023CA27BDFAE /* CheckoutApp */,
-				52606A3632863D16B477E2E8 /* DesignSystemApp */,
-				4A13ACD796F0E77E72D86ACF /* PastPurchasesApp */,
-				1A687E9C2F6D870F3309A733 /* PromotionsApp */,
-				C3ABCAC32FE3287ADA4CBA03 /* SearchApp */,
-				509945D7B46CE40F7296A693 /* ShopApp */,
-				B83639BD53C0BE164AB35B80 /* SuggestionsApp */,
-				6A019607A37AD8D10E801144 /* SupportApp */,
+				C8D6774AE48AFB78A5CA80CA /* DesignSystem */,
 			);
-			path = Apps;
+			path = Core;
 			sourceTree = "<group>";
 		};
-		F1BAF47A9293023CA27BDFAE /* CheckoutApp */ = {
+		CDD558CDDF91E6881B43BB4A /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				B92510626518360443E58FD6 /* CheckoutApp.swift */,
-				E2CCDCCFFFD9D1DFDB78AFBF /* Info.plist */,
+				E2BA9F2281B1C51B048FE22F /* Checkout */,
+				178DD6F65327E74A8404DA2A /* PastPurchases */,
+				E50896D5D680C2A0129201B2 /* Promotions */,
+				8CE2816083DCC36DF0E6DD11 /* Search */,
+				2FA292D08CB4273008ACEF72 /* Suggestions */,
+				3C6A21AB2BE67DCE0BAF5BA9 /* Support */,
 			);
-			path = CheckoutApp;
+			path = Features;
+			sourceTree = "<group>";
+		};
+		E2BA9F2281B1C51B048FE22F /* Checkout */ = {
+			isa = PBXGroup;
+			children = (
+				8FF935B9A77A589ED406A399 /* App */,
+			);
+			path = Checkout;
+			sourceTree = "<group>";
+		};
+		E50896D5D680C2A0129201B2 /* Promotions */ = {
+			isa = PBXGroup;
+			children = (
+				74F3EAF8A2EFCA107EF70F94 /* App */,
+			);
+			path = Promotions;
+			sourceTree = "<group>";
+		};
+		E90EE5CEA20C1E1A8DA5EFDE /* App */ = {
+			isa = PBXGroup;
+			children = (
+				66E6B12A2EA5E7444282C060 /* Sources */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		EEAB9DBAF521FCD2E6E0C8E0 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8F1CEDA138CFEAB2046D97C1 /* Sources */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		FBE9979700374C587C3F04B3 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				6D551EEA314F81EF558DE595 /* Sources */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -464,7 +584,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F6D29FC384163EDFD0766F4 /* SuggestionsApp.swift in Sources */,
+				71CC1B989FBFD8E8C1F18858 /* SuggestionsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,7 +592,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE9BB0C3D957E21F1C3337CE /* PromotionsApp.swift in Sources */,
+				2545B219033042F01F540A7E /* PromotionsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,7 +600,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F52EA862302712EEB25BBD43 /* PastPurchasesApp.swift in Sources */,
+				DAC0E415281914C55081845B /* PastPurchasesApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,7 +608,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C105C9CD15BADCC2547666D6 /* SupportApp.swift in Sources */,
+				33EBB5F024B645FDDD553B44 /* SupportApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,7 +616,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5D6E5540820F0633C282026 /* CheckoutApp.swift in Sources */,
+				7AE577EB14B71D53365A28E8 /* CheckoutApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,7 +624,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E4123DBAC7C6CDE2344D8FF /* SearchApp.swift in Sources */,
+				509419EDEA53034AE71143C8 /* SearchApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -512,8 +632,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B878D83874423B3420811CE2 /* RootView.swift in Sources */,
-				A71801873B5D217B8648D614 /* ShopAppMain.swift in Sources */,
+				08D2DA4171FA617D8B2B4491 /* RootView.swift in Sources */,
+				693C48E8A806032C53FD3645 /* ShopAppMain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,7 +641,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D382C6EB71B1401F211E8C3 /* DesignSystemApp.swift in Sources */,
+				52B3036328935F9303AB6719 /* DesignSystemApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,7 +654,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/DesignSystemApp/Info.plist;
+				INFOPLIST_FILE = Core/DesignSystem/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -554,7 +674,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/ShopApp/Info.plist;
+				INFOPLIST_FILE = Shop/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -574,7 +694,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/SuggestionsApp/Info.plist;
+				INFOPLIST_FILE = Features/Suggestions/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -651,7 +771,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/SupportApp/Info.plist;
+				INFOPLIST_FILE = Features/Support/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -672,7 +792,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/CheckoutApp/Info.plist;
+				INFOPLIST_FILE = Features/Checkout/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -693,7 +813,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/CheckoutApp/Info.plist;
+				INFOPLIST_FILE = Features/Checkout/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -714,7 +834,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/SearchApp/Info.plist;
+				INFOPLIST_FILE = Features/Search/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -735,7 +855,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/ShopApp/Info.plist;
+				INFOPLIST_FILE = Shop/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -755,7 +875,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/SearchApp/Info.plist;
+				INFOPLIST_FILE = Features/Search/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -776,7 +896,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/PromotionsApp/Info.plist;
+				INFOPLIST_FILE = Features/Promotions/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -797,7 +917,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/PastPurchasesApp/Info.plist;
+				INFOPLIST_FILE = Features/PastPurchases/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -817,7 +937,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/SuggestionsApp/Info.plist;
+				INFOPLIST_FILE = Features/Suggestions/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -838,7 +958,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/PromotionsApp/Info.plist;
+				INFOPLIST_FILE = Features/Promotions/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -859,7 +979,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/SupportApp/Info.plist;
+				INFOPLIST_FILE = Features/Support/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -943,7 +1063,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/PastPurchasesApp/Info.plist;
+				INFOPLIST_FILE = Features/PastPurchases/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -963,7 +1083,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = Apps/DesignSystemApp/Info.plist;
+				INFOPLIST_FILE = Core/DesignSystem/App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

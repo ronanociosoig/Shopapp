@@ -1,0 +1,314 @@
+name: ShopApp
+options:
+  bundleIdPrefix: com.shopapp.demo
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+  createIntermediateGroups: true
+
+schemes:
+  ShopApp:
+    build:
+      targets:
+        ShopApp: all
+    run:
+      config: Debug
+      targets: [ShopApp]
+    profile:
+      config: Release
+  SearchApp:
+    build:
+      targets:
+        SearchApp: all
+    run:
+      config: Debug
+      targets: [SearchApp]
+    profile:
+      config: Release
+  CheckoutApp:
+    build:
+      targets:
+        CheckoutApp: all
+    run:
+      config: Debug
+      targets: [CheckoutApp]
+    profile:
+      config: Release
+  SupportApp:
+    build:
+      targets:
+        SupportApp: all
+    run:
+      config: Debug
+      targets: [SupportApp]
+    profile:
+      config: Release
+  SuggestionsApp:
+    build:
+      targets:
+        SuggestionsApp: all
+    run:
+      config: Debug
+      targets: [SuggestionsApp]
+    profile:
+      config: Release
+  PromotionsApp:
+    build:
+      targets:
+        PromotionsApp: all
+    run:
+      config: Debug
+      targets: [PromotionsApp]
+    profile:
+      config: Release
+  PastPurchasesApp:
+    build:
+      targets:
+        PastPurchasesApp: all
+    run:
+      config: Debug
+      targets: [PastPurchasesApp]
+    profile:
+      config: Release
+  DesignSystemApp:
+    build:
+      targets:
+        DesignSystemApp: all
+    run:
+      config: Debug
+      targets: [DesignSystemApp]
+    profile:
+      config: Release
+
+# Reference the local Swift package — all module products become available
+# as dependencies for the app targets below.
+packages:
+  ShopApp:
+    path: "."
+
+# MARK: - App targets
+
+targets:
+
+  # ── Main App (composition root) ──────────────────────────────────────────────
+  #
+  # The only target that depends on all feature modules.
+  # Responsible for creating repositories and injecting them into feature models.
+
+  ShopApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Shop/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Store
+      - package: ShopApp
+        product: Search
+      - package: ShopApp
+        product: Checkout
+      - package: ShopApp
+        product: Account
+      - package: ShopApp
+        product: Promotions
+      - package: ShopApp
+        product: PastPurchases
+      - package: ShopApp
+        product: Support
+      - package: ShopApp
+        product: Suggestions
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.app
+        PRODUCT_NAME: ShopApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Shop/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Search ──────────────────────────────────────────────────────────────────
+
+  SearchApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Search/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Search
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.search
+        PRODUCT_NAME: Search
+        PRODUCT_MODULE_NAME: SearchApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Features/Search/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Checkout ─────────────────────────────────────────────────────────────────
+
+  CheckoutApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Checkout/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Checkout
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.checkout
+        PRODUCT_NAME: Checkout
+        PRODUCT_MODULE_NAME: CheckoutApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Features/Checkout/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Support ──────────────────────────────────────────────────────────────────
+
+  SupportApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Support/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Support
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.support
+        PRODUCT_NAME: Support
+        PRODUCT_MODULE_NAME: SupportApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Features/Support/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Suggestions ──────────────────────────────────────────────────────────────
+
+  SuggestionsApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Suggestions/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Suggestions
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.suggestions
+        PRODUCT_NAME: Suggestions
+        PRODUCT_MODULE_NAME: SuggestionsApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Features/Suggestions/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Promotions ───────────────────────────────────────────────────────────────
+
+  PromotionsApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Promotions/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Promotions
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.promotions
+        PRODUCT_NAME: Promotions
+        PRODUCT_MODULE_NAME: PromotionsApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Features/Promotions/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Past Purchases ───────────────────────────────────────────────────────────
+
+  PastPurchasesApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/PastPurchases/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: PastPurchases
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.pastpurchases
+        PRODUCT_NAME: Past Purchases
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Features/PastPurchases/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
+  # ── Design System ────────────────────────────────────────────────────────────
+
+  DesignSystemApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Core/DesignSystem/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: DesignSystem
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.designsystem
+        PRODUCT_NAME: Design System
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    info:
+      path: Core/DesignSystem/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
