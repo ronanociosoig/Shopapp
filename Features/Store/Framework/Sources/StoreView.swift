@@ -2,11 +2,13 @@ import SwiftUI
 import SwiftUINavigation
 import DesignSystem
 
-public struct StoreView: View {
+public struct StoreView<SuggestionRow: View>: View {
     @Bindable public var model: StoreModel
+    private let suggestionRow: () -> SuggestionRow
 
-    public init(model: StoreModel) {
+    public init(model: StoreModel, @ViewBuilder suggestionRow: @escaping () -> SuggestionRow) {
         self.model = model
+        self.suggestionRow = suggestionRow
     }
 
     public var body: some View {
@@ -44,6 +46,29 @@ public struct StoreView: View {
         }
     }
 
+    private enum StoreRow {
+        case products([StoreProduct])
+        case suggestions
+    }
+
+    private var rows: [StoreRow] {
+        var result: [StoreRow] = []
+        let products = model.displayedProducts
+        var productIndex = 0
+        var outputRow = 0
+        while productIndex < products.count {
+            if outputRow >= 2 && (outputRow - 2) % 4 == 0 {
+                result.append(.suggestions)
+            } else {
+                let pair = Array(products[productIndex ..< min(productIndex + 2, products.count)])
+                result.append(.products(pair))
+                productIndex += pair.count
+            }
+            outputRow += 1
+        }
+        return result
+    }
+
     private var productGrid: some View {
         ScrollView {
             if let category = model.selectedCategory {
@@ -58,14 +83,34 @@ public struct StoreView: View {
                 .padding(.horizontal)
             }
 
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                ForEach(model.displayedProducts) { product in
-                    StoreProductCard(product: product)
-                        .onTapGesture { model.select(product) }
+            LazyVStack(spacing: 16) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    switch row {
+                    case .products(let pair):
+                        HStack(alignment: .top, spacing: 16) {
+                            ForEach(pair) { product in
+                                StoreProductCard(product: product)
+                                    .onTapGesture { model.select(product) }
+                                    .frame(maxWidth: .infinity)
+                            }
+                            if pair.count == 1 {
+                                Color.clear.frame(maxWidth: .infinity)
+                            }
+                        }
+                    case .suggestions:
+                        suggestionRow()
+                    }
                 }
             }
             .padding()
         }
+    }
+}
+
+extension StoreView where SuggestionRow == EmptyView {
+    public init(model: StoreModel) {
+        self.model = model
+        self.suggestionRow = { EmptyView() }
     }
 }
 
