@@ -11,6 +11,7 @@ public protocol AccountRepositoryProtocol: Sendable {
     func updateProfile(_ profile: UserProfile) async throws -> UserProfile
     func addAddress(_ address: SavedAddress) async throws -> SavedAddress
     func removeAddress(id: UUID) async throws
+    func setDefaultAddress(id: UUID) async throws
     func removeCard(id: UUID) async throws
 }
 
@@ -68,9 +69,9 @@ final class RemoteAccountDataSource: Sendable {
 // MARK: - Stub remote data source
 
 public final class StubRemoteAccountDataSource: Sendable {
-    public var profile: UserProfile
-    public var addresses: [SavedAddress]
-    public var cards: [SavedCard]
+    public let profile: UserProfile
+    public let addresses: [SavedAddress]
+    public let cards: [SavedCard]
 
     public init(
         profile: UserProfile      = .stub,
@@ -150,6 +151,11 @@ public final class AccountRepository: AccountRepositoryProtocol {
         addressStore.saveAddresses(addresses)
     }
 
+    public func setDefaultAddress(id: UUID) async throws {
+        let updated = addressStore.loadAddresses().map { $0.settingDefault($0.id == id) }
+        addressStore.saveAddresses(updated)
+    }
+
     public func removeCard(id: UUID) async throws {
         local.cards.removeAll { $0.id == id }
     }
@@ -178,5 +184,6 @@ public final class StubAccountRepository: AccountRepositoryProtocol {
     public func updateProfile(_ profile: UserProfile)     async throws -> UserProfile   { profile }
     public func addAddress(_ address: SavedAddress)       async throws -> SavedAddress  { address }
     public func removeAddress(id: UUID)                   async throws {}
+    public func setDefaultAddress(id: UUID)               async throws {}
     public func removeCard(id: UUID)                      async throws {}
 }
