@@ -29,8 +29,10 @@ let package = Package(
 
         // MARK: - Foundation (no feature deps)
 
-        .target(name: "NetworkFoundation", path: "Core/NetworkFoundation/Framework/Sources"),
-        .target(name: "DesignSystem",       path: "Core/DesignSystem/Framework/Sources"),
+        .target(name: "NetworkFoundation",
+                path: "Core/NetworkFoundation/Framework/Sources"),
+        .target(name: "DesignSystem",
+                path: "Core/DesignSystem/Framework/Sources"),
         .target(name: "Common", dependencies: ["NetworkFoundation"],
                 path: "Core/Common/Framework/Sources"),
 
