@@ -39,6 +39,7 @@ struct PaymentMethodSelectionView: View {
                         .padding(.vertical, 4)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(method.rawValue)
                 }
             }
 

@@ -5,7 +5,6 @@ let package = Package(
     name: "ShopApp",
     platforms: [
         .iOS(.v17),
-        .macOS(.v14),
     ],
     products: [
         .library(name: "NetworkFoundation", targets: ["NetworkFoundation"]),
@@ -19,16 +18,6 @@ let package = Package(
         .library(name: "Suggestions",        targets: ["Suggestions"]),
         .library(name: "Promotions",         targets: ["Promotions"]),
         .library(name: "PastPurchases",      targets: ["PastPurchases"]),
-        // Micro-app executables (macOS) — run with: swift run <name>
-        // Prefixed with "Run" to avoid name collisions with the Xcode iOS targets.
-        .executable(name: "RunShopApp",          targets: ["RunShopApp"]),
-        .executable(name: "RunCheckoutApp",      targets: ["RunCheckoutApp"]),
-        .executable(name: "RunSearchApp",        targets: ["RunSearchApp"]),
-        .executable(name: "RunSuggestionsApp",   targets: ["RunSuggestionsApp"]),
-        .executable(name: "RunSupportApp",       targets: ["RunSupportApp"]),
-        .executable(name: "RunPromotionsApp",    targets: ["RunPromotionsApp"]),
-        .executable(name: "RunPastPurchasesApp", targets: ["RunPastPurchasesApp"]),
-        .executable(name: "RunDesignSystemApp",  targets: ["RunDesignSystemApp"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.0.0"),
@@ -210,53 +199,5 @@ let package = Package(
             path: "Features/PastPurchases/Tests/Sources"
         ),
 
-        // MARK: - Micro-app executables (macOS runners)
-        // Each target wraps the corresponding App/Sources/ files.
-        // Run from the command line with: swift run Run<Name>
-        // (Prefixed with "Run" so they don't conflict with the Xcode iOS schemes.)
-
-        .executableTarget(
-            name: "RunShopApp",
-            dependencies: [
-                "Store", "Search", "Checkout", "Account",
-                "Promotions", "PastPurchases", "Support", "Suggestions",
-            ],
-            path: "Shop/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunCheckoutApp",
-            dependencies: ["Checkout"],
-            path: "Features/Checkout/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunSearchApp",
-            dependencies: ["Search"],
-            path: "Features/Search/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunSuggestionsApp",
-            dependencies: ["Suggestions"],
-            path: "Features/Suggestions/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunSupportApp",
-            dependencies: ["Support"],
-            path: "Features/Support/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunPromotionsApp",
-            dependencies: ["Promotions"],
-            path: "Features/Promotions/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunPastPurchasesApp",
-            dependencies: ["PastPurchases"],
-            path: "Features/PastPurchases/App/Sources"
-        ),
-        .executableTarget(
-            name: "RunDesignSystemApp",
-            dependencies: ["DesignSystem"],
-            path: "Core/DesignSystem/App/Sources"
-        ),
     ]
 )

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		08D2DA4171FA617D8B2B4491 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D036E678FB45A0A588964F33 /* RootView.swift */; };
+		0DA8792556B632C6D04317A1 /* CheckoutFunnelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */; };
 		194D2ED485E44321F8A11EFD /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 8B4EF89E6414765AF69FB40C /* Checkout */; };
 		2545B219033042F01F540A7E /* PromotionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11046F7EA1AAA004621A801 /* PromotionsApp.swift */; };
 		3388C68CCDD8DDC8C6A344DD /* Account in Frameworks */ = {isa = PBXBuildFile; productRef = 74C64115760D62F039D8A416 /* Account */; };
@@ -33,13 +34,25 @@
 		F98286DAF92BDDFF8BAC74A8 /* Suggestions in Frameworks */ = {isa = PBXBuildFile; productRef = 47041F172F6957A31FB0ADB2 /* Suggestions */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3B37F86C4F5B21018CE88C69 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1EE381B326C5BB4B225FF178 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C59BDF7A1F5B9606A8919132;
+			remoteInfo = CheckoutApp;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PastPurchasesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14A2510C199FE28143DA4954 /* SuggestionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SuggestionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E36F9E90AC91DB876855A21 /* SearchApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		245A358B476A4BE5CEB6DD1C /* SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportApp.swift; sourceTree = "<group>"; };
 		25036C54ADA54ACF364E9120 /* ShopAppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppMain.swift; sourceTree = "<group>"; };
+		28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutFunnelUITests.swift; sourceTree = "<group>"; };
 		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CheckoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EA81447207387812C53C745 /* CheckoutAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CheckoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PromotionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DesignSystemApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		510466A867228A7F746D02EF /* ShopApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShopApp; path = .; sourceTree = SOURCE_ROOT; };
@@ -229,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				A8E942797E4A5F68242F4B31 /* Sources */,
+				EEE2BE4AFAF518DDFF774DC6 /* UITests */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -297,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				29F2225CE4E42BDA26534616 /* CheckoutApp.app */,
+				2EA81447207387812C53C745 /* CheckoutAppUITests.xctest */,
 				4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */,
 				038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */,
 				410B2D35D147A3BBCD70727C /* PromotionsApp.app */,
@@ -367,6 +382,14 @@
 				8F1CEDA138CFEAB2046D97C1 /* Sources */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		EEE2BE4AFAF518DDFF774DC6 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */,
+			);
+			path = UITests;
 			sourceTree = "<group>";
 		};
 		FBE9979700374C587C3F04B3 /* App */ = {
@@ -482,6 +505,24 @@
 			productReference = 038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		92D31059F1D1D73C79B10A4A /* CheckoutAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2FA87B38AC4D278EB8E4E907 /* Build configuration list for PBXNativeTarget "CheckoutAppUITests" */;
+			buildPhases = (
+				2E74362226BFCB6B3C4BB56D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BE74DF502AC190A521D4152F /* PBXTargetDependency */,
+			);
+			name = CheckoutAppUITests;
+			packageProductDependencies = (
+			);
+			productName = CheckoutAppUITests;
+			productReference = 2EA81447207387812C53C745 /* CheckoutAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		B6C635E3B7F8242152EDC96F /* DesignSystemApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 36F809332076905039C99E4B /* Build configuration list for PBXNativeTarget "DesignSystemApp" */;
@@ -548,6 +589,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					92D31059F1D1D73C79B10A4A = {
+						TestTargetID = C59BDF7A1F5B9606A8919132;
+					};
 				};
 			};
 			buildConfigurationList = D8BB8CFDD928212D52E30E0A /* Build configuration list for PBXProject "ShopApp" */;
@@ -568,6 +612,7 @@
 			projectRoot = "";
 			targets = (
 				C59BDF7A1F5B9606A8919132 /* CheckoutApp */,
+				92D31059F1D1D73C79B10A4A /* CheckoutAppUITests */,
 				B6C635E3B7F8242152EDC96F /* DesignSystemApp */,
 				80041FED0A7C17D87328DBF3 /* PastPurchasesApp */,
 				0CD4BD802B938D0F443D4F01 /* PromotionsApp */,
@@ -585,6 +630,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				71CC1B989FBFD8E8C1F18858 /* SuggestionsApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E74362226BFCB6B3C4BB56D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0DA8792556B632C6D04317A1 /* CheckoutFunnelUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,6 +700,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		BE74DF502AC190A521D4152F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C59BDF7A1F5B9606A8919132 /* CheckoutApp */;
+			targetProxy = 3B37F86C4F5B21018CE88C69 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1588A2A73971CAFF8F60D75C /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -664,6 +725,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.designsystem;
 				PRODUCT_NAME = "Design System";
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -684,6 +746,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.app;
 				PRODUCT_NAME = ShopApp;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -705,6 +768,7 @@
 				PRODUCT_MODULE_NAME = SuggestionsApp;
 				PRODUCT_NAME = Suggestions;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -782,6 +846,7 @@
 				PRODUCT_MODULE_NAME = SupportApp;
 				PRODUCT_NAME = Support;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -803,6 +868,7 @@
 				PRODUCT_MODULE_NAME = CheckoutApp;
 				PRODUCT_NAME = Checkout;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -824,7 +890,29 @@
 				PRODUCT_MODULE_NAME = CheckoutApp;
 				PRODUCT_NAME = Checkout;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8E0C2CB0FC0CAFA1A319F0E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.checkout.uitests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CheckoutApp;
 			};
 			name = Release;
 		};
@@ -845,6 +933,7 @@
 				PRODUCT_MODULE_NAME = SearchApp;
 				PRODUCT_NAME = Search;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -865,6 +954,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.app;
 				PRODUCT_NAME = ShopApp;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -886,6 +976,7 @@
 				PRODUCT_MODULE_NAME = SearchApp;
 				PRODUCT_NAME = Search;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -907,6 +998,7 @@
 				PRODUCT_MODULE_NAME = PromotionsApp;
 				PRODUCT_NAME = Promotions;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -927,7 +1019,29 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.pastpurchases;
 				PRODUCT_NAME = "Past Purchases";
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C84C51B7178047BD0B859BA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.checkout.uitests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CheckoutApp;
 			};
 			name = Debug;
 		};
@@ -948,6 +1062,7 @@
 				PRODUCT_MODULE_NAME = SuggestionsApp;
 				PRODUCT_NAME = Suggestions;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -969,6 +1084,7 @@
 				PRODUCT_MODULE_NAME = PromotionsApp;
 				PRODUCT_NAME = Promotions;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -990,6 +1106,7 @@
 				PRODUCT_MODULE_NAME = SupportApp;
 				PRODUCT_NAME = Support;
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1073,6 +1190,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.pastpurchases;
 				PRODUCT_NAME = "Past Purchases";
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1093,6 +1211,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.designsystem;
 				PRODUCT_NAME = "Design System";
 				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1100,6 +1219,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2FA87B38AC4D278EB8E4E907 /* Build configuration list for PBXNativeTarget "CheckoutAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C84C51B7178047BD0B859BA8 /* Debug */,
+				8E0C2CB0FC0CAFA1A319F0E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		36F809332076905039C99E4B /* Build configuration list for PBXNativeTarget "DesignSystemApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
