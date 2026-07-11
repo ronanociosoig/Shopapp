@@ -203,6 +203,23 @@ struct PastOrderDetailView: View {
                 .listRowInsets(.init())
                 .padding(.horizontal)
             }
+
+            // MARK: Rate order
+            if order.status == .delivered {
+                Section {
+                    Button {
+                        model.requestRating(for: order)
+                    } label: {
+                        Label(Strings.Detail.rateOrderButton, systemImage: "star.leadinghalf.filled")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.dsPrimary)
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(.init())
+                .padding(.horizontal)
+            }
         }
         .navigationTitle(Strings.orderNumber(order.id.uuidString.prefix(8).uppercased()))
         #if os(iOS)
@@ -253,6 +270,7 @@ private enum Strings {
         static let totalLabel           = "Total"
         static let deliveryInfoHeader   = "Delivery"
         static let repeatOrderButton    = "Repeat Order"
+        static let rateOrderButton      = "Rate this order"
         static let guaranteeLabel       = "Extended Guarantee"
         static func quantityLabel(_ qty: Int) -> String { "Qty: \(qty)" }
     }

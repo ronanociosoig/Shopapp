@@ -17,6 +17,10 @@ public final class PastPurchasesModel {
     /// observes this to present the Support screen and resets it afterwards.
     public var shouldOpenSupport = false
 
+    /// Set to a `PastOrder` when the user requests a rating; the composition root
+    /// observes this to present the Rate Order sheet and resets it afterwards.
+    public var orderToRate: PastOrder?
+
     private let repository: PastPurchasesRepositoryProtocol
 
     public init(repository: PastPurchasesRepositoryProtocol = StubPastPurchasesRepository()) {
@@ -55,6 +59,10 @@ public final class PastPurchasesModel {
 
     public func openSupport() {
         shouldOpenSupport = true
+    }
+
+    public func requestRating(for order: PastOrder) {
+        orderToRate = order
     }
 
     /// Fires `onRepeatOrder` with the given order and signals the composition
