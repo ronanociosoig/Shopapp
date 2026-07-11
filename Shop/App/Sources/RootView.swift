@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftUINavigation
 import Store
 import Search
 import Checkout
@@ -16,6 +17,16 @@ struct RootView: View {
     // Add-to-cart is wired here via onAddToCart closures typed on Foundation
     // primitives (UUID, String, Decimal), so no feature module imports Checkout.
 
+    enum Tab: Hashable {
+        case store, search, cart, account, orders
+    }
+
+    @CasePathable
+    enum Destination {
+        case support
+        case rateOrder(PastOrder)
+    }
+
     private let storeModel:         StoreModel
     private let searchModel:        SearchModel
     private let accountModel:       AccountModel
@@ -25,10 +36,8 @@ struct RootView: View {
     private let supportModel:       SupportModel
     private let suggestionsModel:   SuggestionsModel
 
-    @State private var selectedTab         = 0
-    @State private var isShowingSupport    = false
-
-    private static let cartTabIndex = 2
+    @State private var selectedTab:  Tab         = .store
+    @State private var destination:  Destination?
 
     init(
         storeRepository:          StoreRepositoryProtocol,
@@ -134,26 +143,28 @@ struct RootView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            StoreView(model: storeModel)
-                .tabItem { Label(Strings.storeTab, systemImage: "storefront") }
-                .tag(0)
+            StoreView(model: storeModel) {
+                SuggestionsView(model: suggestionsModel)
+            }
+            .tabItem { Label(Strings.storeTab, systemImage: "storefront") }
+            .tag(Tab.store)
 
             SearchView(model: searchModel)
                 .tabItem { Label(Strings.searchTab, systemImage: "magnifyingglass") }
-                .tag(1)
+                .tag(Tab.search)
 
             CheckoutView(model: checkoutModel)
                 .tabItem { Label(Strings.cartTab, systemImage: "cart") }
                 .badge(checkoutModel.itemCount)
-                .tag(2)
+                .tag(Tab.cart)
 
             AccountView(model: accountModel)
                 .tabItem { Label(Strings.accountTab, systemImage: "person") }
-                .tag(3)
+                .tag(Tab.account)
 
             PastPurchasesView(model: pastPurchasesModel)
                 .tabItem { Label(Strings.ordersTab, systemImage: "bag") }
-                .tag(4)
+                .tag(Tab.orders)
         }
         .task {
             await accountModel.load()
@@ -162,16 +173,24 @@ struct RootView: View {
         .onChange(of: accountModel.addresses) { syncAddresses() }
         .onChange(of: pastPurchasesModel.shouldNavigateToCart) { _, navigates in
             guard navigates else { return }
-            selectedTab = Self.cartTabIndex
+            selectedTab = .cart
             pastPurchasesModel.shouldNavigateToCart = false
         }
         .onChange(of: pastPurchasesModel.shouldOpenSupport) { _, open in
             guard open else { return }
-            isShowingSupport = true
+            destination = .support
             pastPurchasesModel.shouldOpenSupport = false
         }
-        .sheet(isPresented: $isShowingSupport) {
+        .onChange(of: pastPurchasesModel.orderToRate) { _, order in
+            guard let order else { return }
+            destination = .rateOrder(order)
+            pastPurchasesModel.orderToRate = nil
+        }
+        .sheet(isPresented: Binding($destination.support)) {
             SupportView(model: supportModel)
+        }
+        .sheet(item: $destination.rateOrder) { order in
+            RateOrderView(order: order)
         }
     }
 
