@@ -46,6 +46,19 @@ public final class AccountModel {
     public func showAddAddress() { destination = .addAddress }
     public func showSavedCards() { destination = .savedCards }
 
+    public func updateDisplayName(_ name: String) {
+        guard let current = profile, !name.isEmpty else { return }
+        let updated = UserProfile(id: current.id, email: current.email,
+                                  displayName: name, avatarURL: current.avatarURL)
+        profile = updated
+        Task { try? await repository.updateProfile(updated) }
+    }
+
+    public func setDefaultAddress(_ address: SavedAddress) {
+        addresses = addresses.map { $0.settingDefault($0.id == address.id) }
+        Task { try? await repository.setDefaultAddress(id: address.id) }
+    }
+
     public func removeAddress(_ address: SavedAddress) {
         addresses.removeAll { $0.id == address.id }
         Task { try? await repository.removeAddress(id: address.id) }

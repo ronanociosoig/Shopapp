@@ -65,23 +65,31 @@ public struct AccountView: View {
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(model.addresses) { address in
-                        VStack(alignment: .leading, spacing: 2) {
+                        Button { model.setDefaultAddress(address) } label: {
                             HStack {
-                                Text(address.fullName).font(.subheadline.weight(.medium))
-                                if address.isDefault {
-                                    Text(Strings.defaultLabel)
-                                        .font(.caption2)
-                                        .padding(.horizontal, 6).padding(.vertical, 2)
-                                        .background(Color.dsPrimary.opacity(0.12))
-                                        .foregroundStyle(.dsPrimary)
-                                        .clipShape(Capsule())
+                                VStack(alignment: .leading, spacing: 2) {
+                                    HStack {
+                                        Text(address.fullName).font(.subheadline.weight(.medium))
+                                        if address.isDefault {
+                                            Text(Strings.defaultLabel)
+                                                .font(.caption2)
+                                                .padding(.horizontal, 6).padding(.vertical, 2)
+                                                .background(Color.dsPrimary.opacity(0.12))
+                                                .foregroundStyle(.dsPrimary)
+                                                .clipShape(Capsule())
+                                        }
+                                    }
+                                    Text(address.formatted)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
                                 }
+                                Spacer()
+                                Image(systemName: address.isDefault ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(address.isDefault ? Color.dsPrimary : .secondary)
                             }
-                            Text(address.formatted)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            .padding(.vertical, 2)
                         }
-                        .padding(.vertical, 2)
+                        .buttonStyle(.plain)
                     }
                     .onDelete { indexSet in
                         indexSet.forEach { model.removeAddress(model.addresses[$0]) }
@@ -154,7 +162,11 @@ struct EditProfileView: View {
         #endif
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(Strings.EditProfile.saveButton) { model.destination = nil }
+                Button(Strings.EditProfile.saveButton) {
+                    model.updateDisplayName(displayName)
+                    model.destination = nil
+                }
+                .disabled(displayName.isEmpty)
             }
         }
     }
