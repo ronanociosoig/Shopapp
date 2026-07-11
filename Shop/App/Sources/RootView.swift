@@ -155,7 +155,10 @@ struct RootView: View {
                 .tabItem { Label(Strings.ordersTab, systemImage: "bag") }
                 .tag(4)
         }
-        .task { syncAddresses() }
+        .task {
+            await accountModel.load()
+            syncAddresses()
+        }
         .onChange(of: accountModel.addresses) { syncAddresses() }
         .onChange(of: pastPurchasesModel.shouldNavigateToCart) { _, navigates in
             guard navigates else { return }
