@@ -3,7 +3,7 @@
 
 tools/GraphTool/.build/
 
-.swiftPM/
+.swiftpm/
 
 ShopApp.xcodeproj/xcuserdata/
 
