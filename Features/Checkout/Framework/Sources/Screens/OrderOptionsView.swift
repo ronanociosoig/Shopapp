@@ -14,9 +14,7 @@ struct OrderOptionsView: View {
             orderSummarySection
         }
         .navigationTitle(Strings.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Strings.continueButton) {

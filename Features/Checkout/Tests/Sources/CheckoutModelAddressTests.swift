@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Checkout
+import CheckoutTesting
 
 @Suite("CheckoutModel – address selection")
 struct CheckoutModelAddressTests {

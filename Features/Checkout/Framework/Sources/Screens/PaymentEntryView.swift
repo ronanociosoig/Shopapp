@@ -20,19 +20,13 @@ struct PaymentEntryView: View {
 
             Section(Strings.cardSectionHeader) {
                 TextField(Strings.cardNumberPlaceholder, text: $cardNumber)
-                #if os(iOS)
                     .keyboardType(.numberPad)
                     .textContentType(.creditCardNumber)
-                #endif
                 HStack {
                     TextField(Strings.expiryPlaceholder, text: $expiry)
-                    #if os(iOS)
                         .keyboardType(.numbersAndPunctuation)
-                    #endif
                     TextField(Strings.cvvPlaceholder, text: $cvv)
-                    #if os(iOS)
                         .keyboardType(.numberPad)
-                    #endif
                 }
             }
 
@@ -45,9 +39,7 @@ struct PaymentEntryView: View {
             }
         }
         .navigationTitle(Strings.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 if isSubmitting {

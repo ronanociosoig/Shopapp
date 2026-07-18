@@ -3,19 +3,29 @@ import Testing
 import SnapshotTesting
 import SwiftUI
 @testable import Checkout
+import CheckoutTesting
 
-// MARK: - CaseIterable conformance
+// MARK: - CaseIterable: Destination (modal surfaces)
 
 extension CheckoutModel.Destination: CaseIterable {
     public static var allCases: [CheckoutModel.Destination] {
         [
-            .addressForm,
-            .orderOptions(.stub),
-            .paymentMethodSelection(.stub),
-            .paymentEntry(.stub),
             .processing,
             .confirmation(.stub),
             .paymentFailed(.cardDeclined),
+        ]
+    }
+}
+
+// MARK: - CaseIterable: CheckoutStep (funnel screens)
+
+extension CheckoutStep: CaseIterable {
+    public static var allCases: [CheckoutStep] {
+        [
+            .address,
+            .orderOptions(.stub),
+            .paymentMethod(.stub),
+            .paymentEntry(.stub),
         ]
     }
 }
@@ -58,7 +68,15 @@ struct CheckoutSnapshotTests {
         assertSnapshot(of: CheckoutView(model: model), as: .image(layout: .device(config: .iPhone13Pro)), named: "cart_express_delivery")
     }
 
-    @Test("Each checkout destination renders correctly", arguments: CheckoutModel.Destination.allCases)
+    @Test("Each funnel step renders correctly", arguments: CheckoutStep.allCases)
+    func step(_ step: CheckoutStep) async throws {
+        let model = CheckoutModel(cart: CartItem.stubs)
+        model.savedAddresses = ShippingAddress.stubs
+        model.path = [step]
+        assertSnapshot(of: CheckoutView(model: model), as: .image(layout: .device(config: .iPhone13Pro)), named: snapshotName(step))
+    }
+
+    @Test("Each modal destination renders correctly", arguments: CheckoutModel.Destination.allCases)
     func destination(_ destination: CheckoutModel.Destination) async throws {
         let model = CheckoutModel(cart: CartItem.stubs)
         model.destination = destination
@@ -98,6 +116,7 @@ struct CheckoutFunnelFlowTests {
             cart: CartItem.stubs,
             repository: StubCheckoutRepository(delay: .zero)
         )
+        model.savedAddresses = [.stub]
 
         // Step 1 — Cart
         assertSnapshot(of: CheckoutView(model: model),
@@ -108,9 +127,9 @@ struct CheckoutFunnelFlowTests {
         model.proceedToAddress()
         assertSnapshot(of: CheckoutView(model: model),
                        as: .image(layout: .device(config: .iPhone13Pro)),
-                       named: "step_2_address_form")
+                       named: "step_2_address")
 
-        // Step 3 — Order options (delivery speed)
+        // Step 3 — Order options (delivery speed + extended guarantee)
         model.submitAddress(.stub)
         assertSnapshot(of: CheckoutView(model: model),
                        as: .image(layout: .device(config: .iPhone13Pro)),
@@ -120,7 +139,7 @@ struct CheckoutFunnelFlowTests {
         model.proceedToPaymentMethod(address: .stub)
         assertSnapshot(of: CheckoutView(model: model),
                        as: .image(layout: .device(config: .iPhone13Pro)),
-                       named: "step_4_payment_method_selection")
+                       named: "step_4_payment_method")
 
         // Step 5 — Card entry form
         model.selectPaymentMethod(.creditCard, address: .stub)
@@ -135,44 +154,49 @@ struct CheckoutFunnelFlowTests {
                        named: "step_6_confirmation")
     }
 
-    @Test("Failure path — card declined shows error screen, retrying returns to address form")
+    @Test("Failure path — card declined shows error screen, retrying returns to address step")
     func cardDeclinedFunnel() async throws {
         let model = CheckoutModel(
             cart: CartItem.stubs,
             repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined)
         )
+        model.savedAddresses = [.stub]
 
-        // Advance to payment entry using the same path as the happy path
         model.proceedToAddress()
         model.submitAddress(.stub)
         model.proceedToPaymentMethod(address: .stub)
         model.selectPaymentMethod(.creditCard, address: .stub)
 
-        // Step 5 — Payment fails
+        // Payment fails
         await model.submitPayment(address: .stub, cardToken: "tok_bad")
         assertSnapshot(of: CheckoutView(model: model),
                        as: .image(layout: .device(config: .iPhone13Pro)),
                        named: "step_failure_card_declined")
 
-        // Step 6 — Retry resets to address form so the user can try a different card
+        // Retry clears modal and returns to address step
         model.retryPayment()
         assertSnapshot(of: CheckoutView(model: model),
                        as: .image(layout: .device(config: .iPhone13Pro)),
-                       named: "step_failure_retry_address_form")
+                       named: "step_failure_retry_address")
     }
 }
 
 // MARK: - Helpers
 
+private func snapshotName(_ step: CheckoutStep) -> String {
+    switch step {
+    case .address:               return "step_address"
+    case .orderOptions:          return "step_order_options"
+    case .paymentMethod:         return "step_payment_method"
+    case .paymentEntry:          return "step_payment_entry"
+    }
+}
+
 private func snapshotName(_ destination: CheckoutModel.Destination) -> String {
     switch destination {
-    case .addressForm:             return "destination_address_form"
-    case .orderOptions:            return "destination_order_options"
-    case .paymentMethodSelection:  return "destination_payment_method_selection"
-    case .paymentEntry:            return "destination_payment_entry"
-    case .processing:              return "destination_processing"
-    case .confirmation:            return "destination_confirmation"
-    case .paymentFailed(let err):  return "destination_payment_failed_\(err.id)"
+    case .processing:            return "destination_processing"
+    case .confirmation:          return "destination_confirmation"
+    case .paymentFailed(let err): return "destination_payment_failed_\(err.id)"
     }
 }
 #endif

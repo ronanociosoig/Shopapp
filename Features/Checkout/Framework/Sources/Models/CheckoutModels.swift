@@ -167,7 +167,7 @@ public extension CartItem {
 
 // MARK: - ShippingAddress
 
-public struct ShippingAddress: Identifiable, Equatable, Sendable, Codable {
+public struct ShippingAddress: Identifiable, Equatable, Hashable, Sendable, Codable {
     public let id: UUID
     public let fullName: String
     public let line1: String
@@ -243,6 +243,18 @@ public extension ShippingAddress {
             country: "United Kingdom"
         ),
     ]
+}
+
+// MARK: - CheckoutStep
+
+/// Each value represents one screen in the sequential checkout funnel.
+/// Appended to `CheckoutModel.path` to push screens onto the NavigationStack.
+/// The user can navigate back through the stack at any point.
+public enum CheckoutStep: Hashable {
+    case address
+    case orderOptions(ShippingAddress)
+    case paymentMethod(ShippingAddress)
+    case paymentEntry(ShippingAddress)
 }
 
 // MARK: - PlacedOrder

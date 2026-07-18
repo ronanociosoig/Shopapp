@@ -13,9 +13,7 @@ struct AddressFormView: View {
             }
         }
         .navigationTitle(Strings.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .toolbar {
             if !model.savedAddresses.isEmpty {
                 ToolbarItem(placement: .confirmationAction) {

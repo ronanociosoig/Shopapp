@@ -6,20 +6,32 @@ import SwiftUINavigation
 
 /// CheckoutModel drives the full purchase funnel.
 ///
-/// All six reachable UI states are expressed as a single `Destination` enum.
-/// This makes every screen injectable in tests without scripting UI interactions:
+/// Navigation is split across two properties, each modelling a distinct concern:
 ///
-///     // Snapshot the confirmation screen in one line:
+/// - `path` — the `NavigationStack` path for the sequential funnel screens.
+///   Each step is pushed on top of the previous, giving the user full back
+///   navigation through the funnel. A `[CheckoutStep]` array naturally expresses
+///   sequence; boolean flags cannot.
+///
+/// - `destination` — modal surfaces (processing overlay, confirmation,
+///   payment failed) that sit outside the back-navigable stack. These are not
+///   part of the funnel sequence and are never back-navigated to.
+///
+/// Having two navigation properties on one model is intentional — the goal is
+/// one type per navigation concern, not one type per model.
+///
+/// Any screen in the funnel is reachable in tests by setting state directly:
+///
+///     // Snapshot the order options screen:
 ///     let model = CheckoutModel(cart: CartItem.stubs)
-///     model.destination = .confirmation(.stub)
+///     model.savedAddresses = [.stub]
+///     model.path = [.address, .orderOptions(.stub)]
 ///     assertSnapshot(of: CheckoutView(model: model), as: .image(on: .iPhone13Pro))
-///
-/// Adding a new `Destination` case without updating `CaseIterable.allCases`
-/// in the test target is a compile error — coverage is structural, not optional.
 ///
 @Observable
 public final class CheckoutModel {
     public var cart: [CartItem]
+    public var path: [CheckoutStep] = []
     public var destination: Destination?
     public var savedAddresses: [ShippingAddress] = []
     public var deliveryOption: DeliveryOption = .standard
@@ -38,10 +50,12 @@ public final class CheckoutModel {
 
     public init(
         cart: [CartItem] = [],
-        repository: CheckoutRepositoryProtocol = StubCheckoutRepository(),
+        destination: Destination? = nil,
+        repository: CheckoutRepositoryProtocol,
         selectedAddressStore: SelectedAddressStoreProtocol = UserDefaultsSelectedAddressStore()
     ) {
         self.cart                 = cart
+        self.destination          = destination
         self.repository           = repository
         self.selectedAddressStore = selectedAddressStore
         self.selectedAddressID    = selectedAddressStore.loadSelectedID()
@@ -82,19 +96,13 @@ public final class CheckoutModel {
 
     // MARK: - Destination
 
-    /// The complete set of UI states in the checkout funnel.
+    /// Modal surfaces that sit outside the sequential funnel stack.
     ///
-    /// - `cart` is the root view; `destination` is `nil` when showing the cart.
-    /// - `addressForm` and `paymentEntry` are pushed onto the NavigationStack.
-    /// - `processing` is a non-dismissable sheet shown during the API call.
-    /// - `confirmation` is a full-screen cover shown on success.
-    /// - `paymentFailed` is a sheet shown on failure, allowing the user to retry.
+    /// - `processing` — non-dismissable overlay shown during the API call.
+    /// - `confirmation` — full-screen cover shown on successful order placement.
+    /// - `paymentFailed` — sheet shown on failure, allowing retry or cancel.
     @CasePathable
     public enum Destination: Equatable {
-        case addressForm
-        case orderOptions(ShippingAddress)
-        case paymentMethodSelection(ShippingAddress)
-        case paymentEntry(ShippingAddress)
         case processing
         case confirmation(PlacedOrder)
         case paymentFailed(PaymentError)
@@ -115,7 +123,7 @@ public final class CheckoutModel {
                 selectedAddressStore.saveSelectedID(selectedAddressID)
             }
         }
-        destination = .addressForm
+        path.append(.address)
     }
 
     /// Persists the user's address choice and updates `selectedAddressID`.
@@ -125,11 +133,11 @@ public final class CheckoutModel {
     }
 
     public func submitAddress(_ address: ShippingAddress) {
-        destination = .orderOptions(address)
+        path.append(.orderOptions(address))
     }
 
     public func proceedToPaymentMethod(address: ShippingAddress) {
-        destination = .paymentMethodSelection(address)
+        path.append(.paymentMethod(address))
     }
 
     public func toggleGuarantee(for product: CheckoutProduct) {
@@ -142,7 +150,7 @@ public final class CheckoutModel {
 
     public func selectPaymentMethod(_ method: PaymentMethod, address: ShippingAddress) {
         if method == .creditCard {
-            destination = .paymentEntry(address)
+            path.append(.paymentEntry(address))
         } else {
             Task { await submitPayment(address: address, cardToken: method.stubToken) }
         }
@@ -160,10 +168,11 @@ public final class CheckoutModel {
             )
             // Notify the composition root so it can persist the order.
             onOrderPlaced?(order, extendedGuaranteeItems)
-            // Clear the cart now that the order is confirmed.
+            // Clear cart and funnel state now that the order is confirmed.
             cart = []
             extendedGuaranteeItems = []
             deliveryOption = .standard
+            path = []
             destination = .confirmation(order)
         } catch let error as PaymentError {
             destination = .paymentFailed(error)
@@ -173,8 +182,8 @@ public final class CheckoutModel {
     }
 
     public func retryPayment() {
-        // Pop back to address form to let the user try a different card
-        destination = .addressForm
+        destination = nil
+        path = [.address]
     }
 
     public func updateQuantity(for item: CartItem, quantity: Int) {

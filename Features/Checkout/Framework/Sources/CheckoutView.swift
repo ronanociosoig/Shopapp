@@ -2,39 +2,32 @@ import SwiftUI
 import SwiftUINavigation
 import DesignSystem
 
-public struct CheckoutView: View {
+public struct CheckoutView<PromotionBanner: View>: View {
     @Bindable public var model: CheckoutModel
+    private let promotionBanner: () -> PromotionBanner
 
-    public init(model: CheckoutModel) {
+    public init(
+        model: CheckoutModel,
+        @ViewBuilder promotionBanner: @escaping () -> PromotionBanner
+    ) {
         self.model = model
+        self.promotionBanner = promotionBanner
     }
 
     public var body: some View {
-        NavigationStack {
-            CartView(model: model)
-                // Push: address form (no associated value)
-                .navigationDestination(
-                    isPresented: Binding($model.destination.addressForm)
-                ) {
-                    AddressFormView(model: model)
-                }
-                // Push: delivery options + extended guarantee
-                .navigationDestination(
-                    item: $model.destination.orderOptions
-                ) { address in
-                    OrderOptionsView(model: model, address: address)
-                }
-                // Push: payment method selection (carries the confirmed address)
-                .navigationDestination(
-                    item: $model.destination.paymentMethodSelection
-                ) { address in
-                    PaymentMethodSelectionView(model: model, address: address)
-                }
-                // Push: credit card entry (carries the confirmed address)
-                .navigationDestination(
-                    item: $model.destination.paymentEntry
-                ) { address in
-                    PaymentEntryView(model: model, address: address)
+        NavigationStack(path: $model.path) {
+            CartView(model: model, promotionBanner: promotionBanner)
+                .navigationDestination(for: CheckoutStep.self) { step in
+                    switch step {
+                    case .address:
+                        AddressFormView(model: model)
+                    case .orderOptions(let address):
+                        OrderOptionsView(model: model, address: address)
+                    case .paymentMethod(let address):
+                        PaymentMethodSelectionView(model: model, address: address)
+                    case .paymentEntry(let address):
+                        PaymentEntryView(model: model, address: address)
+                    }
                 }
         }
         // Sheet: processing — non-dismissable, shown during API call
@@ -56,5 +49,11 @@ public struct CheckoutView: View {
         .sheet(item: $model.destination.paymentFailed) { error in
             PaymentFailedView(error: error, onRetry: model.retryPayment)
         }
+    }
+}
+
+extension CheckoutView where PromotionBanner == EmptyView {
+    public init(model: CheckoutModel) {
+        self.init(model: model, promotionBanner: { EmptyView() })
     }
 }

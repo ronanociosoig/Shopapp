@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Checkout
+import CheckoutTesting
 
 /// Tests that exercise complete user interaction flows through the Checkout module.
 @Suite("Checkout — UI Interaction Tests")
@@ -37,50 +38,46 @@ struct CheckoutUITests {
 
     // MARK: - Checkout funnel navigation
 
-    @Test("User proceeds from cart to address form")
+    @Test("User proceeds from cart to address step")
     func userProceedsToAddress() {
         let model = CheckoutModel(cart: CartItem.stubs)
         model.proceedToAddress()
-        #expect(model.destination == .addressForm)
+        #expect(model.path.last == .address)
     }
 
     @Test("User submits an address and proceeds to order options")
     func userSubmitsAddress() {
         let model = CheckoutModel(cart: CartItem.stubs)
         model.submitAddress(.stub)
-        #expect(model.destination == .orderOptions(.stub))
+        #expect(model.path.last == .orderOptions(.stub))
     }
 
-    @Test("User proceeds from order options to payment method selection")
+    @Test("User proceeds from order options to payment method step")
     func userProceedsToPaymentMethod() {
         let model = CheckoutModel(cart: CartItem.stubs)
         model.proceedToPaymentMethod(address: .stub)
-        #expect(model.destination == .paymentMethodSelection(.stub))
+        #expect(model.path.last == .paymentMethod(.stub))
     }
 
-    @Test("Selecting credit card navigates to payment entry form")
+    @Test("Selecting credit card pushes payment entry onto the path")
     func userSelectsCreditCard() {
         let model = CheckoutModel(cart: CartItem.stubs)
         model.selectPaymentMethod(.creditCard, address: .stub)
-        #expect(model.destination == .paymentEntry(.stub))
+        #expect(model.path.last == .paymentEntry(.stub))
     }
 
-    @Test("Selecting Apple Pay goes directly to processing without showing card form")
+    @Test("Selecting Apple Pay does not push payment entry onto the path")
     func userSelectsApplePay() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
             repository: StubCheckoutRepository(delay: .zero)
         )
         model.selectPaymentMethod(.applePay, address: .stub)
-        // Give the spawned Task a moment to run
         try? await Task.sleep(for: .milliseconds(100))
-        // Either processing or confirmation depending on timing — destination must not be .paymentEntry
-        if let dest = model.destination {
-            switch dest {
-            case .paymentEntry: Issue.record("Apple Pay should not show the card entry form")
-            default: break
-            }
-        }
+        let pushedCardEntry = model.path.contains(where: {
+            if case .paymentEntry = $0 { return true }; return false
+        })
+        #expect(!pushedCardEntry, "Apple Pay should not push the card entry step")
     }
 
     // MARK: - Full payment flow
@@ -125,7 +122,7 @@ struct CheckoutUITests {
         #expect(error == .cardDeclined)
     }
 
-    @Test("User retries after a failed payment and returns to address form")
+    @Test("User retries after a failed payment and returns to the address step")
     func userRetriesAfterFailure() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
@@ -133,7 +130,8 @@ struct CheckoutUITests {
         )
         await model.submitPayment(address: .stub, cardToken: "tok_bad")
         model.retryPayment()
-        #expect(model.destination == .addressForm)
+        #expect(model.destination == nil)
+        #expect(model.path == [.address])
     }
 
     // MARK: - Extended guarantee selection during checkout

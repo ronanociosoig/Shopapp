@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Checkout
+import CheckoutTesting
 
 @Suite("CheckoutModel — Unit Tests")
 struct CheckoutModelTests {
@@ -147,11 +148,12 @@ struct CheckoutModelTests {
 
     // MARK: - retryPayment
 
-    @Test("retryPayment resets destination to addressForm")
-    func retryPaymentResetsToAddressForm() {
+    @Test("retryPayment clears the modal destination and returns to the address step")
+    func retryPaymentResetsToAddressStep() {
         let model = CheckoutModel()
         model.destination = .paymentFailed(.cardDeclined)
         model.retryPayment()
-        #expect(model.destination == .addressForm)
+        #expect(model.destination == nil)
+        #expect(model.path == [.address])
     }
 }

@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Checkout
+import CheckoutTesting
 
 @Suite("CheckoutModel — Payment Flow")
 @MainActor
@@ -24,29 +25,29 @@ struct CheckoutModelPaymentTests {
 
     // MARK: - submitAddress
 
-    @Test("submitAddress sets destination to orderOptions with the given address")
-    func submitAddressNavigatesToOrderOptions() {
+    @Test("submitAddress pushes orderOptions onto the path")
+    func submitAddressPushesOrderOptions() {
         let model = makeModelWithItem()
         model.submitAddress(.stub)
-        #expect(model.destination == .orderOptions(.stub))
+        #expect(model.path.last == .orderOptions(.stub))
     }
 
     // MARK: - proceedToPaymentMethod
 
-    @Test("proceedToPaymentMethod sets destination to paymentMethodSelection")
-    func proceedToPaymentMethodNavigates() {
+    @Test("proceedToPaymentMethod pushes paymentMethod onto the path")
+    func proceedToPaymentMethodPushesStep() {
         let model = makeModelWithItem()
         model.proceedToPaymentMethod(address: .stub)
-        #expect(model.destination == .paymentMethodSelection(.stub))
+        #expect(model.path.last == .paymentMethod(.stub))
     }
 
     // MARK: - selectPaymentMethod
 
-    @Test("selectPaymentMethod(.creditCard) sets destination to paymentEntry")
-    func selectCreditCardNavigatesToPaymentEntry() {
+    @Test("selectPaymentMethod(.creditCard) pushes paymentEntry onto the path")
+    func selectCreditCardPushesPaymentEntry() {
         let model = makeModelWithItem()
         model.selectPaymentMethod(.creditCard, address: .stub)
-        #expect(model.destination == .paymentEntry(.stub))
+        #expect(model.path.last == .paymentEntry(.stub))
     }
 
     // MARK: - submitPayment — success
