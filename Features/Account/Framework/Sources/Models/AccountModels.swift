@@ -58,6 +58,12 @@ public struct SavedAddress: Identifiable, Equatable, Hashable, Sendable, Codable
         lines.append(country)
         return lines.joined(separator: "\n")
     }
+
+    public func settingDefault(_ value: Bool) -> SavedAddress {
+        SavedAddress(id: id, fullName: fullName, line1: line1, line2: line2,
+                     city: city, state: state, postalCode: postalCode,
+                     country: country, isDefault: value)
+    }
 }
 
 // MARK: - Saved payment card

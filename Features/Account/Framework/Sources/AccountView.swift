@@ -157,9 +157,7 @@ struct EditProfileView: View {
             }
         }
         .navigationTitle(Strings.EditProfile.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Strings.EditProfile.saveButton) {
@@ -199,9 +197,7 @@ struct AddAddressView: View {
             }
         }
         .navigationTitle(Strings.AddAddress.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Strings.AddAddress.saveButton) {
@@ -241,9 +237,7 @@ struct SavedCardsView: View {
             }
         }
         .navigationTitle(Strings.SavedCards.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 }
 
@@ -292,4 +286,90 @@ private enum Strings {
         static let navigationTitle = "Saved Cards"
         static func expires(month: Int, year: Int) -> String { "Expires \(month)/\(year)" }
     }
+}
+
+struct Product {
+    let name: String
+}
+
+struct ProductView: View {
+    let product: Product
+    
+    @State private var destination: Destination?
+
+    enum Destination {
+        case share
+        case addReview
+        case error(String)
+    }
+
+    @State private var showShare     = false
+    @State private var showAddReview = false
+    @State private var showError     = false
+    @State private var errorMessage  = ""
+
+    var body: some View {
+        ProductContent(product: product)
+            .toolbar {
+                Button("Share")  { showShare = true }
+                Button("Review") { showAddReview = true }
+            }
+            .sheet(isPresented: Binding(
+                get: { if case .share = destination {
+                    return true
+                };
+                    return false
+                },
+                set: { if !$0 { destination = nil } }
+            )) {
+                ShareView(product: product)
+            }
+            .sheet(isPresented: $showAddReview) {
+                AddReviewView(product: product)
+            }
+            .alert("Error", isPresented: $showError) {
+                Button("OK") { showError = false }
+            } message: {
+                Text(errorMessage)
+            }
+    }
+}
+
+struct ProductContent: View {
+    let product: Product
+    
+    init (product: Product) {
+        self.product = product
+    }
+    
+    var body: some View {
+        Text("Product: \(product.name)")
+    }
+    
+}
+
+struct ShareView: View {
+    let product: Product
+    
+    init (product: Product) {
+        self.product = product
+    }
+    
+    var body: some View {
+        Text("Product: \(product.name)")
+    }
+    
+}
+
+struct AddReviewView: View {
+    let product: Product
+    
+    init (product: Product) {
+        self.product = product
+    }
+    
+    var body: some View {
+        Text("Product: \(product.name)")
+    }
+    
 }
