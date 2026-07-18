@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Search
+import SearchTesting
 
 // MARK: - Stub helpers
 

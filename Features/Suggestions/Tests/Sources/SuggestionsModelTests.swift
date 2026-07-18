@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Suggestions
+import SuggestionsTesting
 
 // MARK: - Helpers
 

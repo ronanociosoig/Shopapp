@@ -1,5 +1,6 @@
 import SwiftUI
 import PastPurchases
+import PastPurchasesTesting
 
 @main
 struct PastPurchasesApp: App {

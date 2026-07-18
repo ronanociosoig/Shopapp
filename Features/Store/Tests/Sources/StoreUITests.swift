@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Store
+import StoreTesting
 
 /// Tests that exercise complete user interaction flows through the Store module.
 /// Each test simulates a multi-step journey a user would take in the UI.

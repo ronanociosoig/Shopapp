@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Promotions
+import PromotionsTesting
 
 /// Tests that exercise complete user interaction flows through the Promotions module.
 @Suite("Promotions — UI Interaction Tests")

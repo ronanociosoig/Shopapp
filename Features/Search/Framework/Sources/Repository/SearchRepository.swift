@@ -38,27 +38,6 @@ final class RemoteSearchDataSource: RemoteSearchDataSourceProtocol, Sendable {
     }
 }
 
-// MARK: - Mock remote data source
-
-/// Drop-in replacement for the live remote that serves the full stub catalogue.
-/// Plugs into `SearchRepository` so the caching layer still applies.
-public final class MockRemoteSearchDataSource: RemoteSearchDataSourceProtocol, Sendable {
-    private let products: [SearchProduct]
-
-    public init(products: [SearchProduct] = SearchProduct.stubs) {
-        self.products = products
-    }
-
-    public func search(query: String) async throws -> [SearchProduct] {
-        guard !query.isEmpty else { return products }
-        return products.filter { $0.name.localizedCaseInsensitiveContains(query) }
-    }
-
-    public func fetchByCategory(_ category: String) async throws -> [SearchProduct] {
-        products.filter { $0.category == category }
-    }
-}
-
 // MARK: - Local data source
 
 final class LocalSearchDataSource {
@@ -81,15 +60,6 @@ public final class SearchRepository: SearchRepositoryProtocol {
         self.remote = RemoteSearchDataSource(client: client)
     }
 
-    init(remote: some RemoteSearchDataSourceProtocol) {
-        self.remote = remote
-    }
-
-    /// A `SearchRepository` backed by mock data, going through the full caching layer.
-    public static func mock(products: [SearchProduct] = SearchProduct.stubs) -> SearchRepository {
-        SearchRepository(remote: MockRemoteSearchDataSource(products: products))
-    }
-
     public func search(query: String) async throws -> [SearchProduct] {
         if let cached = local.cachedResults(for: query) { return cached }
         let results = try await remote.search(query: query)
@@ -110,32 +80,3 @@ public final class SearchRepository: SearchRepositoryProtocol {
     }
 }
 
-// MARK: - Stub repository
-
-public final class StubSearchRepository: SearchRepositoryProtocol {
-    private let result: Result<[SearchProduct], Error>
-
-    public init(returning products: [SearchProduct] = SearchProduct.stubs) {
-        result = .success(products)
-    }
-
-    public init(throwing error: Error) {
-        result = .failure(error)
-    }
-
-    public func search(query: String) async throws -> [SearchProduct] {
-        let all = try result.get()
-        guard !query.isEmpty else { return all }
-        return all.filter { $0.name.localizedCaseInsensitiveContains(query) }
-    }
-
-    public func fetchCategories() async throws -> [String] {
-        let all = try result.get()
-        return Array(Set(all.map(\.category))).sorted()
-    }
-
-    public func fetchByCategory(_ category: String) async throws -> [SearchProduct] {
-        let all = try result.get()
-        return all.filter { $0.category == category }
-    }
-}

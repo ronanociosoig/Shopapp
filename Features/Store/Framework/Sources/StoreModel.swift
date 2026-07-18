@@ -22,7 +22,7 @@ public final class StoreModel {
 
     private let repository: StoreRepositoryProtocol
 
-    public init(repository: StoreRepositoryProtocol = StubStoreRepository()) {
+    public init(repository: StoreRepositoryProtocol) {
         self.repository = repository
     }
 

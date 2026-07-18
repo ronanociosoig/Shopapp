@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Promotions
+import PromotionsTesting
 
 // MARK: - Helpers
 

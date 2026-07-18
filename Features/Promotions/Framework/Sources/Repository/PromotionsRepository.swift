@@ -25,18 +25,6 @@ final class RemotePromotionsDataSource: Sendable {
     }
 }
 
-// MARK: - Stub remote data source
-
-public final class StubRemotePromotionsDataSource: Sendable {
-    private let promotions: [Promotion]
-
-    public init(promotions: [Promotion] = Promotion.stubs) {
-        self.promotions = promotions
-    }
-
-    public func fetchPromotions() async throws -> [Promotion] { promotions }
-}
-
 // MARK: - Live repository
 
 public final class PromotionsRepository: PromotionsRepositoryProtocol {
@@ -51,14 +39,3 @@ public final class PromotionsRepository: PromotionsRepositoryProtocol {
     }
 }
 
-// MARK: - Stub repository
-
-public final class StubPromotionsRepository: PromotionsRepositoryProtocol {
-    private let promotions: [Promotion]
-
-    public init(promotions: [Promotion] = Promotion.stubs) {
-        self.promotions = promotions
-    }
-
-    public func fetchPromotions() async throws -> [Promotion] { promotions }
-}

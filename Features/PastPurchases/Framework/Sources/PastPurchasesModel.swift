@@ -23,7 +23,7 @@ public final class PastPurchasesModel {
 
     private let repository: PastPurchasesRepositoryProtocol
 
-    public init(repository: PastPurchasesRepositoryProtocol = StubPastPurchasesRepository()) {
+    public init(repository: PastPurchasesRepositoryProtocol) {
         self.repository = repository
     }
 

@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import PastPurchases
+import PastPurchasesTesting
 
 /// Tests that exercise complete user interaction flows through the PastPurchases module.
 @Suite("PastPurchases — UI Interaction Tests")

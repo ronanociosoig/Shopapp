@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Account
+import AccountTesting
 
 // MARK: - AccountModel Tests
 

@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Suggestions
+import SuggestionsTesting
 
 /// Tests that exercise complete user interaction flows through the Suggestions module.
 @Suite("Suggestions — UI Interaction Tests")

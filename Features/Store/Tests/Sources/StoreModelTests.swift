@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Store
+import StoreTesting
 
 @Suite("StoreModel — Unit Tests")
 struct StoreModelTests {

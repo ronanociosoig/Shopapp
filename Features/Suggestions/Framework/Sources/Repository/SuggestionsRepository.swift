@@ -28,20 +28,6 @@ final class RemoteSuggestionsDataSource: Sendable {
     }
 }
 
-// MARK: - Stub remote data source
-
-public final class StubRemoteSuggestionsDataSource: Sendable {
-    private let products: [SuggestedProduct]
-
-    public init(products: [SuggestedProduct] = SuggestedProduct.stubs) {
-        self.products = products
-    }
-
-    public func fetchSuggestions(for userId: String?) async throws -> [SuggestedProduct] {
-        products
-    }
-}
-
 // MARK: - Live repository
 
 public final class SuggestionsRepository: SuggestionsRepositoryProtocol {
@@ -56,16 +42,3 @@ public final class SuggestionsRepository: SuggestionsRepositoryProtocol {
     }
 }
 
-// MARK: - Stub repository
-
-public final class StubSuggestionsRepository: SuggestionsRepositoryProtocol {
-    private let products: [SuggestedProduct]
-
-    public init(products: [SuggestedProduct] = SuggestedProduct.stubs) {
-        self.products = products
-    }
-
-    public func fetchSuggestions(for userId: String?) async throws -> [SuggestedProduct] {
-        products
-    }
-}

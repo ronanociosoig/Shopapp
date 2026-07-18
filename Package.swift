@@ -18,6 +18,21 @@ let package = Package(
         .library(name: "Suggestions",        targets: ["Suggestions"]),
         .library(name: "Promotions",         targets: ["Promotions"]),
         .library(name: "PastPurchases",      targets: ["PastPurchases"]),
+        .library(name: "ShopCore",           targets: ["ShopCore"]),
+
+        // MARK: - Testing libraries
+        //
+        // Stub repositories for use in tests and micro-apps.
+        // Production targets (Store, Checkout, …) do not depend on these.
+
+        .library(name: "StoreTesting",        targets: ["StoreTesting"]),
+        .library(name: "AccountTesting",      targets: ["AccountTesting"]),
+        .library(name: "SearchTesting",       targets: ["SearchTesting"]),
+        .library(name: "CheckoutTesting",     targets: ["CheckoutTesting"]),
+        .library(name: "PromotionsTesting",   targets: ["PromotionsTesting"]),
+        .library(name: "SuggestionsTesting",  targets: ["SuggestionsTesting"]),
+        .library(name: "PastPurchasesTesting",targets: ["PastPurchasesTesting"]),
+        .library(name: "SupportTesting",      targets: ["SupportTesting"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.0.0"),
@@ -123,6 +138,51 @@ let package = Package(
             path: "Features/PastPurchases/Framework/Sources"
         ),
 
+        // MARK: - Testing targets
+
+        .target(name: "StoreTesting",
+                dependencies: ["Store", "NetworkFoundation"],
+                path: "Features/Store/Testing/Sources"),
+        .target(name: "AccountTesting",
+                dependencies: ["Account"],
+                path: "Features/Account/Testing/Sources"),
+        .target(name: "SearchTesting",
+                dependencies: ["Search"],
+                path: "Features/Search/Testing/Sources"),
+        .target(name: "CheckoutTesting",
+                dependencies: ["Checkout"],
+                path: "Features/Checkout/Testing/Sources"),
+        .target(name: "PromotionsTesting",
+                dependencies: ["Promotions"],
+                path: "Features/Promotions/Testing/Sources"),
+        .target(name: "SuggestionsTesting",
+                dependencies: ["Suggestions"],
+                path: "Features/Suggestions/Testing/Sources"),
+        .target(name: "PastPurchasesTesting",
+                dependencies: ["PastPurchases"],
+                path: "Features/PastPurchases/Testing/Sources"),
+        .target(name: "SupportTesting",
+                dependencies: ["Support"],
+                path: "Features/Support/Testing/Sources"),
+
+        // MARK: - Composition root
+
+        .target(
+            name: "ShopCore",
+            dependencies: [
+                "Store",
+                "Account",
+                "Search",
+                "Checkout",
+                "Support",
+                "Suggestions",
+                "Promotions",
+                "PastPurchases",
+                .product(name: "SwiftUINavigation", package: "swift-navigation"),
+            ],
+            path: "Shop/Framework/Sources"
+        ),
+
         // MARK: - Test targets
 
         .testTarget(
@@ -137,6 +197,7 @@ let package = Package(
             name: "AccountTests",
             dependencies: [
                 "Account",
+                "AccountTesting",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
@@ -146,6 +207,7 @@ let package = Package(
             name: "SearchTests",
             dependencies: [
                 "Search",
+                "SearchTesting",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
@@ -155,6 +217,7 @@ let package = Package(
             name: "CheckoutTests",
             dependencies: [
                 "Checkout",
+                "CheckoutTesting",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/Checkout/Tests/Sources"
@@ -163,6 +226,7 @@ let package = Package(
             name: "StoreTests",
             dependencies: [
                 "Store",
+                "StoreTesting",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
@@ -172,6 +236,7 @@ let package = Package(
             name: "PromotionsTests",
             dependencies: [
                 "Promotions",
+                "PromotionsTesting",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/Promotions/Tests/Sources"
@@ -180,6 +245,7 @@ let package = Package(
             name: "SuggestionsTests",
             dependencies: [
                 "Suggestions",
+                "SuggestionsTesting",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/Suggestions/Tests/Sources"
@@ -188,6 +254,7 @@ let package = Package(
             name: "SupportTests",
             dependencies: [
                 "Support",
+                "SupportTesting",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/Support/Tests/Sources"
@@ -196,6 +263,7 @@ let package = Package(
             name: "PastPurchasesTests",
             dependencies: [
                 "PastPurchases",
+                "PastPurchasesTesting",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/PastPurchases/Tests/Sources"

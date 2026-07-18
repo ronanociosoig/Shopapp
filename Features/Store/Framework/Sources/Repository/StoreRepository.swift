@@ -33,31 +33,6 @@ final class RemoteStoreDataSource: Sendable {
     }
 }
 
-// MARK: - Stub remote data source
-//
-// Used in micro-apps and Xcode previews so the Store feature runs
-// without a live server. The main app swaps this for the live source.
-
-public final class StubRemoteStoreDataSource: Sendable {
-    private let products: [StoreProduct]
-
-    public init(products: [StoreProduct] = StoreProduct.stubs) {
-        self.products = products
-    }
-
-    func fetchProducts(category: String?) async throws -> [StoreProduct] {
-        guard let category else { return products }
-        return products.filter { $0.category == category }
-    }
-
-    func fetchProduct(id: UUID) async throws -> StoreProduct {
-        guard let product = products.first(where: { $0.id == id }) else {
-            throw HTTPError.statusCode(404)
-        }
-        return product
-    }
-}
-
 // MARK: - Local data source (in-memory cache)
 
 final class LocalStoreDataSource {
@@ -96,28 +71,3 @@ public final class StoreRepository: StoreRepositoryProtocol {
     }
 }
 
-// MARK: - Stub repository (for snapshot tests)
-
-public final class StubStoreRepository: StoreRepositoryProtocol {
-    private let result: Result<[StoreProduct], Error>
-
-    public init(returning products: [StoreProduct] = StoreProduct.stubs) {
-        result = .success(products)
-    }
-
-    public init(throwing error: Error) {
-        result = .failure(error)
-    }
-
-    public func fetchProducts(category: String?) async throws -> [StoreProduct] {
-        let all = try result.get()
-        guard let category else { return all }
-        return all.filter { $0.category == category }
-    }
-
-    public func fetchProduct(id: UUID) async throws -> StoreProduct {
-        let all = try result.get()
-        guard let product = all.first(where: { $0.id == id }) else { throw HTTPError.statusCode(404) }
-        return product
-    }
-}

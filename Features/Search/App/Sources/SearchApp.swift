@@ -1,5 +1,6 @@
 import SwiftUI
 import Search
+import SearchTesting
 
 @main
 struct SearchApp: App {

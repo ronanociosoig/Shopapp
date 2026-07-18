@@ -36,7 +36,7 @@ public final class SearchModel {
 
     private let repository: SearchRepositoryProtocol
 
-    public init(repository: SearchRepositoryProtocol = StubSearchRepository()) {
+    public init(repository: SearchRepositoryProtocol) {
         self.repository = repository
     }
 

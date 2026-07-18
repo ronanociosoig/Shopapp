@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Search
+import SearchTesting
 
 /// Tests that exercise complete user interaction flows through the Search module.
 @Suite("Search — UI Interaction Tests")

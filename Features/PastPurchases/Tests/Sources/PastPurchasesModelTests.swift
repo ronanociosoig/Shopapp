@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import PastPurchases
+import PastPurchasesTesting
 
 // MARK: - Helpers
 

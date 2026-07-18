@@ -3,6 +3,7 @@ import Testing
 import SnapshotTesting
 import SwiftUI
 @testable import Account
+import AccountTesting
 
 // MARK: - CaseIterable conformance
 

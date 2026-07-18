@@ -1,5 +1,6 @@
 import SwiftUI
 import Suggestions
+import SuggestionsTesting
 
 @main
 struct SuggestionsApp: App {

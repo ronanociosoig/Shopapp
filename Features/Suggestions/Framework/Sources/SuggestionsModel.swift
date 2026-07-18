@@ -15,7 +15,7 @@ public final class SuggestionsModel {
 
     private let repository: SuggestionsRepositoryProtocol
 
-    public init(repository: SuggestionsRepositoryProtocol = StubSuggestionsRepository()) {
+    public init(repository: SuggestionsRepositoryProtocol) {
         self.repository = repository
     }
 

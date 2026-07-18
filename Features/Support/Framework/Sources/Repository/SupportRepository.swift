@@ -28,15 +28,6 @@ final class RemoteSupportDataSource: Sendable {
     func fetchTickets() async throws -> [SupportTicket] { [] }
 }
 
-// MARK: - Stub remote data source
-
-public final class StubRemoteSupportDataSource: Sendable {
-    public init() {}
-
-    public func submitTicket(_ ticket: SupportTicket) async throws {}
-    public func fetchTickets() async throws -> [SupportTicket] { [] }
-}
-
 // MARK: - Live repository
 
 public final class SupportRepository: SupportRepositoryProtocol {
@@ -55,11 +46,3 @@ public final class SupportRepository: SupportRepositoryProtocol {
     }
 }
 
-// MARK: - Stub repository
-
-public final class StubSupportRepository: SupportRepositoryProtocol {
-    public init() {}
-
-    public func submitTicket(_ ticket: SupportTicket) async throws {}
-    public func fetchTickets() async throws -> [SupportTicket] { [] }
-}

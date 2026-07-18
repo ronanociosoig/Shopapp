@@ -11,7 +11,7 @@ public final class AccountModel {
 
     private let repository: AccountRepositoryProtocol
 
-    public init(repository: AccountRepositoryProtocol = StubAccountRepository()) {
+    public init(repository: AccountRepositoryProtocol) {
         self.repository = repository
     }
 

@@ -9,7 +9,7 @@ public final class PromotionsModel {
 
     private let repository: PromotionsRepositoryProtocol
 
-    public init(repository: PromotionsRepositoryProtocol = StubPromotionsRepository()) {
+    public init(repository: PromotionsRepositoryProtocol) {
         self.repository = repository
     }
 

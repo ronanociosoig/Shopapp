@@ -12,9 +12,16 @@ schemes:
     build:
       targets:
         ShopApp: all
+        ShopAppTests: [test]
+        ShopAppUITests: [test]
     run:
       config: Debug
       targets: [ShopApp]
+    test:
+      config: Debug
+      targets:
+        - ShopAppTests
+        - ShopAppUITests
     profile:
       config: Release
   SearchApp:
@@ -38,6 +45,15 @@ schemes:
       config: Debug
       targets:
         - CheckoutAppUITests
+    profile:
+      config: Release
+  AccountApp:
+    build:
+      targets:
+        AccountApp: all
+    run:
+      config: Debug
+      targets: [AccountApp]
     profile:
       config: Release
   SupportApp:
@@ -91,6 +107,9 @@ schemes:
 packages:
   ShopApp:
     path: "."
+  swift-snapshot-testing:
+    url: "https://github.com/pointfreeco/swift-snapshot-testing"
+    from: "1.17.0"
 
 # MARK: - App targets
 
@@ -109,6 +128,8 @@ targets:
       - path: Shop/App/Sources
     dependencies:
       - package: ShopApp
+        product: ShopCore
+      - package: ShopApp
         product: Store
       - package: ShopApp
         product: Search
@@ -121,9 +142,19 @@ targets:
       - package: ShopApp
         product: PastPurchases
       - package: ShopApp
-        product: Support
-      - package: ShopApp
         product: Suggestions
+      # Testing: modules without a production backend use stubs at runtime.
+      # These dependencies are explicit so the intent is visible at a glance.
+      - package: ShopApp
+        product: StoreTesting
+      - package: ShopApp
+        product: AccountTesting
+      - package: ShopApp
+        product: CheckoutTesting
+      - package: ShopApp
+        product: PromotionsTesting
+      - package: ShopApp
+        product: SuggestionsTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.app
@@ -139,6 +170,40 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
 
+  ShopAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Shop/Tests/Sources
+    dependencies:
+      - target: ShopApp
+      - package: swift-snapshot-testing
+        product: SnapshotTesting
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.app.tests
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/ShopApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShopApp
+        BUNDLE_LOADER: $(TEST_HOST)
+        GENERATE_INFOPLIST_FILE: YES
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
+
+  ShopAppUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Shop/App/UITests
+    dependencies:
+      - target: ShopApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.app.uitests
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
+        GENERATE_INFOPLIST_FILE: YES
+
   # ── Search ──────────────────────────────────────────────────────────────────
 
   SearchApp:
@@ -150,6 +215,8 @@ targets:
     dependencies:
       - package: ShopApp
         product: Search
+      - package: ShopApp
+        product: SearchTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.search
@@ -177,6 +244,8 @@ targets:
     dependencies:
       - package: ShopApp
         product: Checkout
+      - package: ShopApp
+        product: CheckoutTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.checkout
@@ -208,6 +277,35 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
         GENERATE_INFOPLIST_FILE: YES
+
+  # ── Account ──────────────────────────────────────────────────────────────────
+
+  AccountApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Account/App/Sources
+    dependencies:
+      - package: ShopApp
+        product: Account
+      - package: ShopApp
+        product: AccountTesting
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.account
+        PRODUCT_NAME: Account
+        PRODUCT_MODULE_NAME: AccountApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
+    info:
+      path: Features/Account/App/Resources/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
 
   # ── Support ──────────────────────────────────────────────────────────────────
 
@@ -247,6 +345,8 @@ targets:
     dependencies:
       - package: ShopApp
         product: Suggestions
+      - package: ShopApp
+        product: SuggestionsTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.suggestions
@@ -274,6 +374,16 @@ targets:
     dependencies:
       - package: ShopApp
         product: Promotions
+      - package: ShopApp
+        product: Store
+      - package: ShopApp
+        product: Checkout
+      - package: ShopApp
+        product: PromotionsTesting
+      - package: ShopApp
+        product: StoreTesting
+      - package: ShopApp
+        product: CheckoutTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.promotions
@@ -301,6 +411,8 @@ targets:
     dependencies:
       - package: ShopApp
         product: PastPurchases
+      - package: ShopApp
+        product: PastPurchasesTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.pastpurchases

@@ -1,5 +1,6 @@
 import SwiftUI
 import Checkout
+import CheckoutTesting
 
 @main
 struct CheckoutApp: App {
@@ -13,6 +14,7 @@ struct CheckoutApp: App {
             CheckoutView(model: {
                 let model = CheckoutModel(
                     cart: CartItem.stubs,
+                    //destination: .processing,
                     repository: StubCheckoutRepository(delay: .zero)
                 )
                 model.savedAddresses = [.stub]
