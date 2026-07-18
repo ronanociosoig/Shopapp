@@ -1,0 +1,41 @@
+{
+  "layers": [
+    {
+      "name": "App",
+      "modules": [
+        "RunShopApp",
+        "RunCheckoutApp",
+        "RunSearchApp",
+        "RunSuggestionsApp",
+        "RunSupportApp",
+        "RunPromotionsApp",
+        "RunPastPurchasesApp",
+        "RunDesignSystemApp"
+      ],
+      "canDependOn": ["Feature", "Foundation"]
+    },
+    {
+      "name": "Feature",
+      "modules": [
+        "Store",
+        "Account",
+        "Search",
+        "Checkout",
+        "Support",
+        "Suggestions",
+        "Promotions",
+        "PastPurchases"
+      ],
+      "canDependOn": ["Foundation"]
+    },
+    {
+      "name": "Foundation",
+      "modules": [
+        "NetworkFoundation",
+        "DesignSystem",
+        "Common"
+      ],
+      "canDependOn": []
+    }
+  ]
+}
