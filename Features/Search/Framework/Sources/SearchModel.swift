@@ -27,12 +27,13 @@ public final class SearchModel {
 
     private let repository: SearchRepositoryProtocol
 
-    public init(repository: SearchRepositoryProtocol) {
+    public init(repository: SearchRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 
     @CasePathable
-    enum Destination: Equatable {
+    public enum Destination: Equatable {
         case productDetail(SearchProduct)
         case filters
         case categoryBrowse(String)

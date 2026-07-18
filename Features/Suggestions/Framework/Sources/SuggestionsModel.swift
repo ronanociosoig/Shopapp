@@ -15,12 +15,13 @@ public final class SuggestionsModel {
 
     private let repository: SuggestionsRepositoryProtocol
 
-    public init(repository: SuggestionsRepositoryProtocol) {
+    public init(repository: SuggestionsRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 
     @CasePathable
-    enum Destination: Equatable {
+    public enum Destination: Equatable {
         case productDetail(SuggestedProduct)
     }
 

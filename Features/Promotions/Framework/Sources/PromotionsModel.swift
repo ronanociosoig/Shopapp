@@ -9,12 +9,13 @@ public final class PromotionsModel {
 
     private let repository: PromotionsRepositoryProtocol
 
-    public init(repository: PromotionsRepositoryProtocol) {
+    public init(repository: PromotionsRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 
     @CasePathable
-    enum Destination: Equatable {
+    public enum Destination: Equatable {
         case promotionDetail(Promotion)
     }
 

@@ -22,12 +22,13 @@ public final class StoreModel {
 
     private let repository: StoreRepositoryProtocol
 
-    public init(repository: StoreRepositoryProtocol) {
+    public init(repository: StoreRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 
     @CasePathable
-    enum Destination: Equatable {
+    public enum Destination: Equatable {
         case productDetail(StoreProduct)
         case categoryFilter
     }

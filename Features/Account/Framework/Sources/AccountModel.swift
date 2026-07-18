@@ -11,12 +11,13 @@ public final class AccountModel {
 
     private let repository: AccountRepositoryProtocol
 
-    public init(repository: AccountRepositoryProtocol) {
+    public init(repository: AccountRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 
     @CasePathable
-    enum Destination: Equatable {
+    public enum Destination: Equatable {
         case editProfile(UserProfile)
         case addAddress
         case savedCards

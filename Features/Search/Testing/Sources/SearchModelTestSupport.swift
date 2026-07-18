@@ -1,7 +1,7 @@
 import Search
 
 public extension SearchModel {
-    convenience init() {
-        self.init(repository: StubSearchRepository())
+    convenience init(destination: Destination? = nil) {
+        self.init(repository: StubSearchRepository(), destination: destination)
     }
 }

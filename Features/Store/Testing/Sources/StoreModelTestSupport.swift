@@ -1,7 +1,7 @@
 import Store
 
 public extension StoreModel {
-    convenience init() {
-        self.init(repository: StubStoreRepository())
+    convenience init(destination: Destination? = nil) {
+        self.init(repository: StubStoreRepository(), destination: destination)
     }
 }

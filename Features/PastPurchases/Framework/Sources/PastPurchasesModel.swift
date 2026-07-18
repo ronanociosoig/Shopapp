@@ -23,12 +23,13 @@ public final class PastPurchasesModel {
 
     private let repository: PastPurchasesRepositoryProtocol
 
-    public init(repository: PastPurchasesRepositoryProtocol) {
+    public init(repository: PastPurchasesRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 
     @CasePathable
-    enum Destination: Equatable {
+    public enum Destination: Equatable {
         case orderDetail(PastOrder)
     }
 
