@@ -4,9 +4,9 @@ import SwiftUINavigation
 
 @Observable
 public final class SuggestionsModel {
-    public var products: [SuggestedProduct] = []
-    public var isLoading                    = false
-    public var destination: Destination?
+    var products: [SuggestedProduct] = []
+    var isLoading                    = false
+    var destination: Destination?
 
     /// Called by the composition root to route add-to-cart events to the Checkout module.
     /// Typed on Foundation primitives so the Suggestions module stays independent of Checkout.
@@ -20,20 +20,20 @@ public final class SuggestionsModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    enum Destination: Equatable {
         case productDetail(SuggestedProduct)
     }
 
-    public func select(_ product: SuggestedProduct) {
+    func select(_ product: SuggestedProduct) {
         destination = .productDetail(product)
     }
 
-    public func addToCart(_ product: SuggestedProduct, wantsGuarantee: Bool = false) {
+    func addToCart(_ product: SuggestedProduct, wantsGuarantee: Bool = false) {
         onAddToCart?(product.id, product.name, product.price, wantsGuarantee)
     }
 
     @MainActor
-    public func load(for userId: String? = nil) async {
+    func load(for userId: String? = nil) async {
         isLoading = true
         defer { isLoading = false }
         products = (try? await repository.fetchSuggestions(for: userId)) ?? []

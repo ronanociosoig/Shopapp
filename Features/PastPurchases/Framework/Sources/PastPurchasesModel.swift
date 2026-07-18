@@ -3,9 +3,9 @@ import SwiftUINavigation
 
 @Observable
 public final class PastPurchasesModel {
-    public var orders: [PastOrder]       = []
-    public var isLoading                  = false
-    public var destination: Destination?
+    var orders: [PastOrder]       = []
+    var isLoading                  = false
+    var destination: Destination?
     /// Set to `true` after a repeat-order action; the composition root
     /// observes this to switch the tab bar to the cart tab.
     public var shouldNavigateToCart       = false
@@ -28,16 +28,16 @@ public final class PastPurchasesModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    enum Destination: Equatable {
         case orderDetail(PastOrder)
     }
 
-    public func select(_ order: PastOrder) {
+    func select(_ order: PastOrder) {
         destination = .orderDetail(order)
     }
 
     @MainActor
-    public func load() async {
+    func load() async {
         isLoading = true
         defer { isLoading = false }
         orders = (try? await repository.fetchOrders()) ?? []
@@ -52,22 +52,22 @@ public final class PastPurchasesModel {
 
     /// Removes an order from the list and deletes it from the store.
     @MainActor
-    public func deleteOrder(_ order: PastOrder) async {
+    func deleteOrder(_ order: PastOrder) async {
         try? await repository.deleteOrder(id: order.id)
         orders.removeAll { $0.id == order.id }
     }
 
-    public func openSupport() {
+    func openSupport() {
         shouldOpenSupport = true
     }
 
-    public func requestRating(for order: PastOrder) {
+    func requestRating(for order: PastOrder) {
         orderToRate = order
     }
 
     /// Fires `onRepeatOrder` with the given order and signals the composition
     /// root to switch to the cart tab.
-    public func repeatOrder(_ order: PastOrder) {
+    func repeatOrder(_ order: PastOrder) {
         onRepeatOrder?(order)
         shouldNavigateToCart = true
     }

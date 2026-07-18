@@ -25,7 +25,7 @@ public struct PastOrderLine: Equatable, Sendable, Codable {
         self.hasExtendedGuarantee = hasExtendedGuarantee
     }
 
-    public var subtotal: Decimal { unitPrice * Decimal(quantity) }
+    var subtotal: Decimal { unitPrice * Decimal(quantity) }
 }
 
 // MARK: - PastOrderAddress
@@ -59,7 +59,7 @@ public struct PastOrderAddress: Equatable, Sendable, Codable {
         self.country    = country
     }
 
-    public var formatted: String {
+    var formatted: String {
         var parts = [fullName, line1]
         if let line2 { parts.append(line2) }
         parts.append("\(city), \(state) \(postalCode)")
@@ -73,21 +73,21 @@ public struct PastOrderAddress: Equatable, Sendable, Codable {
 public struct PastOrder: Identifiable, Equatable, Sendable, Codable {
     public let id: UUID
     public let placedAt: Date
-    public let estimatedDelivery: Date
-    public var status: OrderStatus
+    let estimatedDelivery: Date
+    var status: OrderStatus
 
     // Contents
     public let lines: [PastOrderLine]
-    public let deliveryOptionName: String
+    let deliveryOptionName: String
 
     // Price breakdown — each component stored separately for the receipt view
-    public let itemsSubtotal: Decimal
-    public let deliveryCost: Decimal
-    public let guaranteeCost: Decimal
-    public let total: Decimal
+    let itemsSubtotal: Decimal
+    let deliveryCost: Decimal
+    let guaranteeCost: Decimal
+    let total: Decimal
 
     // Shipping
-    public let shippingAddress: PastOrderAddress
+    let shippingAddress: PastOrderAddress
 
     public init(
         id: UUID = UUID(),
@@ -116,7 +116,7 @@ public struct PastOrder: Identifiable, Equatable, Sendable, Codable {
     }
 
     /// Total number of individual units across all lines.
-    public var itemCount: Int { lines.reduce(0) { $0 + $1.quantity } }
+    var itemCount: Int { lines.reduce(0) { $0 + $1.quantity } }
 }
 
 // MARK: - OrderStatus
@@ -132,7 +132,7 @@ public enum OrderStatus: String, Equatable, Sendable, Codable {
 
 private let iso = ISO8601DateFormatter()
 
-public extension PastOrderAddress {
+extension PastOrderAddress {
     static let stub = PastOrderAddress(
         fullName:   "Alex Johnson",
         line1:      "123 Main Street",
@@ -197,5 +197,5 @@ public extension PastOrder {
         ),
     ]
 
-    static var stub: PastOrder { stubs[0] }
+    internal static var stub: PastOrder { stubs[0] }
 }

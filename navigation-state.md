@@ -66,24 +66,9 @@ The manual `Binding(get:set:)` is the remaining friction — see [swift-navigati
 
 ## Scaling Up
 
-The argument gets stronger as the number of states grows. `CheckoutModel` in ShopApp tracks a seven-step purchase funnel:
+The argument gets stronger as the number of destinations grows. ShopApp has 27 screens across 3 foundation modules and 8 feature modules. The Checkout module alone accounts for 8 of them. Its model splits navigation across two typed properties rather than a single flat enum: `path: [CheckoutStep]` drives the sequential purchase funnel — address entry, delivery options, payment method, card entry — each step pushed onto a stack the user can navigate back through; `destination: Destination?` covers the three modal surfaces that float above that stack: the processing overlay, the confirmation screen, and the payment failure sheet. Seven destinations in total. In boolean flags that would be 128 combinations, exactly 8 of which are valid. In types it is 8 states, all of them valid.
 
-```swift
-@CasePathable
-enum Destination {
-    case addressForm
-    case orderOptions(ShippingAddress)
-    case paymentMethodSelection(ShippingAddress)
-    case paymentEntry(ShippingAddress)
-    case processing
-    case confirmation(PlacedOrder)
-    case paymentFailed(PaymentError)
-}
-```
-
-Seven boolean flags would yield 128 combinations. The enum yields exactly seven — one per valid state. Associated values compound the advantage: `confirmation` carries the `PlacedOrder` needed to render the confirmation screen; `paymentFailed` carries the `PaymentError` needed to explain the failure. There is no way to be in the confirmed state without an order to show.
-
-ShopApp has 27 screens across 3 foundation modules and 8 feature modules. Every model follows the same convention — a single `var destination: Destination?` drives all navigation surfaces for that screen.
+That split is not arbitrary — it follows a real distinction in SwiftUI's own model. `NavigationStack` is genuinely data-driven: its path is a value you assign in code, and push navigation follows from it. But `NavigationStack` covers only the push stack. Sheets, full-screen covers, alerts, and confirmation dialogs each still require independent state, with nothing to prevent two of them being active simultaneously. This is the gap [swift-navigation](https://github.com/pointfreeco/swift-navigation) from Point-Free closes. Its `@CasePathable` macro generates a binding for each case of a `Destination` enum, eliminating the manual `Binding(get:set:)` from earlier and connecting that single property to every SwiftUI presentation API. One property. One source of truth. Push, sheet, cover, and alert — all driven from it.
 
 ---
 

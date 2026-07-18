@@ -2,12 +2,12 @@ import Foundation
 
 public struct Promotion: Identifiable, Equatable, Sendable, Codable {
     public let id: UUID
-    public let title: String
-    public let subtitle: String
-    public let discountPercent: Int
-    public let expiresAt: Date?
+    let title: String
+    let subtitle: String
+    let discountPercent: Int
+    let expiresAt: Date?
 
-    public init(
+    init(
         id: UUID = UUID(),
         title: String,
         subtitle: String,

@@ -4,11 +4,11 @@ import Foundation
 
 public struct UserProfile: Identifiable, Equatable, Sendable, Codable {
     public let id: UUID
-    public let email: String
-    public let displayName: String
-    public let avatarURL: URL?
+    let email: String
+    let displayName: String
+    let avatarURL: URL?
 
-    public init(id: UUID = UUID(), email: String, displayName: String, avatarURL: URL? = nil) {
+    init(id: UUID = UUID(), email: String, displayName: String, avatarURL: URL? = nil) {
         self.id          = id
         self.email       = email
         self.displayName = displayName
@@ -51,7 +51,7 @@ public struct SavedAddress: Identifiable, Equatable, Hashable, Sendable, Codable
         self.isDefault  = isDefault
     }
 
-    public var formatted: String {
+    var formatted: String {
         var lines = [fullName, line1]
         if let line2 { lines.append(line2) }
         lines.append("\(city), \(state) \(postalCode)")
@@ -59,7 +59,7 @@ public struct SavedAddress: Identifiable, Equatable, Hashable, Sendable, Codable
         return lines.joined(separator: "\n")
     }
 
-    public func settingDefault(_ value: Bool) -> SavedAddress {
+    func settingDefault(_ value: Bool) -> SavedAddress {
         SavedAddress(id: id, fullName: fullName, line1: line1, line2: line2,
                      city: city, state: state, postalCode: postalCode,
                      country: country, isDefault: value)
@@ -70,14 +70,14 @@ public struct SavedAddress: Identifiable, Equatable, Hashable, Sendable, Codable
 
 public struct SavedCard: Identifiable, Equatable, Sendable, Codable {
     public let id: UUID
-    public let token: String
-    public let lastFour: String
-    public let brand: CardBrand
-    public let expiryMonth: Int
-    public let expiryYear: Int
-    public let isDefault: Bool
+    let token: String
+    let lastFour: String
+    let brand: CardBrand
+    let expiryMonth: Int
+    let expiryYear: Int
+    let isDefault: Bool
 
-    public init(
+    init(
         id: UUID = UUID(),
         token: String,
         lastFour: String,
@@ -95,10 +95,10 @@ public struct SavedCard: Identifiable, Equatable, Sendable, Codable {
         self.isDefault   = isDefault
     }
 
-    public var displayLabel: String { "\(brand.rawValue) •••• \(lastFour)" }
+    var displayLabel: String { "\(brand.rawValue) •••• \(lastFour)" }
 }
 
-public enum CardBrand: String, Equatable, Sendable, Codable {
+enum CardBrand: String, Equatable, Sendable, Codable {
     case visa       = "Visa"
     case mastercard = "Mastercard"
     case amex       = "Amex"

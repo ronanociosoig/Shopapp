@@ -30,15 +30,15 @@ import SwiftUINavigation
 ///
 @Observable
 public final class CheckoutModel {
-    public var cart: [CartItem]
-    public var path: [CheckoutStep] = []
-    public var destination: Destination?
+    var cart: [CartItem]
+    var path: [CheckoutStep] = []
+    var destination: Destination?
     public var savedAddresses: [ShippingAddress] = []
-    public var deliveryOption: DeliveryOption = .standard
+    var deliveryOption: DeliveryOption = .standard
     /// Product IDs (not cart-item IDs) for which the user has opted into the extended guarantee.
     public var extendedGuaranteeItems: Set<UUID> = []
     /// The UUID of the shipping address the user last selected, persisted across launches.
-    public var selectedAddressID: UUID?
+    var selectedAddressID: UUID?
 
     private let repository: CheckoutRepositoryProtocol
     private let selectedAddressStore: SelectedAddressStoreProtocol
@@ -64,12 +64,12 @@ public final class CheckoutModel {
     // MARK: - Computed
 
     /// The `ShippingAddress` that matches `selectedAddressID`, or `nil` if none.
-    public var selectedAddress: ShippingAddress? {
+    var selectedAddress: ShippingAddress? {
         guard let id = selectedAddressID else { return nil }
         return savedAddresses.first(where: { $0.id == id })
     }
 
-    public var subtotal: Decimal {
+    var subtotal: Decimal {
         cart.reduce(0) { $0 + $1.subtotal }
     }
 
@@ -77,20 +77,20 @@ public final class CheckoutModel {
         cart.reduce(0) { $0 + $1.quantity }
     }
 
-    public var isEmpty: Bool { cart.isEmpty }
+    var isEmpty: Bool { cart.isEmpty }
 
     /// Cost of all opted-in extended guarantees (€9.99 per eligible item line).
-    public var guaranteeCost: Decimal {
+    var guaranteeCost: Decimal {
         Decimal(extendedGuaranteeItems.count) * 9.99
     }
 
     /// Grand total shown to the user and charged at payment.
-    public var checkoutTotal: Decimal {
+    var checkoutTotal: Decimal {
         subtotal + deliveryOption.price + guaranteeCost
     }
 
     /// True when at least one cart item is eligible for an extended guarantee.
-    public var hasGuaranteeEligibleItems: Bool {
+    var hasGuaranteeEligibleItems: Bool {
         cart.contains { $0.product.supportsExtendedGuarantee }
     }
 
@@ -110,7 +110,7 @@ public final class CheckoutModel {
 
     // MARK: - Actions
 
-    public func proceedToAddress() {
+    func proceedToAddress() {
         // If there are saved addresses and the stored selection is missing or stale,
         // fall back to the default address (or the first one if none is marked default).
         if !savedAddresses.isEmpty {
@@ -127,20 +127,20 @@ public final class CheckoutModel {
     }
 
     /// Persists the user's address choice and updates `selectedAddressID`.
-    public func selectAddress(_ address: ShippingAddress) {
+    func selectAddress(_ address: ShippingAddress) {
         selectedAddressID = address.id
         selectedAddressStore.saveSelectedID(address.id)
     }
 
-    public func submitAddress(_ address: ShippingAddress) {
+    func submitAddress(_ address: ShippingAddress) {
         path.append(.orderOptions(address))
     }
 
-    public func proceedToPaymentMethod(address: ShippingAddress) {
+    func proceedToPaymentMethod(address: ShippingAddress) {
         path.append(.paymentMethod(address))
     }
 
-    public func toggleGuarantee(for product: CheckoutProduct) {
+    func toggleGuarantee(for product: CheckoutProduct) {
         if extendedGuaranteeItems.contains(product.id) {
             extendedGuaranteeItems.remove(product.id)
         } else {
@@ -148,7 +148,7 @@ public final class CheckoutModel {
         }
     }
 
-    public func selectPaymentMethod(_ method: PaymentMethod, address: ShippingAddress) {
+    func selectPaymentMethod(_ method: PaymentMethod, address: ShippingAddress) {
         if method == .creditCard {
             path.append(.paymentEntry(address))
         } else {
@@ -156,7 +156,7 @@ public final class CheckoutModel {
         }
     }
 
-    public func submitPayment(address: ShippingAddress, cardToken: String) async {
+    func submitPayment(address: ShippingAddress, cardToken: String) async {
         destination = .processing
         do {
             let order = try await repository.placeOrder(
@@ -181,12 +181,12 @@ public final class CheckoutModel {
         }
     }
 
-    public func retryPayment() {
+    func retryPayment() {
         destination = nil
         path = [.address]
     }
 
-    public func updateQuantity(for item: CartItem, quantity: Int) {
+    func updateQuantity(for item: CartItem, quantity: Int) {
         guard let index = cart.firstIndex(where: { $0.id == item.id }) else { return }
         if quantity <= 0 {
             cart.remove(at: index)
@@ -195,7 +195,7 @@ public final class CheckoutModel {
         }
     }
 
-    public func removeItem(_ item: CartItem) {
+    func removeItem(_ item: CartItem) {
         cart.removeAll { $0.id == item.id }
     }
 

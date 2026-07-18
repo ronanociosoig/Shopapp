@@ -3,13 +3,13 @@ import Foundation
 // MARK: - ProductColour
 
 /// A named colour option available for a product.
-public struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codable {
+struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codable {
     /// 6-digit RGB hex, no leading `#` (e.g. `"2C2C2E"`).
-    public let name: String
-    public let hex: String
-    public var id: String { name }
+    let name: String
+    let hex: String
+    var id: String { name }
 
-    public init(name: String, hex: String) {
+    init(name: String, hex: String) {
         self.name = name
         self.hex  = hex
     }
@@ -19,18 +19,18 @@ public struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codabl
 
 public struct StoreProduct: Identifiable, Equatable, Hashable, Sendable, Codable {
     public let id: UUID
-    public let name: String
-    public let description: String
-    public let price: Decimal
-    public let imageURL: URL?
+    let name: String
+    let description: String
+    let price: Decimal
+    let imageURL: URL?
     public let category: String
-    public let isAvailable: Bool
+    let isAvailable: Bool
     /// Selectable colour variants. Empty means no colour choice for this product.
-    public let availableColours: [ProductColour]
+    let availableColours: [ProductColour]
     /// `true` for consumer electronics — enables the 1-year extended guarantee upsell.
-    public let supportsExtendedGuarantee: Bool
+    let supportsExtendedGuarantee: Bool
 
-    public init(
+    init(
         id: UUID = UUID(),
         name: String,
         description: String,
@@ -69,7 +69,7 @@ public extension StoreProduct {
 
     // MARK: Electronics (IDs 1–22)
 
-    static let electronics: [StoreProduct] = [
+    internal static let electronics: [StoreProduct] = [
         StoreProduct(id: id(1),  name: "MacBook Pro 16\"",
             description: "Apple M3 Pro chip, 18 GB RAM, up to 22-hour battery. The ultimate professional laptop. Available in Space Black, Silver, and Space Grey.",
             price: 2499.99, category: "Electronics",
@@ -188,7 +188,7 @@ public extension StoreProduct {
 
     // MARK: Furniture (IDs 23–44)
 
-    static let furniture: [StoreProduct] = [
+    internal static let furniture: [StoreProduct] = [
         StoreProduct(id: id(23), name: "Ergonomic Office Chair",
             description: "Adjustable lumbar support, breathable mesh back, and 4D armrests for all-day comfort. Available in Black, Grey, and Blue.",
             price: 299.99, category: "Furniture",
@@ -300,7 +300,7 @@ public extension StoreProduct {
 
     // MARK: Garden (IDs 45–66)
 
-    static let garden: [StoreProduct] = [
+    internal static let garden: [StoreProduct] = [
         StoreProduct(id: id(45), name: "Acacia Garden Dining Table",
             description: "FSC-certified acacia wood table for 6, with natural grain and weather-resistant oil finish.",
             price: 379.99, category: "Garden"),
@@ -405,7 +405,7 @@ public extension StoreProduct {
 
     // MARK: Kitchen (IDs 67–88)
 
-    static let kitchen: [StoreProduct] = [
+    internal static let kitchen: [StoreProduct] = [
         StoreProduct(id: id(67), name: "Solid Oak Dining Table",
             description: "4-seater solid oak table with tapered legs, natural grain, and protective oil finish.",
             price: 699.99, category: "Kitchen"),

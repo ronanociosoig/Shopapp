@@ -2,15 +2,15 @@ import Foundation
 
 // MARK: - PaymentMethod
 
-public enum PaymentMethod: String, CaseIterable, Identifiable, Sendable {
+enum PaymentMethod: String, CaseIterable, Identifiable, Sendable {
     case creditCard = "Credit / Debit Card"
     case applePay   = "Apple Pay"
     case sofort     = "Sofort"
     case bizum      = "Bizum"
 
-    public var id: String { rawValue }
+    var id: String { rawValue }
 
-    public var icon: String {
+    var icon: String {
         switch self {
         case .creditCard: return "creditcard"
         case .applePay:   return "apple.logo"
@@ -19,7 +19,7 @@ public enum PaymentMethod: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    public var subtitle: String {
+    var subtitle: String {
         switch self {
         case .creditCard: return "Visa, Mastercard, Amex"
         case .applePay:   return "Face ID or Touch ID"
@@ -29,7 +29,7 @@ public enum PaymentMethod: String, CaseIterable, Identifiable, Sendable {
     }
 
     /// Token stub used when submitting without a card form.
-    public var stubToken: String { "tok_\(rawValue.lowercased().replacingOccurrences(of: " ", with: "_"))" }
+    var stubToken: String { "tok_\(rawValue.lowercased().replacingOccurrences(of: " ", with: "_"))" }
 }
 
 // MARK: - DeliveryOption
@@ -41,7 +41,7 @@ public enum DeliveryOption: String, CaseIterable, Identifiable, Sendable, Codabl
 
     public var id: String { rawValue }
 
-    public var icon: String {
+    var icon: String {
         switch self {
         case .standard: return "shippingbox"
         case .express:  return "bolt.fill"
@@ -49,7 +49,7 @@ public enum DeliveryOption: String, CaseIterable, Identifiable, Sendable, Codabl
         }
     }
 
-    public var detail: String {
+    var detail: String {
         switch self {
         case .standard: return "3–5 business days"
         case .express:  return "Next business day"
@@ -65,7 +65,7 @@ public enum DeliveryOption: String, CaseIterable, Identifiable, Sendable, Codabl
         }
     }
 
-    public var priceLabel: String {
+    var priceLabel: String {
         price == 0 ? "Free" : "+€\(price)"
     }
 }
@@ -79,7 +79,7 @@ public struct CheckoutProduct: Identifiable, Equatable, Hashable, Sendable, Coda
     public let id: UUID
     public let name: String
     public let price: Decimal
-    public let supportsExtendedGuarantee: Bool
+    let supportsExtendedGuarantee: Bool
 
     public init(
         id: UUID = UUID(),
@@ -94,7 +94,7 @@ public struct CheckoutProduct: Identifiable, Equatable, Hashable, Sendable, Coda
     }
 }
 
-public extension CheckoutProduct {
+extension CheckoutProduct {
 
     // UUID helper: "00000000-0000-0000-0004-00000000NNNN"
     // Module prefix 0004 = Checkout; NNNN = sequential product number.
@@ -141,7 +141,7 @@ public struct CartItem: Identifiable, Equatable, Sendable {
     public let product: CheckoutProduct
     public var quantity: Int
 
-    public init(id: UUID = UUID(), product: CheckoutProduct, quantity: Int = 1) {
+    init(id: UUID = UUID(), product: CheckoutProduct, quantity: Int = 1) {
         self.id       = id
         self.product  = product
         self.quantity = quantity
@@ -200,7 +200,7 @@ public struct ShippingAddress: Identifiable, Equatable, Hashable, Sendable, Coda
         self.isDefault  = isDefault
     }
 
-    public var formatted: String {
+    var formatted: String {
         var lines = [fullName, line1]
         if let line2 { lines.append(line2) }
         lines.append("\(city), \(state) \(postalCode)")
@@ -250,7 +250,7 @@ public extension ShippingAddress {
 /// Each value represents one screen in the sequential checkout funnel.
 /// Appended to `CheckoutModel.path` to push screens onto the NavigationStack.
 /// The user can navigate back through the stack at any point.
-public enum CheckoutStep: Hashable {
+enum CheckoutStep: Hashable {
     case address
     case orderOptions(ShippingAddress)
     case paymentMethod(ShippingAddress)
@@ -284,7 +284,7 @@ public struct PlacedOrder: Identifiable, Equatable, Sendable, Codable {
     }
 }
 
-public extension PlacedOrder {
+extension PlacedOrder {
     static let stub = PlacedOrder(
         id: UUID(uuidString: "00000000-0000-0000-0007-000000000001")!,
         items: [OrderLineItem(product: .stub, quantity: 1)],

@@ -3,12 +3,12 @@ import Foundation
 // MARK: - ProductColour
 
 /// A named colour option available for a product.
-public struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codable {
-    public let name: String
-    public let hex: String   // 6-digit RGB hex, no leading `#`
-    public var id: String { name }
+struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codable {
+    let name: String
+    let hex: String   // 6-digit RGB hex, no leading `#`
+    var id: String { name }
 
-    public init(name: String, hex: String) {
+    init(name: String, hex: String) {
         self.name = name
         self.hex  = hex
     }
@@ -19,14 +19,14 @@ public struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codabl
 public struct SearchProduct: Identifiable, Equatable, Hashable, Sendable, Codable {
     public let id: UUID
     public let name: String
-    public let description: String
-    public let price: Decimal
-    public let imageURL: URL?
+    let description: String
+    let price: Decimal
+    let imageURL: URL?
     public let category: String
-    public let availableColours: [ProductColour]
-    public let supportsExtendedGuarantee: Bool
+    let availableColours: [ProductColour]
+    let supportsExtendedGuarantee: Bool
 
-    public init(
+    init(
         id: UUID = UUID(),
         name: String,
         description: String,
@@ -63,7 +63,7 @@ public extension SearchProduct {
 
     // MARK: Electronics (IDs 1–22)
 
-    static let electronics: [SearchProduct] = [
+    internal static let electronics: [SearchProduct] = [
         SearchProduct(id: id(1),  name: "MacBook Pro 16\"",
             description: "Apple M3 Pro chip, 18 GB RAM, up to 22-hour battery. The ultimate professional laptop. Available in Space Black, Silver, and Space Grey.",
             price: 2499.99, category: "Electronics",
@@ -182,7 +182,7 @@ public extension SearchProduct {
 
     // MARK: Furniture (IDs 23–44)
 
-    static let furniture: [SearchProduct] = [
+    internal static let furniture: [SearchProduct] = [
         SearchProduct(id: id(23), name: "Ergonomic Office Chair",
             description: "Adjustable lumbar support, breathable mesh back, and 4D armrests for all-day comfort. Available in Black, Grey, and Blue.",
             price: 299.99, category: "Furniture",
@@ -294,7 +294,7 @@ public extension SearchProduct {
 
     // MARK: Garden (IDs 45–66)
 
-    static let garden: [SearchProduct] = [
+    internal static let garden: [SearchProduct] = [
         SearchProduct(id: id(45), name: "Acacia Garden Dining Table",
             description: "FSC-certified acacia wood table for 6, with natural grain and weather-resistant oil finish.",
             price: 379.99, category: "Garden"),
@@ -378,7 +378,7 @@ public extension SearchProduct {
 
     // MARK: Kitchen (IDs 67–88)
 
-    static let kitchen: [SearchProduct] = [
+    internal static let kitchen: [SearchProduct] = [
         SearchProduct(id: id(67), name: "Solid Oak Dining Table",
             description: "4-seater solid oak table with tapered legs, natural grain, and protective oil finish.",
             price: 699.99, category: "Kitchen"),

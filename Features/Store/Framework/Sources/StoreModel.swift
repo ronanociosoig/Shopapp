@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import SwiftUINavigation
 
-public enum StoreLoadState: Equatable {
+enum StoreLoadState: Equatable {
     case idle
     case loading
     case loaded([StoreProduct])
@@ -11,9 +11,9 @@ public enum StoreLoadState: Equatable {
 
 @Observable
 public final class StoreModel {
-    public var loadState: StoreLoadState = .idle
-    public var selectedCategory: String?
-    public var destination: Destination?
+    var loadState: StoreLoadState = .idle
+    var selectedCategory: String?
+    var destination: Destination?
 
     /// Called by the composition root to route add-to-cart events to the Checkout module.
     /// Typed on Foundation primitives so the Store module stays independent of Checkout.
@@ -27,24 +27,24 @@ public final class StoreModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    enum Destination: Equatable {
         case productDetail(StoreProduct)
         case categoryFilter
     }
 
-    public var categories: [String] {
+    var categories: [String] {
         guard case .loaded(let products) = loadState else { return [] }
         return Array(Set(products.map(\.category))).sorted()
     }
 
-    public var displayedProducts: [StoreProduct] {
+    var displayedProducts: [StoreProduct] {
         guard case .loaded(let products) = loadState else { return [] }
         guard let category = selectedCategory else { return products }
         return products.filter { $0.category == category }
     }
 
     @MainActor
-    public func load() async {
+    func load() async {
         loadState = .loading
         do {
             let products = try await repository.fetchProducts(category: nil)
@@ -54,15 +54,15 @@ public final class StoreModel {
         }
     }
 
-    public func select(_ product: StoreProduct) {
+    func select(_ product: StoreProduct) {
         destination = .productDetail(product)
     }
 
-    public func showCategoryFilter() {
+    func showCategoryFilter() {
         destination = .categoryFilter
     }
 
-    public func addToCart(_ product: StoreProduct, wantsGuarantee: Bool = false) {
+    func addToCart(_ product: StoreProduct, wantsGuarantee: Bool = false) {
         onAddToCart?(product.id, product.name, product.price, wantsGuarantee)
     }
 }

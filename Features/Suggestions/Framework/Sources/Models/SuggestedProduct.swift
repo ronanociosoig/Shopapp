@@ -3,12 +3,12 @@ import Foundation
 // MARK: - ProductColour
 
 /// A named colour option available for a product.
-public struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codable {
-    public let name: String
-    public let hex: String   // 6-digit RGB hex, no leading `#`
-    public var id: String { name }
+struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codable {
+    let name: String
+    let hex: String   // 6-digit RGB hex, no leading `#`
+    var id: String { name }
 
-    public init(name: String, hex: String) {
+    init(name: String, hex: String) {
         self.name = name
         self.hex  = hex
     }
@@ -18,14 +18,14 @@ public struct ProductColour: Identifiable, Equatable, Hashable, Sendable, Codabl
 
 public struct SuggestedProduct: Identifiable, Equatable, Hashable, Sendable, Codable {
     public let id: UUID
-    public let name: String
-    public let description: String
-    public let price: Decimal
-    public let category: String
-    public let availableColours: [ProductColour]
-    public let supportsExtendedGuarantee: Bool
+    let name: String
+    let description: String
+    let price: Decimal
+    let category: String
+    let availableColours: [ProductColour]
+    let supportsExtendedGuarantee: Bool
 
-    public init(
+    init(
         id: UUID = UUID(),
         name: String,
         description: String,
