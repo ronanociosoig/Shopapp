@@ -1,39 +1,40 @@
 import SwiftUI
+import ShopCore
 import Store
 import Search
 import Checkout
 import Account
 import Promotions
 import PastPurchases
-import Support
 import Suggestions
+import StoreTesting
+import AccountTesting
+import CheckoutTesting
+import PromotionsTesting
+import SuggestionsTesting
 
 @main
 struct ShopAppMain: App {
-    // MARK: - Composition root
-    //
-    // All repositories are created here and injected into feature models.
-    // Swap StubXRepository for LiveXRepository to connect to a real backend.
+    private let appModel: AppModel
 
-    private let storeRepository          = StoreRepository()
-    private let searchRepository         = SearchRepository()
-    private let accountRepository        = StubAccountRepository()
-    private let checkoutRepository       = StubCheckoutRepository()
-    private let promotionsRepository     = StubPromotionsRepository()
-    private let pastPurchasesRepository  = PastPurchasesRepository()
-    private let suggestionsRepository    = StubSuggestionsRepository()
+    init() {
+        let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        appModel = AppModel(
+            // destination: .support,
+            // selectedTab: .orders,
+            storeRepository:         isUITesting ? StubStoreRepository()              : StoreRepository(),
+            searchRepository:        SearchRepository(),
+            accountRepository:       StubAccountRepository(),
+            checkoutRepository:      isUITesting ? StubCheckoutRepository(delay: .zero) : StubCheckoutRepository(),
+            promotionsRepository:    StubPromotionsRepository(),
+            pastPurchasesRepository: PastPurchasesRepository(),
+            suggestionsRepository:   StubSuggestionsRepository()
+        )
+    }
 
     var body: some Scene {
         WindowGroup {
-            RootView(
-                storeRepository:          storeRepository,
-                searchRepository:         searchRepository,
-                accountRepository:        accountRepository,
-                checkoutRepository:       checkoutRepository,
-                promotionsRepository:     promotionsRepository,
-                pastPurchasesRepository:  pastPurchasesRepository,
-                suggestionsRepository:    suggestionsRepository
-            )
+            RootView(model: appModel)
         }
     }
 }
