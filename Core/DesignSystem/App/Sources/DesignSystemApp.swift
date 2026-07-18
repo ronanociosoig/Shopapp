@@ -13,15 +13,50 @@ struct DesignSystemApp: App {
 // MARK: - Catalog
 
 struct DesignSystemCatalog: View {
+    @State private var destination: Destination?
+
+    enum Destination: Hashable {
+        case colours
+        case typography
+        case components
+    }
+
     var body: some View {
         NavigationStack {
             List {
-                NavigationLink(Strings.colours)    { ColourCatalog() }
-                NavigationLink(Strings.typography) { TypographyCatalog() }
-                NavigationLink(Strings.components) { ComponentCatalog() }
+                CatalogRow(title: Strings.colours)    { destination = .colours }
+                CatalogRow(title: Strings.typography) { destination = .typography }
+                CatalogRow(title: Strings.components) { destination = .components }
             }
             .navigationTitle(Strings.navigationTitle)
+            .navigationDestination(item: $destination) { destination in
+                switch destination {
+                case .colours:    ColourCatalog()
+                case .typography: TypographyCatalog()
+                case .components: ComponentCatalog()
+                }
+            }
         }
+    }
+}
+
+// MARK: - Catalog Row
+
+private struct CatalogRow: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.footnote.bold())
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .foregroundStyle(.primary)
     }
 }
 
