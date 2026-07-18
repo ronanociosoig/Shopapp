@@ -2,13 +2,19 @@ import SwiftUI
 import SwiftUINavigation
 import DesignSystem
 
-public struct StoreView<SuggestionRow: View>: View {
+public struct StoreView<SuggestionRow: View, PromotionBanner: View>: View {
     @Bindable public var model: StoreModel
-    private let suggestionRow: () -> SuggestionRow
+    private let suggestionRow:   () -> SuggestionRow
+    private let promotionBanner: () -> PromotionBanner
 
-    public init(model: StoreModel, @ViewBuilder suggestionRow: @escaping () -> SuggestionRow) {
-        self.model = model
-        self.suggestionRow = suggestionRow
+    public init(
+        model: StoreModel,
+        @ViewBuilder suggestionRow:   @escaping () -> SuggestionRow,
+        @ViewBuilder promotionBanner: @escaping () -> PromotionBanner
+    ) {
+        self.model           = model
+        self.suggestionRow   = suggestionRow
+        self.promotionBanner = promotionBanner
     }
 
     public var body: some View {
@@ -71,6 +77,7 @@ public struct StoreView<SuggestionRow: View>: View {
 
     private var productGrid: some View {
         ScrollView {
+            promotionBanner()
             if let category = model.selectedCategory {
                 HStack {
                     Label(category, systemImage: "tag")
@@ -107,10 +114,24 @@ public struct StoreView<SuggestionRow: View>: View {
     }
 }
 
-extension StoreView where SuggestionRow == EmptyView {
+// No promotion banner — for StoreApp (suggestions only)
+extension StoreView where PromotionBanner == EmptyView {
+    public init(model: StoreModel, @ViewBuilder suggestionRow: @escaping () -> SuggestionRow) {
+        self.init(model: model, suggestionRow: suggestionRow, promotionBanner: { EmptyView() })
+    }
+}
+
+// No suggestions, no banner — for snapshot tests and basic use
+extension StoreView where SuggestionRow == EmptyView, PromotionBanner == EmptyView {
     public init(model: StoreModel) {
-        self.model = model
-        self.suggestionRow = { EmptyView() }
+        self.init(model: model, suggestionRow: { EmptyView() }, promotionBanner: { EmptyView() })
+    }
+}
+
+// No suggestions, with banner — for PromotionsApp (store context)
+extension StoreView where SuggestionRow == EmptyView {
+    public init(model: StoreModel, @ViewBuilder promotionBanner: @escaping () -> PromotionBanner) {
+        self.init(model: model, suggestionRow: { EmptyView() }, promotionBanner: promotionBanner)
     }
 }
 

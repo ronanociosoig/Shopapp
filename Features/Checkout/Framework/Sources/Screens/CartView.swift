@@ -1,8 +1,14 @@
 import SwiftUI
 import DesignSystem
 
-struct CartView: View {
+struct CartView<PromotionBanner: View>: View {
     let model: CheckoutModel
+    private let promotionBanner: () -> PromotionBanner
+
+    init(model: CheckoutModel, @ViewBuilder promotionBanner: @escaping () -> PromotionBanner) {
+        self.model = model
+        self.promotionBanner = promotionBanner
+    }
 
     var body: some View {
         Group {
@@ -13,9 +19,7 @@ struct CartView: View {
             }
         }
         .navigationTitle(Strings.navigationTitle)
-        #if os(iOS)
         .navigationBarTitleDisplayMode(.large)
-        #endif
     }
 
     private var cartList: some View {
@@ -29,6 +33,9 @@ struct CartView: View {
                 }
             }
             .listStyle(.plain)
+
+            promotionBanner()
+                .padding(.vertical, 8)
 
             orderSummary
         }
