@@ -130,7 +130,7 @@ public enum OrderStatus: String, Equatable, Sendable, Codable {
 
 // MARK: - Stubs
 
-private let iso = ISO8601DateFormatter()
+nonisolated(unsafe) private let iso = ISO8601DateFormatter()
 
 extension PastOrderAddress {
     static let stub = PastOrderAddress(

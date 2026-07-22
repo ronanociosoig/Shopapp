@@ -28,6 +28,7 @@ import Suggestions
 ///
 /// The goal is not "one enum per model" but "one type per navigation concern."
 /// Two independent concerns on the same model warrant two independent types.
+@MainActor
 @Observable
 public final class AppModel {
 

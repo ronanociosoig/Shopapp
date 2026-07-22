@@ -59,7 +59,7 @@ struct PaymentEntryView: View {
     private func submitPayment() {
         isSubmitting = true
         let token = "tok_\(cardNumber.suffix(4))"
-        Task {
+        Task { @MainActor in
             await model.submitPayment(address: address, cardToken: token)
             isSubmitting = false
         }

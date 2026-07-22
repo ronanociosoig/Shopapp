@@ -66,15 +66,48 @@ The manual `Binding(get:set:)` is the remaining friction — see [swift-navigati
 
 ## Scaling Up
 
-The argument gets stronger as the number of destinations grows. ShopApp has 27 screens across 3 foundation modules and 8 feature modules. The Checkout module alone accounts for 8 of them. Its model splits navigation across two typed properties rather than a single flat enum: `path: [CheckoutStep]` drives the sequential purchase funnel — address entry, delivery options, payment method, card entry — each step pushed onto a stack the user can navigate back through; `destination: Destination?` covers the three modal surfaces that float above that stack: the processing overlay, the confirmation screen, and the payment failure sheet. Seven destinations in total. In boolean flags that would be 128 combinations, exactly 8 of which are valid. In types it is 8 states, all of them valid.
+The argument gets more concrete with a realistic feature. An account settings screen might let the user edit their profile, add a shipping address, or manage their saved cards. Three destinations, each reachable from the same parent view.
 
-That split is not arbitrary — it follows a real distinction in SwiftUI's own model. `NavigationStack` is genuinely data-driven: its path is a value you assign in code, and push navigation follows from it. But `NavigationStack` covers only the push stack. Sheets, full-screen covers, alerts, and confirmation dialogs each still require independent state, with nothing to prevent two of them being active simultaneously. This is the gap [swift-navigation](https://github.com/pointfreeco/swift-navigation) from Point-Free closes. Its `@CasePathable` macro generates a binding for each case of a `Destination` enum, eliminating the manual `Binding(get:set:)` from earlier and connecting that single property to every SwiftUI presentation API. One property. One source of truth. Push, sheet, cover, and alert — all driven from it.
+With boolean flags:
+
+```swift
+var isShowingEditProfile = false
+var isShowingAddAddress  = false
+var isShowingCards       = false
+```
+
+Three booleans produce eight possible combinations. Only four are valid: all false, or exactly one true. The other four — two or three flags true simultaneously — are illegal states the type system cannot prevent. Every transition function must clear the others before setting the new one, and every destination added later requires updating every existing transition.
+
+The enum collapses this:
+
+```swift
+@CasePathable
+public enum Destination: Equatable {
+    case editProfile(UserProfile)
+    case addAddress
+    case savedCards
+}
+
+var destination: Destination?
+```
+
+Four states: `nil` and each case. All valid. Setting `.addAddress` while `.savedCards` is active is structurally impossible — there is only one property.
+
+The associated value in `.editProfile` compounds the advantage. With boolean flags, `isShowingEditProfile = true` while the profile itself is `nil` is a legal combination in the type system — an edit screen with nothing to display. The enum makes that inexpressible: `.editProfile` carries the `UserProfile` it needs. The data and the state are the same value; they cannot be separated.
+
+This is the pattern every model in the project follows. ShopApp has 27 screens across 8 feature modules. Each one is reached by assigning a single `destination` property — no clearing, no coordination, no defensive guards against combinations that should never exist.
+
+The model side of the pattern is straightforward. The friction is on the SwiftUI side: connecting a single `destination` property to the full range of SwiftUI's presentation APIs — push navigation, sheets, full-screen covers, alerts — is not something SwiftUI supports natively from a single source of truth. Understanding why requires a short detour through what `NavigationStack` actually solves, and what it does not.
 
 ---
 
 ## NavigationStack
 
-Apple's `NavigationStack` was a significant step forward — the navigation path is data, and you drive it entirely from code. But it covers only push navigation. Sheets, alerts, confirmation dialogs, and popovers each still require their own independent state, with nothing to coordinate them or prevent conflicts. It solves one surface well, but navigation is all of them.
+Before iOS 16, push navigation in SwiftUI was driven by `NavigationLink(destination:)` — a view-level declaration that embedded the destination directly in the link. There was no way to trigger navigation from model code, no way to restore a navigation stack from state, and no way to deep link into a specific screen without constructing the entire view hierarchy up front. Navigation was a view concern, not a model concern.
+
+`NavigationStack`, introduced in iOS 16, changed this. The navigation path is now a value — an array you own, assign, and observe. Push navigation follows from data, not from view structure. That is a genuine step forward: the stack is inspectable, restorable, and testable without running the app.
+
+But `NavigationStack` covers only push navigation. Sheets, alerts, confirmation dialogs, and popovers each still require their own independent state, with nothing to coordinate them or prevent conflicts. It solves one surface well, but navigation is all of them.
 
 ---
 
@@ -114,7 +147,7 @@ Every feature model follows the same structure:
 ```swift
 @Observable
 public final class SomeModel {
-    public var destination: Destination?
+    var destination: Destination?
 
     @CasePathable
     public enum Destination {

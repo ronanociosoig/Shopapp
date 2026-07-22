@@ -1,7 +1,7 @@
 import Foundation
 import Account
 
-public final class StubAccountRepository: AccountRepositoryProtocol {
+public final class StubAccountRepository: AccountRepositoryProtocol, @unchecked Sendable {
     private var profile: UserProfile
     private var addresses: [SavedAddress]
     private var cards: [SavedCard]

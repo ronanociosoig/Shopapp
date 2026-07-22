@@ -28,14 +28,14 @@ But this merges two unrelated concerns. Push destinations are sequential and bac
 `CheckoutModel` carries two navigation properties, each typed for its own concern:
 
 ```swift
-public var path: [CheckoutStep]    // sequential, back-navigable funnel
-public var destination: Destination?  // modal surfaces outside the funnel
+var path: [CheckoutStep]    // sequential, back-navigable funnel
+var destination: Destination?  // modal surfaces outside the funnel
 ```
 
 `CheckoutStep` is an enum of the ordered funnel screens:
 
 ```swift
-public enum CheckoutStep {
+enum CheckoutStep {
     case address
     case orderOptions(ShippingAddress)
     case paymentMethod(ShippingAddress)

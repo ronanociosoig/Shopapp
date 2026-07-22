@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.1
 import PackageDescription
 
 let package = Package(
@@ -35,7 +35,7 @@ let package = Package(
         .library(name: "SupportTesting",      targets: ["SupportTesting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.0.0"),
+        .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.10.0", traits: ["CasePaths"]),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0"),
         // Article 2: uncomment to add Replay for network recording
         // .package(url: "https://github.com/NSHipster/Replay", from: "1.0.0"),
@@ -44,12 +44,17 @@ let package = Package(
 
         // MARK: - Foundation (no feature deps)
 
-        .target(name: "NetworkFoundation",
-                path: "Core/NetworkFoundation/Framework/Sources"),
-        .target(name: "DesignSystem",
-                path: "Core/DesignSystem/Framework/Sources"),
-        .target(name: "Common", dependencies: ["NetworkFoundation"],
-                path: "Core/Common/Framework/Sources"),
+        .target(
+            name: "NetworkFoundation",
+            path: "Core/NetworkFoundation/Framework/Sources"),
+        .target(
+            name: "DesignSystem",
+            path: "Core/DesignSystem/Framework/Sources"),
+        .target(
+            name: "Common",
+            dependencies: ["NetworkFoundation"],
+            path: "Core/Common/Framework/Sources"
+        ),
 
         // MARK: - Feature modules
         //
@@ -140,30 +145,46 @@ let package = Package(
 
         // MARK: - Testing targets
 
-        .target(name: "StoreTesting",
-                dependencies: ["Store", "NetworkFoundation"],
-                path: "Features/Store/Testing/Sources"),
-        .target(name: "AccountTesting",
-                dependencies: ["Account"],
-                path: "Features/Account/Testing/Sources"),
-        .target(name: "SearchTesting",
-                dependencies: ["Search"],
-                path: "Features/Search/Testing/Sources"),
-        .target(name: "CheckoutTesting",
-                dependencies: ["Checkout"],
-                path: "Features/Checkout/Testing/Sources"),
-        .target(name: "PromotionsTesting",
-                dependencies: ["Promotions"],
-                path: "Features/Promotions/Testing/Sources"),
-        .target(name: "SuggestionsTesting",
-                dependencies: ["Suggestions"],
-                path: "Features/Suggestions/Testing/Sources"),
-        .target(name: "PastPurchasesTesting",
-                dependencies: ["PastPurchases"],
-                path: "Features/PastPurchases/Testing/Sources"),
-        .target(name: "SupportTesting",
-                dependencies: ["Support"],
-                path: "Features/Support/Testing/Sources"),
+        .target(
+            name: "StoreTesting",
+            dependencies: ["Store", "NetworkFoundation"],
+            path: "Features/Store/Testing/Sources"
+        ),
+        .target(
+            name: "AccountTesting",
+            dependencies: ["Account"],
+            path: "Features/Account/Testing/Sources"
+        ),
+        .target(
+            name: "SearchTesting",
+            dependencies: ["Search"],
+            path: "Features/Search/Testing/Sources"
+        ),
+        .target(
+            name: "CheckoutTesting",
+            dependencies: ["Checkout"],
+            path: "Features/Checkout/Testing/Sources"
+        ),
+        .target(
+            name: "PromotionsTesting",
+            dependencies: ["Promotions"],
+            path: "Features/Promotions/Testing/Sources"
+        ),
+        .target(
+            name: "SuggestionsTesting",
+            dependencies: ["Suggestions"],
+            path: "Features/Suggestions/Testing/Sources"
+        ),
+        .target(
+            name: "PastPurchasesTesting",
+            dependencies: ["PastPurchases"],
+            path: "Features/PastPurchases/Testing/Sources"
+        ),
+        .target(
+            name: "SupportTesting",
+            dependencies: ["Support"],
+            path: "Features/Support/Testing/Sources"
+        ),
 
         // MARK: - Composition root
 
@@ -268,6 +289,5 @@ let package = Package(
             ],
             path: "Features/PastPurchases/Tests/Sources"
         ),
-
     ]
 )

@@ -28,6 +28,7 @@ import SwiftUINavigation
 ///     model.path = [.address, .orderOptions(.stub)]
 ///     assertSnapshot(of: CheckoutView(model: model), as: .image(on: .iPhone13Pro))
 ///
+@MainActor
 @Observable
 public final class CheckoutModel {
     var cart: [CartItem]
@@ -102,7 +103,7 @@ public final class CheckoutModel {
     /// - `confirmation` — full-screen cover shown on successful order placement.
     /// - `paymentFailed` — sheet shown on failure, allowing retry or cancel.
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case processing
         case confirmation(PlacedOrder)
         case paymentFailed(PaymentError)

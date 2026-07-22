@@ -37,8 +37,9 @@ The stub implementation lives in the companion `XxxTesting` target (ADR-0006). F
 public final class StoreModel {
     private let repository: StoreRepositoryProtocol
 
-    public init(repository: StoreRepositoryProtocol) {
+    public init(repository: StoreRepositoryProtocol, destination: Destination? = nil) {
         self.repository = repository
+        self.destination = destination
     }
 }
 ```

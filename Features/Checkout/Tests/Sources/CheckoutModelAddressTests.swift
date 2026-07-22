@@ -4,6 +4,7 @@ import Foundation
 import CheckoutTesting
 
 @Suite("CheckoutModel – address selection")
+@MainActor
 struct CheckoutModelAddressTests {
 
     // Convenience: two addresses where the first is the default.

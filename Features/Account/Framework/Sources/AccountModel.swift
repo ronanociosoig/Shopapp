@@ -1,6 +1,7 @@
 import Observation
 import SwiftUINavigation
 
+@MainActor
 @Observable
 public final class AccountModel {
     var profile: UserProfile?
@@ -27,13 +28,13 @@ public final class AccountModel {
     var defaultCard: SavedCard?        { cards.first(where: \.isDefault) ?? cards.first }
     var isSignedIn: Bool               { profile != nil }
 
-    @MainActor
     public func load() async {
         isLoading = true
         defer { isLoading = false }
-        async let profile   = try? repository.fetchProfile()
-        async let addresses = try? repository.fetchAddresses()
-        async let cards     = try? repository.fetchCards()
+        let repo = repository
+        async let profile   = try? repo.fetchProfile()
+        async let addresses = try? repo.fetchAddresses()
+        async let cards     = try? repo.fetchCards()
         self.profile   = await profile
         self.addresses = await addresses ?? []
         self.cards     = await cards ?? []

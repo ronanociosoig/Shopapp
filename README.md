@@ -1,5 +1,42 @@
 # ShopApp — Architecture Reference
 
+ShopApp is a companion project to the article series [*AI Writes Fast. Your Safety Net Needs to Be Faster.*](https://ronanociosoig.medium.com) It is a reference implementation for programmatic navigation in SwiftUI — demonstrating how to make illegal navigation states unrepresentable at the type level, how to test every screen state with snapshot tests, and how to encode architectural rules in agent instructions so AI-generated code follows the same constraints as handwritten code.
+
+The app is a multi-module e-commerce shell: 27 screens across 8 feature modules, built with Swift 6, `@Observable`, and iOS 17 as the minimum deployment target. It is not a production app. Every repository is stubbed. The purpose is to show the pattern at realistic scale, not to ship to the App Store.
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Xcode 26 or later
+- iOS 17 simulator
+
+### xcodegen
+
+The Xcode project (`ShopApp.xcodeproj`) is generated from `project.yml` using [xcodegen](https://github.com/yonaskolb/XcodeGen). Rather than committing a hand-maintained `.pbxproj` file — which produces large, unreadable merge conflicts whenever targets or files change — the project structure is declared in a human-readable YAML file. `project.yml` is the source of truth; the generated `.xcodeproj` is the output.
+
+Install xcodegen with Homebrew:
+
+```bash
+brew install xcodegen
+```
+
+Regenerate the project after any change to `project.yml`:
+
+```bash
+xcodegen generate
+```
+
+Then open `ShopApp.xcodeproj` in Xcode. Swift Package Manager dependencies resolve automatically on first open.
+
+### When to run xcodegen
+
+Run `xcodegen generate` any time `project.yml` changes — for example, after pulling a commit that adds a new target, source file, or dependency. The generated `.xcodeproj` is committed to the repository, so you only need to regenerate when the YAML has changed since your last pull.
+
+---
+
 ## Module structure
 
 The project is a Swift package with eleven library products organised into three layers.
@@ -50,7 +87,7 @@ Every model in the project follows the same navigation convention:
 ```swift
 @Observable
 public final class SomeModel {
-    public var destination: Destination?
+    var destination: Destination?
 
     @CasePathable
     public enum Destination {
@@ -293,12 +330,12 @@ No simulator. No animations. No waiting. The test completes in under a second an
 
 ### Composition-root snapshot tests
 
-`ShopAppTests` is a `bundle.unit-test` target hosted inside `ShopApp.app`. It injects state at the `AppModel` level:
+`ShopAppTests` is a `bundle.unit-test` target hosted inside `ShopApp.app`. It injects state at the `AppModel` level. Because `cart` and `orders` are internal to their respective modules, the test file uses `@testable import Checkout` and `@testable import PastPurchases`:
 
 ```swift
 func cartTab() {
     let model = makeModel()
-    model.checkoutModel.cart           = CartItem.stubs
+    model.checkoutModel.cart           = CartItem.stubs  // internal — @testable import Checkout
     model.checkoutModel.savedAddresses = ShippingAddress.stubs
     model.selectedTab                  = .cart
     assertSnapshot(of: RootView(model: model), ...)
@@ -306,7 +343,7 @@ func cartTab() {
 
 func rateOrderDestination() {
     let model = makeModel()
-    model.pastPurchasesModel.orders = PastOrder.stubs
+    model.pastPurchasesModel.orders = PastOrder.stubs  // internal — @testable import PastPurchases
     model.selectedTab               = .orders
     model.destination               = .rateOrder(PastOrder.stubs[0])
     assertSnapshot(of: RootView(model: model), ...)
@@ -336,6 +373,7 @@ Features/Store/Framework/Sources/
 `AppModel.init` contains all the cross-module wiring — `onAddToCart`, `onOrderPlaced`, `onRepeatOrder`, `syncAddresses`. None of this logic has unit tests. A test for the add-to-cart path would look like:
 
 ```swift
+// Requires @testable import Store and @testable import Checkout
 func test_addToCart_routesToCheckoutModel() {
     let model = AppModel(...)
     model.storeModel.loadState = .loaded(StoreProduct.stubs)

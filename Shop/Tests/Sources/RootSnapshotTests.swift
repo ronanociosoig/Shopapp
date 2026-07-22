@@ -2,7 +2,7 @@
 import Testing
 import SnapshotTesting
 import SwiftUI
-import ShopCore
+@testable import ShopCore
 @testable import Store
 @testable import Search
 @testable import Checkout

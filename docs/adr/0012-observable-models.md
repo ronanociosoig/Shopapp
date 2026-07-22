@@ -19,9 +19,9 @@ All feature models are marked `@Observable`:
 ```swift
 @Observable
 public final class StoreModel {
-    public var loadState: StoreLoadState = .idle
-    public var selectedCategory: String?
-    public var destination: Destination?
+    var loadState: StoreLoadState = .idle
+    var selectedCategory: String?
+    var destination: Destination?
     // ...
 }
 ```

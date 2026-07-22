@@ -4,6 +4,7 @@ import Foundation
 import CheckoutTesting
 
 @Suite("CheckoutModel — Unit Tests")
+@MainActor
 struct CheckoutModelTests {
 
     // MARK: - Initial state

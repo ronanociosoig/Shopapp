@@ -35,7 +35,7 @@ final class RemoteStoreDataSource: Sendable {
 
 // MARK: - Local data source (in-memory cache)
 
-final class LocalStoreDataSource {
+final class LocalStoreDataSource: @unchecked Sendable {
     private let productsCache = LocalCache<String, [StoreProduct]>()
     private let productCache  = LocalCache<UUID, StoreProduct>()
 

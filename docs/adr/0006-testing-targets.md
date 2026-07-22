@@ -27,8 +27,8 @@ Stub classes live in `Features/Xxx/Testing/Sources/`. Each testing target also c
 import Store
 
 public extension StoreModel {
-    convenience init() {
-        self.init(repository: StubStoreRepository())
+    convenience init(destination: Destination? = nil) {
+        self.init(repository: StubStoreRepository(), destination: destination)
     }
 }
 ```

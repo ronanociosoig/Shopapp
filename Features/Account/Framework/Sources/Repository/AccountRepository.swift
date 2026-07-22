@@ -68,7 +68,7 @@ final class RemoteAccountDataSource: Sendable {
 
 // MARK: - Local cache (profile and cards only)
 
-final class LocalAccountDataSource {
+final class LocalAccountDataSource: @unchecked Sendable {
     var profile: UserProfile?
     var cards: [SavedCard] = []
 }

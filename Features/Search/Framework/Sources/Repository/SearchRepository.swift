@@ -40,7 +40,7 @@ final class RemoteSearchDataSource: RemoteSearchDataSourceProtocol, Sendable {
 
 // MARK: - Local data source
 
-final class LocalSearchDataSource {
+final class LocalSearchDataSource: @unchecked Sendable {
     private let queryCache    = LocalCache<String, [SearchProduct]>()
     private let categoryCache = LocalCache<String, [SearchProduct]>()
 

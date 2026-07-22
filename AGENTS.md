@@ -92,8 +92,7 @@ extension FeatureModel.Destination: CaseIterable {
 
 @Test("New screen renders correctly")
 func newScreen() async throws {
-    let model = FeatureModel()
-    model.destination = .newCase(Item.stub)
+    let model = FeatureModel(destination: .newCase(Item.stub))
     assertSnapshot(
         of: FeatureView(model: model),
         as: .image(layout: .device(config: .iPhone13Pro)),
@@ -131,14 +130,23 @@ not an XCUITest.
 ### Rule: models accept dependencies via protocol, never concrete types
 
 ```swift
-// ✅ Correct — stub is the default; tests and previews work with zero configuration
-init(repository: FeatureRepositoryProtocol = StubFeatureRepository()) { ... }
+// ✅ Correct — production init requires an explicit repository; no stub default
+public init(repository: FeatureRepositoryProtocol, destination: Destination? = nil) { ... }
+
+// In XxxTesting — convenience init supplies the stub so tests need no setup
+convenience init(destination: Destination? = nil) {
+    self.init(repository: StubFeatureRepository(), destination: destination)
+}
 
 // ❌ Never inject a concrete type as a default
 init(repository: LiveFeatureRepository = LiveFeatureRepository()) { ... }
+
+// ❌ Never put a stub default on the production init
+init(repository: FeatureRepositoryProtocol = StubFeatureRepository()) { ... }
 ```
 
 Production implementations are injected at the composition root (`Shop/App/Sources`).
+The stub default lives in the companion `XxxTesting` target (ADR-0006).
 Feature modules must not reference live implementations.
 
 ---

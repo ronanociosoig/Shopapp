@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: com.shopapp.demo
   deploymentTarget:
     iOS: "17.0"
-  xcodeVersion: "16.0"
+  xcodeVersion: "26.0"
   generateEmptyDirectories: true
   createIntermediateGroups: true
 
@@ -155,6 +155,10 @@ targets:
         product: PromotionsTesting
       - package: ShopApp
         product: SuggestionsTesting
+      - package: ShopApp
+        product: SearchTesting
+      - package: ShopApp
+        product: PastPurchasesTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.app
@@ -176,6 +180,8 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: Shop/Tests/Sources
+        excludes:
+          - "**/__Snapshots__/**"
     dependencies:
       - target: ShopApp
       - package: swift-snapshot-testing

@@ -20,7 +20,7 @@ public enum Destination {
     case categoryFilter
 }
 
-public var destination: Destination?
+var destination: Destination?
 ```
 
 `nil` means no destination is active. A non-nil value means exactly one destination is active, carrying the data that destination requires. It is structurally impossible for two cases to be active simultaneously: the enum can hold only one value.
