@@ -4,6 +4,12 @@
 tools/GraphTool/.build/
 
 .swiftpm/
+# Exception: .swiftpm/xcode/xcshareddata/xcschemes/StoreTests.xcscheme is force-tracked
+# (git add -f) — it's the only way to run the StoreTests package target via
+# `xcodebuild test -scheme StoreTests`, since XcodeGen can't wire an SPM test
+# target into ShopApp.xcodeproj's native scheme. Nested negation patterns don't
+# work here: git won't descend into a wholesale-excluded directory to check for
+# re-include rules on paths inside it.
 
 ShopApp.xcodeproj/xcuserdata/
 

@@ -1,6 +1,24 @@
 {
-  "originHash" : "14bfbac69d2845c6e88d8f3cfdbf372f6811862f58891605a9a788d4d95ac144",
+  "originHash" : "6413a910f05e992208978c59bb06df9a175f4260685fd5bef40892a95be00d76",
   "pins" : [
+    {
+      "identity" : "replay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattt/Replay",
+      "state" : {
+        "revision" : "f641f9c06a4a01c73342aa0879a860591b608418",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version" : "1.8.2"
+      }
+    },
     {
       "identity" : "swift-case-paths",
       "kind" : "remoteSourceControl",

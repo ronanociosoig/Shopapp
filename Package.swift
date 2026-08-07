@@ -37,8 +37,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.10.0", traits: ["CasePaths"]),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0"),
-        // Article 2: uncomment to add Replay for network recording
-        // .package(url: "https://github.com/NSHipster/Replay", from: "1.0.0"),
+        .package(url: "https://github.com/mattt/Replay", from: "0.4.0"),
     ],
     targets: [
 
@@ -250,8 +249,10 @@ let package = Package(
                 "StoreTesting",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/Store/Tests/Sources"
+            path: "Features/Store/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
         .testTarget(
             name: "PromotionsTests",

@@ -37,7 +37,13 @@ public struct StoreView<SuggestionRow: View, PromotionBanner: View>: View {
         .sheet(isPresented: Binding($model.destination.categoryFilter)) {
             CategoryFilterView(model: model)
         }
-        .task { await model.load() }
+        .task {
+            // Only auto-load from a fresh model. Guards against `.task` firing on every
+            // appearance and clobbering state a caller (or a test) already set explicitly —
+            // explicit reloads (e.g. the retry button below) still call model.load() directly.
+            guard model.loadState == .idle else { return }
+            await model.load()
+        }
     }
 
     @ViewBuilder

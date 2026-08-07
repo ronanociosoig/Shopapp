@@ -28,7 +28,7 @@ public final class StoreModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case productDetail(StoreProduct)
         case categoryFilter
     }
