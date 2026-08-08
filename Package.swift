@@ -5,6 +5,7 @@ let package = Package(
     name: "ShopApp",
     platforms: [
         .iOS(.v17),
+        .macOS(.v14),
     ],
     products: [
         .library(name: "NetworkFoundation", targets: ["NetworkFoundation"]),

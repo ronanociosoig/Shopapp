@@ -7,9 +7,20 @@ import Replay
 // Replay's source-relative archive resolution assumes a `swift test` working
 // directory; under xcodebuild/simulator the test process cwd doesn't match the
 // repo layout, so pin the archive root explicitly via `#filePath`.
-private let replaysRootURL = URL(fileURLWithPath: "\(#filePath)")
+let replaysRootURL = URL(fileURLWithPath: "\(#filePath)")
     .deletingLastPathComponent()
     .appendingPathComponent("Replays")
+
+// Applied at record time to every fixture, regardless of whether the endpoint
+// being recorded happens to carry anything sensitive today. Redaction discipline
+// that only kicks in when someone remembers a given endpoint has secrets is the
+// same failure mode as a hand-authored stub going stale — it depends on a human
+// noticing. ShopAppServer has no auth today, so this is currently a no-op; the
+// policy is what matters, not whether it currently redacts anything.
+let replayFilters: [Filter] = [
+    .headers(removing: ["Authorization", "Cookie"]),
+    .queryParameters(removing: ["token", "api_key"]),
+]
 
 @Suite("StoreRepository — caching and network")
 struct StoreRepositoryTests {
@@ -18,7 +29,7 @@ struct StoreRepositoryTests {
 
     @Test(
         "fetchProducts decodes the remote response",
-        .replay("fetchProducts", matching: .default, filters: [], rootURL: replaysRootURL)
+        .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchProductsDecodesResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer (see
@@ -73,7 +84,7 @@ struct StoreRepositoryTests {
 
     @Test(
         "fetchProduct decodes a single product by ID",
-        .replay("fetchProduct", matching: .default, filters: [], rootURL: replaysRootURL)
+        .replay("fetchProduct", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchProductDecodesProduct() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer (see

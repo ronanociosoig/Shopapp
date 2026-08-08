@@ -2,6 +2,8 @@
 import Testing
 import SnapshotTesting
 import SwiftUI
+import NetworkFoundation
+import Replay
 @testable import Store
 import StoreTesting
 
@@ -71,6 +73,31 @@ struct StoreSnapshotTests {
             of: StoreView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),
             named: snapshotName(destination)
+        )
+    }
+
+    // MARK: - Composed with Replay
+
+    /// The payoff: navigate (a real `StoreModel`), fetch (a real `StoreRepository`
+    /// call, served by a recorded fixture — the same `fetchProducts.har` that
+    /// `StoreRepositoryTests` decodes), render (a real `StoreView`), assert
+    /// (a real snapshot). All three tiers, offline, in one test.
+    ///
+    /// `await model.load()` runs to completion before the view is even
+    /// constructed — that's the whole fix for the timing problem `.task` would
+    /// otherwise introduce here (see the guard added to `StoreView`'s `.task`).
+    /// No delay, no polling, no third-party fork of SnapshotTesting required.
+    @Test(
+        "Root view renders real recorded product data end-to-end",
+        .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
+    )
+    func rootViewRendersRealRecordedData() async throws {
+        let model = StoreModel(repository: StoreRepository(client: NetworkClient()))
+        await model.load()
+        assertSnapshot(
+            of: StoreView(model: model),
+            as: .image(layout: .device(config: .iPhone13Pro)),
+            named: "loaded_from_replay"
         )
     }
 }
