@@ -68,7 +68,14 @@ final class RemoteCheckoutDataSource: Sendable {
         deliveryOption: DeliveryOption,
         guaranteeCost: Decimal
     ) async throws -> PlacedOrder {
-        try await remote.post("orders")
+        let request = PlaceOrderRequest(
+            items: items,
+            shippingAddress: address,
+            cardToken: cardToken,
+            deliveryOption: deliveryOption,
+            guaranteeCost: guaranteeCost
+        )
+        return try await remote.post("orders", body: request)
     }
 }
 

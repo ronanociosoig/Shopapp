@@ -136,7 +136,7 @@ extension CheckoutProduct {
 
 // MARK: - CartItem
 
-public struct CartItem: Identifiable, Equatable, Sendable {
+public struct CartItem: Identifiable, Equatable, Sendable, Codable {
     public let id: UUID
     public let product: CheckoutProduct
     public var quantity: Int
@@ -255,6 +255,17 @@ enum CheckoutStep: Hashable, Sendable {
     case orderOptions(ShippingAddress)
     case paymentMethod(ShippingAddress)
     case paymentEntry(ShippingAddress)
+}
+
+// MARK: - PlaceOrderRequest
+
+/// Request body for `POST /orders`.
+struct PlaceOrderRequest: Encodable {
+    let items: [CartItem]
+    let shippingAddress: ShippingAddress
+    let cardToken: String
+    let deliveryOption: DeliveryOption
+    let guaranteeCost: Decimal
 }
 
 // MARK: - PlacedOrder
