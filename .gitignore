@@ -10,7 +10,9 @@ tools/GraphTool/.build/
 # target into ShopApp.xcodeproj's native scheme. Nested negation patterns don't
 # work here: git won't descend into a wholesale-excluded directory to check for
 # re-include rules on paths inside it.
-# Same exception for .swiftpm/xcode/xcshareddata/xcschemes/CheckoutTests.xcscheme.
+# Same exception for .swiftpm/xcode/xcshareddata/xcschemes/CheckoutTests.xcscheme,
+# AccountTests.xcscheme, SearchTests.xcscheme, PromotionsTests.xcscheme,
+# SuggestionsTests.xcscheme, PastPurchasesTests.xcscheme, and SupportTests.xcscheme.
 
 ShopApp.xcodeproj/xcuserdata/
 

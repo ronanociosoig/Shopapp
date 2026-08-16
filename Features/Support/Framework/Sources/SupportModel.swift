@@ -8,7 +8,7 @@ public final class SupportModel {
     public init() {}
 
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case topic(SupportTopic)
     }
 

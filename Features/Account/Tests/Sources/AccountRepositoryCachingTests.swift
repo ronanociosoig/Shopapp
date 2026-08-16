@@ -27,6 +27,17 @@ struct AccountRepositoryCachingTests {
         #expect(client.receivedRequests.filter { $0.url?.path.contains("profile") == true }.count == 1)
     }
 
+    // MARK: - fetchAddresses
+
+    @Test("fetchAddresses decodes the remote response when the local store is empty")
+    func fetchAddressesDecodesResponse() async throws {
+        let client = MockNetworkClient()
+        try client.setJSON(SavedAddress.stubs)
+        let repo      = AccountRepository(client: client, addressStore: InMemoryAddressStore())
+        let addresses = try await repo.fetchAddresses()
+        #expect(addresses.count == SavedAddress.stubs.count)
+    }
+
     // MARK: - fetchCards
 
     @Test("fetchCards decodes the remote response")

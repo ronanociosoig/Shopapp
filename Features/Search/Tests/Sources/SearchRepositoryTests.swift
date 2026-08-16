@@ -1,10 +1,52 @@
 import Testing
 import Foundation
 import NetworkFoundation
+import Replay
 @testable import Search
+
+// Replay's source-relative archive resolution assumes a `swift test` working
+// directory; under xcodebuild/simulator the test process cwd doesn't match the
+// repo layout, so pin the archive root explicitly via `#filePath`.
+let replaysRootURL = URL(fileURLWithPath: "\(#filePath)")
+    .deletingLastPathComponent()
+    .appendingPathComponent("Replays")
+
+// Applied at record time to every fixture, regardless of whether the endpoint
+// being recorded happens to carry anything sensitive today. ShopAppServer has
+// no auth today, so this is currently a no-op; the policy is what matters.
+let replayFilters: [Filter] = [
+    .headers(removing: ["Authorization", "Cookie"]),
+    .queryParameters(removing: ["token", "api_key"]),
+]
 
 @Suite("SearchRepository — caching, categories, and network")
 struct SearchRepositoryTests {
+
+    // MARK: - Replay (response fidelity)
+
+    @Test(
+        "search decodes the real remote response",
+        .replay("search", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
+    )
+    func searchDecodesRealResponse() async throws {
+        // Response fidelity test: real traffic recorded from ShopAppServer
+        // (see Replays/search.har), not a hand-authored stub.
+        let repo    = SearchRepository(client: NetworkClient())
+        let results = try await repo.search(query: "MacBook")
+        #expect(!results.isEmpty)
+        #expect(results.allSatisfy { $0.name.lowercased().contains("macbook") })
+    }
+
+    @Test(
+        "fetchByCategory decodes the real remote response",
+        .replay("fetchByCategory", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
+    )
+    func fetchByCategoryDecodesRealResponse() async throws {
+        let repo    = SearchRepository(client: NetworkClient())
+        let results = try await repo.fetchByCategory("Electronics")
+        #expect(!results.isEmpty)
+        #expect(results.allSatisfy { $0.category == "Electronics" })
+    }
 
     // MARK: - search(query:)
 

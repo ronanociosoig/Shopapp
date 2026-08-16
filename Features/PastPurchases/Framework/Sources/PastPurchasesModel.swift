@@ -29,7 +29,7 @@ public final class PastPurchasesModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case orderDetail(PastOrder)
     }
 

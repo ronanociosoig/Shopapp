@@ -18,7 +18,7 @@ public final class AccountModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case editProfile(UserProfile)
         case addAddress
         case savedCards

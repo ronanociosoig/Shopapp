@@ -31,7 +31,7 @@ public enum SupportTopic: String, Identifiable, CaseIterable, Sendable {
     }
 }
 
-public struct SupportTicket: Identifiable, Sendable {
+public struct SupportTicket: Identifiable, Sendable, Codable {
     public let id: UUID
     public let topic: String
     public let message: String

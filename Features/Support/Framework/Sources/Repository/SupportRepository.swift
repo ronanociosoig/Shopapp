@@ -22,7 +22,7 @@ final class RemoteSupportDataSource: Sendable {
     }
 
     func submitTicket(_ ticket: SupportTicket) async throws {
-        try await remote.post("support/tickets")
+        try await remote.post("support/tickets", body: ticket)
     }
 
     func fetchTickets() async throws -> [SupportTicket] { [] }

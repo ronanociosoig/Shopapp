@@ -233,5 +233,6 @@ private final class FailingAccountRepository: AccountRepositoryProtocol, @unchec
     func updateProfile(_ profile: UserProfile)       async throws -> UserProfile   { throw FetchError() }
     func addAddress(_ address: SavedAddress)         async throws -> SavedAddress  { throw FetchError() }
     func removeAddress(id: UUID)                     async throws                  { throw FetchError() }
+    func setDefaultAddress(id: UUID)                 async throws                  { throw FetchError() }
     func removeCard(id: UUID)                        async throws                  { throw FetchError() }
 }

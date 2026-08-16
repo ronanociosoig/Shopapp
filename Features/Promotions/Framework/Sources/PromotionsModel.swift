@@ -15,7 +15,7 @@ public final class PromotionsModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case promotionDetail(Promotion)
     }
 

@@ -22,7 +22,7 @@ extension SearchState: CaseIterable {
         [
             .idle,
             .loading,
-            .results(.stubs),
+            .results(SearchProduct.stubs),
             .empty,
             .error("Something went wrong. Please try again.")
         ]
@@ -81,7 +81,7 @@ struct SearchSnapshotTests {
     func destination(_ destination: SearchModel.Destination) async throws {
         let model = SearchModel()
         model.query = "MacBook"
-        model.searchState = .results(.stubs)
+        model.searchState = .results(SearchProduct.stubs)
         model.destination = destination
 
         assertSnapshot(

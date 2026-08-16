@@ -33,7 +33,7 @@ public final class SearchModel {
     }
 
     @CasePathable
-    public enum Destination: Equatable {
+    public enum Destination: Equatable, Sendable {
         case productDetail(SearchProduct)
         case filters
         case categoryBrowse(String)

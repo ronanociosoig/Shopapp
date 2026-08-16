@@ -221,8 +221,10 @@ let package = Package(
                 "AccountTesting",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/Account/Tests/Sources"
+            path: "Features/Account/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
         .testTarget(
             name: "SearchTests",
@@ -231,8 +233,10 @@ let package = Package(
                 "SearchTesting",
                 "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/Search/Tests/Sources"
+            path: "Features/Search/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
         .testTarget(
             name: "CheckoutTests",
@@ -263,24 +267,31 @@ let package = Package(
             dependencies: [
                 "Promotions",
                 "PromotionsTesting",
+                "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/Promotions/Tests/Sources"
+            path: "Features/Promotions/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
         .testTarget(
             name: "SuggestionsTests",
             dependencies: [
                 "Suggestions",
                 "SuggestionsTesting",
+                "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/Suggestions/Tests/Sources"
+            path: "Features/Suggestions/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
         .testTarget(
             name: "SupportTests",
             dependencies: [
                 "Support",
                 "SupportTesting",
+                "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/Support/Tests/Sources"
@@ -290,9 +301,12 @@ let package = Package(
             dependencies: [
                 "PastPurchases",
                 "PastPurchasesTesting",
+                "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/PastPurchases/Tests/Sources"
+            path: "Features/PastPurchases/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
     ]
 )
