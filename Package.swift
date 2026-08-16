@@ -239,9 +239,12 @@ let package = Package(
             dependencies: [
                 "Checkout",
                 "CheckoutTesting",
+                "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+                .product(name: "Replay", package: "Replay"),
             ],
-            path: "Features/Checkout/Tests/Sources"
+            path: "Features/Checkout/Tests/Sources",
+            resources: [.copy("Replays")]
         ),
         .testTarget(
             name: "StoreTests",
