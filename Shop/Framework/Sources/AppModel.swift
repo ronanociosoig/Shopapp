@@ -69,7 +69,7 @@ public final class AppModel {
         searchRepository:        any SearchRepository,
         accountRepository:       any AccountRepository,
         checkoutRepository:      any CheckoutRepository,
-        promotionsRepository:    any PromotionsRepositoryProtocol,
+        promotionsRepository:    any PromotionsRepository,
         pastPurchasesRepository: any PastPurchasesRepositoryProtocol,
         suggestionsRepository:   any SuggestionsRepositoryProtocol
     ) {

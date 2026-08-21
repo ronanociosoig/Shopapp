@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol PromotionsRepositoryProtocol: Sendable {
+public protocol PromotionsRepository: Sendable {
     func fetchPromotions() async throws -> [Promotion]
 }
 
@@ -27,7 +27,7 @@ final class RemotePromotionsDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class PromotionsRepository: PromotionsRepositoryProtocol {
+public final class DefaultPromotionsRepository: PromotionsRepository {
     private let remote: RemotePromotionsDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {

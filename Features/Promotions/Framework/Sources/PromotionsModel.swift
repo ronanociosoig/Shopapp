@@ -14,9 +14,9 @@ public final class PromotionsModel {
     /// can't tell them apart.
     var suppressAutoLoad = false
 
-    private let repository: PromotionsRepositoryProtocol
+    private let repository: PromotionsRepository
 
-    public init(repository: PromotionsRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: PromotionsRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }

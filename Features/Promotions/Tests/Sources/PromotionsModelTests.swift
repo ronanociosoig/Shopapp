@@ -5,7 +5,7 @@ import PromotionsTesting
 
 // MARK: - Helpers
 
-private final class FailingPromotionsRepository: PromotionsRepositoryProtocol {
+private final class FailingPromotionsRepository: PromotionsRepository {
     func fetchPromotions() async throws -> [Promotion] { throw URLError(.notConnectedToInternet) }
 }
 

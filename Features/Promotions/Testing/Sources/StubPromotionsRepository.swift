@@ -1,7 +1,7 @@
 import Foundation
 import Promotions
 
-public final class StubPromotionsRepository: PromotionsRepositoryProtocol {
+public final class StubPromotionsRepository: PromotionsRepository {
     private let promotions: [Promotion]
 
     public init(promotions: [Promotion] = Promotion.stubs) {

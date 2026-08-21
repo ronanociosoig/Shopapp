@@ -28,7 +28,7 @@ struct PromotionsRepositoryTests {
     func fetchPromotionsDecodesResponse() async throws {
         let client = MockNetworkClient()
         try client.setJSON(Promotion.stubs)
-        let repo       = PromotionsRepository(client: client)
+        let repo       = DefaultPromotionsRepository(client: client)
         let promotions = try await repo.fetchPromotions()
         #expect(promotions.count == Promotion.stubs.count)
     }
@@ -37,7 +37,7 @@ struct PromotionsRepositoryTests {
     func fetchPromotionsSendsGetRequest() async throws {
         let client = MockNetworkClient()
         try client.setJSON([Promotion]())
-        let repo = PromotionsRepository(client: client)
+        let repo = DefaultPromotionsRepository(client: client)
         _ = try await repo.fetchPromotions()
         let request = try #require(client.receivedRequests.first)
         #expect(request.url?.path.hasSuffix("/promotions") == true)
@@ -52,7 +52,7 @@ struct PromotionsRepositoryTests {
     func fetchPromotionsDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchPromotions.har), not a hand-authored stub.
-        let repo       = PromotionsRepository(client: DefaultNetworkClient())
+        let repo       = DefaultPromotionsRepository(client: DefaultNetworkClient())
         let promotions = try await repo.fetchPromotions()
         #expect(promotions.count == 2)
         #expect(promotions.first?.title == "Weekend Flash Sale")
