@@ -13,7 +13,7 @@ public struct PastPurchasesView: View {
         NavigationStack {
             Group {
                 if model.isLoading {
-                    DSLoadingView(message: Strings.loadingMessage)
+                    LoadingView(message: Strings.loadingMessage)
                 } else if model.orders.isEmpty {
                     ContentUnavailableView(
                         Strings.emptyTitle,

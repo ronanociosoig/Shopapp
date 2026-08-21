@@ -40,7 +40,7 @@ public struct SearchView: View {
         case .idle:
             SuggestedCategoriesView(model: model)
         case .loading:
-            DSLoadingView(message: Strings.loadingMessage)
+            LoadingView(message: Strings.loadingMessage)
         case .results(let products):
             SearchResultsView(products: products, model: model)
         case .empty:

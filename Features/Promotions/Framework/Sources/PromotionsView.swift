@@ -13,7 +13,7 @@ public struct PromotionsView: View {
         NavigationStack {
             Group {
                 if model.isLoading {
-                    DSLoadingView(message: Strings.loadingMessage)
+                    LoadingView(message: Strings.loadingMessage)
                 } else if model.promotions.isEmpty {
                     ContentUnavailableView(
                         Strings.emptyTitle,

@@ -13,7 +13,7 @@ public struct AccountView: View {
         NavigationStack {
             Group {
                 if model.isLoading {
-                    DSLoadingView(message: Strings.loadingMessage)
+                    LoadingView(message: Strings.loadingMessage)
                 } else {
                     accountContent
                 }

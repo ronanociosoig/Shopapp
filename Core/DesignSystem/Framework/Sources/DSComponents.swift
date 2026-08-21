@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Loading
 
-public struct DSLoadingView: View {
+public struct LoadingView: View {
     public let message: String
 
     public init(message: String = "Loading…") {

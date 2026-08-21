@@ -50,7 +50,7 @@ public struct StoreView<SuggestionRow: View, PromotionBanner: View>: View {
     private var content: some View {
         switch model.loadState {
         case .idle, .loading:
-            DSLoadingView(message: Strings.loadingMessage)
+            LoadingView(message: Strings.loadingMessage)
         case .loaded:
             productGrid
         case .failed(let message):
