@@ -22,7 +22,7 @@ public struct DSLoadingView: View {
 
 // MARK: - Error
 
-public struct DSErrorView: View {
+public struct ErrorView: View {
     public let message: String
     public let retry: (() -> Void)?
 

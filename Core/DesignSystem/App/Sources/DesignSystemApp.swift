@@ -142,7 +142,7 @@ struct ComponentCatalog: View {
                     .frame(height: 120)
                     .listRowInsets(.init())
 
-                DSErrorView(message: Strings.Components.errorMessage) { }
+                ErrorView(message: Strings.Components.errorMessage) { }
                     .frame(height: 160)
                     .listRowInsets(.init())
             }

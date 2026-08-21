@@ -50,7 +50,7 @@ public struct SearchView: View {
                 description: Text(Strings.emptyDescription)
             )
         case .error(let message):
-            DSErrorView(message: message) {
+            ErrorView(message: message) {
                 Task { await model.search() }
             }
         }

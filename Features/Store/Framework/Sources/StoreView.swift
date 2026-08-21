@@ -54,7 +54,7 @@ public struct StoreView<SuggestionRow: View, PromotionBanner: View>: View {
         case .loaded:
             productGrid
         case .failed(let message):
-            DSErrorView(message: message) { Task { await model.load() } }
+            ErrorView(message: message) { Task { await model.load() } }
         }
     }
 
