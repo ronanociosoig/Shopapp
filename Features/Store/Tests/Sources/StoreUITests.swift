@@ -96,7 +96,7 @@ struct StoreUITests {
 
     @Test("Store shows error state when loading fails, then recovers on retry")
     func userRetriesAfterError() async {
-        final class FailingThenSucceedingRepository: StoreRepositoryProtocol, @unchecked Sendable {
+        final class FailingThenSucceedingRepository: StoreRepository, @unchecked Sendable {
             var callCount = 0
             func fetchProducts(category: String?) async throws -> [StoreProduct] {
                 callCount += 1

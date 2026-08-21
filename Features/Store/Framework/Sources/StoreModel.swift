@@ -20,9 +20,9 @@ public final class StoreModel {
     /// Called by the composition root with (id, name, price, wantsExtendedGuarantee).
     public var onAddToCart: ((UUID, String, Decimal, Bool) -> Void)?
 
-    private let repository: StoreRepositoryProtocol
+    private let repository: StoreRepository
 
-    public init(repository: StoreRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: StoreRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }

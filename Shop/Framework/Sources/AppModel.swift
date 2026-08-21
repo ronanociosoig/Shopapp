@@ -65,7 +65,7 @@ public final class AppModel {
     public init(
         destination: Destination? = nil,
         selectedTab: Tab = .store,
-        storeRepository:         any StoreRepositoryProtocol,
+        storeRepository:         any StoreRepository,
         searchRepository:        any SearchRepositoryProtocol,
         accountRepository:       any AccountRepositoryProtocol,
         checkoutRepository:      any CheckoutRepositoryProtocol,

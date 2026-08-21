@@ -22,7 +22,7 @@ struct ShopAppMain: App {
         appModel = AppModel(
             // destination: .support,
             // selectedTab: .orders,
-            storeRepository:         isUITesting ? StubStoreRepository()              : StoreRepository(),
+            storeRepository:         isUITesting ? StubStoreRepository()              : DefaultStoreRepository(),
             searchRepository:        SearchRepository(),
             accountRepository:       StubAccountRepository(),
             checkoutRepository:      isUITesting ? StubCheckoutRepository(delay: .zero) : StubCheckoutRepository(),

@@ -2,7 +2,7 @@ import Foundation
 import NetworkFoundation
 import Store
 
-public final class StubStoreRepository: StoreRepositoryProtocol {
+public final class StubStoreRepository: StoreRepository {
     private let result: Result<[StoreProduct], Error>
 
     public init(returning products: [StoreProduct] = StoreProduct.stubs) {

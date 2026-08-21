@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol StoreRepositoryProtocol: Sendable {
+public protocol StoreRepository: Sendable {
     func fetchProducts(category: String?) async throws -> [StoreProduct]
     func fetchProduct(id: UUID) async throws -> StoreProduct
 }
@@ -48,7 +48,7 @@ final class LocalStoreDataSource: @unchecked Sendable {
 
 // MARK: - Live repository
 
-public final class StoreRepository: StoreRepositoryProtocol {
+public final class DefaultStoreRepository: StoreRepository {
     private let remote: RemoteStoreDataSource
     private let local  = LocalStoreDataSource()
 
