@@ -6,7 +6,7 @@ import NetworkFoundation
 // MARK: - AccountRepository Address Persistence Tests
 //
 // These tests verify that the repository correctly delegates address reads and
-// writes to the injected AddressStoreProtocol. UnimplementedNetworkClient is
+// writes to the injected AddressStore. UnimplementedNetworkClient is
 // used so any unexpected network call causes an immediate test failure.
 
 @Suite("AccountRepository — Address Persistence")
@@ -114,9 +114,9 @@ struct AccountRepositoryPersistenceTests {
 
 // MARK: - In-memory store (test double)
 
-/// A thread-safe, in-memory implementation of `AddressStoreProtocol` for use
+/// A thread-safe, in-memory implementation of `AddressStore` for use
 /// in tests. No disk I/O — each test gets a fresh instance via `init()`.
-final class InMemoryAddressStore: AddressStoreProtocol, @unchecked Sendable {
+final class InMemoryAddressStore: AddressStore, @unchecked Sendable {
     private var addresses: [SavedAddress] = []
 
     func loadAddresses() -> [SavedAddress] { addresses }

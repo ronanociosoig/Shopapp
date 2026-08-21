@@ -19,7 +19,7 @@ public protocol AccountRepository: Sendable {
 
 /// Abstracts over the address persistence back-end.
 /// Inject a custom implementation in tests to avoid touching real UserDefaults.
-public protocol AddressStoreProtocol: Sendable {
+public protocol AddressStore: Sendable {
     func loadAddresses() -> [SavedAddress]
     func saveAddresses(_ addresses: [SavedAddress])
 }
@@ -27,7 +27,7 @@ public protocol AddressStoreProtocol: Sendable {
 // MARK: - UserDefaults Address Store
 
 /// Persists `SavedAddress` values as JSON in `UserDefaults`.
-public final class UserDefaultsAddressStore: AddressStoreProtocol, @unchecked Sendable {
+public final class UserDefaultsAddressStore: AddressStore, @unchecked Sendable {
     private let store: UserDefaultsStore<SavedAddress>
 
     public init(
@@ -77,13 +77,13 @@ final class LocalAccountDataSource: @unchecked Sendable {
 
 public final class DefaultAccountRepository: AccountRepository {
     private let remote: RemoteAccountDataSource
-    private let addressStore: AddressStoreProtocol
+    private let addressStore: AddressStore
     // In-memory cache for profile and cards (not persisted across launches)
     private let local = LocalAccountDataSource()
 
     public init(
         client: NetworkClient = DefaultNetworkClient(),
-        addressStore: AddressStoreProtocol = UserDefaultsAddressStore()
+        addressStore: AddressStore = UserDefaultsAddressStore()
     ) {
         self.remote = RemoteAccountDataSource(client: client)
         self.addressStore = addressStore
