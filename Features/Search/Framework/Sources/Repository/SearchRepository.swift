@@ -23,7 +23,7 @@ final class RemoteSearchDataSource: RemoteSearchDataSourceProtocol, Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = RemoteDataSourceHelper.defaultBaseURL
     ) {
         remote = RemoteDataSourceHelper(client: client, baseURL: baseURL)
@@ -56,7 +56,7 @@ public final class SearchRepository: SearchRepositoryProtocol {
     private let remote: any RemoteSearchDataSourceProtocol
     private let local  = LocalSearchDataSource()
 
-    public init(client: NetworkClientProtocol = NetworkClient()) {
+    public init(client: NetworkClient = DefaultNetworkClient()) {
         self.remote = RemoteSearchDataSource(client: client)
     }
 

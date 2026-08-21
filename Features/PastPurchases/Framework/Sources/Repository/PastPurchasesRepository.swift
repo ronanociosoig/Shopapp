@@ -56,7 +56,7 @@ final class RemotePastPurchasesDataSource: RemotePastPurchasesDataSourceProtocol
     private let remote: RemoteDataSourceHelper
 
     init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = RemoteDataSourceHelper.defaultBaseURL
     ) {
         remote = RemoteDataSourceHelper(client: client, baseURL: baseURL)
@@ -103,7 +103,7 @@ public final class PastPurchasesRepository: PastPurchasesRepositoryProtocol {
     private let store: OrderStoreProtocol
 
     public init(
-        client: NetworkClientProtocol = NetworkClient(),
+        client: NetworkClient = DefaultNetworkClient(),
         store: OrderStoreProtocol = UserDefaultsOrderStore()
     ) {
         self.remote = RemotePastPurchasesDataSource(client: client)

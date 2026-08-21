@@ -47,7 +47,7 @@ final class RemoteAccountDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = RemoteDataSourceHelper.defaultBaseURL
     ) {
         remote = RemoteDataSourceHelper(client: client, baseURL: baseURL)
@@ -82,7 +82,7 @@ public final class AccountRepository: AccountRepositoryProtocol {
     private let local = LocalAccountDataSource()
 
     public init(
-        client: NetworkClientProtocol = NetworkClient(),
+        client: NetworkClient = DefaultNetworkClient(),
         addressStore: AddressStoreProtocol = UserDefaultsAddressStore()
     ) {
         self.remote = RemoteAccountDataSource(client: client)

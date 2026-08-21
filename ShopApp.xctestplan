@@ -1,0 +1,101 @@
+{
+  "configurations" : [
+    {
+      "id" : "923DFE4E-AD91-4967-B741-11FD525A8AF1",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "Account",
+          "name" : "Account"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Checkout",
+          "name" : "Checkout"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Common",
+          "name" : "Common"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "DesignSystem",
+          "name" : "DesignSystem"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "NetworkFoundation",
+          "name" : "NetworkFoundation"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "PastPurchases",
+          "name" : "PastPurchases"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Promotions",
+          "name" : "Promotions"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Store",
+          "name" : "Store"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Search",
+          "name" : "Search"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Support",
+          "name" : "Support"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "Suggestions",
+          "name" : "Suggestions"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "ShopCore",
+          "name" : "ShopCore"
+        }
+      ]
+    },
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:ShopApp.xcodeproj",
+      "identifier" : "1A5F384FD9116CC9E60609FF",
+      "name" : "ShopApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:ShopApp.xcodeproj",
+        "identifier" : "274E88F17A5596775030DA0E",
+        "name" : "ShopAppTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:ShopApp.xcodeproj",
+        "identifier" : "B9FB74AE72C21D64AC08E0B6",
+        "name" : "ShopAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

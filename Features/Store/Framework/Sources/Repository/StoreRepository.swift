@@ -15,7 +15,7 @@ final class RemoteStoreDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = RemoteDataSourceHelper.defaultBaseURL
     ) {
         remote = RemoteDataSourceHelper(client: client, baseURL: baseURL)
@@ -52,7 +52,7 @@ public final class StoreRepository: StoreRepositoryProtocol {
     private let remote: RemoteStoreDataSource
     private let local  = LocalStoreDataSource()
 
-    public init(client: NetworkClientProtocol = NetworkClient()) {
+    public init(client: NetworkClient = DefaultNetworkClient()) {
         self.remote = RemoteStoreDataSource(client: client)
     }
 

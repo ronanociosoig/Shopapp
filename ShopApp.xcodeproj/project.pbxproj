@@ -80,30 +80,39 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PastPurchasesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = PastPurchasesApp.app; path = "Past Purchases.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0580246527A91B4F270829A2 /* RootSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSnapshotTests.swift; sourceTree = "<group>"; };
 		0C36D272A4B2A18394A6857C /* ShopAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DD4711B4DF11A1176E4908B /* ShopAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppUITests.swift; sourceTree = "<group>"; };
-		14A2510C199FE28143DA4954 /* SuggestionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SuggestionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E36F9E90AC91DB876855A21 /* SearchApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		14A2510C199FE28143DA4954 /* SuggestionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = SuggestionsApp.app; path = Suggestions.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E36F9E90AC91DB876855A21 /* SearchApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = SearchApp.app; path = Search.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		245A358B476A4BE5CEB6DD1C /* SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportApp.swift; sourceTree = "<group>"; };
 		25036C54ADA54ACF364E9120 /* ShopAppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppMain.swift; sourceTree = "<group>"; };
 		28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutFunnelUITests.swift; sourceTree = "<group>"; };
-		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CheckoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = CheckoutApp.app; path = Checkout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EA81447207387812C53C745 /* CheckoutAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CheckoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3752626176AA8E3AB2C31C32 /* ShopAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PromotionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DesignSystemApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = PromotionsApp.app; path = Promotions.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = DesignSystemApp.app; path = "Design System.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		510466A867228A7F746D02EF /* ShopApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShopApp; path = .; sourceTree = SOURCE_ROOT; };
 		614A542CBFDDF6204FE71598 /* SuggestionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsApp.swift; sourceTree = "<group>"; };
 		874943F7E67E6C5ACB08F55D /* ShopApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		9385120A0CFB0198D2A458C9 /* SupportApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SupportApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9385120A0CFB0198D2A458C9 /* SupportApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = SupportApp.app; path = Support.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DAAE2C9217523C1066D1E27 /* AccountApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountApp.swift; sourceTree = "<group>"; };
 		9EAFB1F87AD9E11E206B75F5 /* PastPurchasesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastPurchasesApp.swift; sourceTree = "<group>"; };
+		A8CF4F143038D83E004A3CD8 /* Checkout.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Checkout.xctestplan; sourceTree = "<group>"; };
+		A8CF4F153038D8B9004A3CD8 /* Common.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Common.xctestplan; sourceTree = "<group>"; };
+		A8CF4F163038D92D004A3CD8 /* Support.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Support.xctestplan; sourceTree = "<group>"; };
+		A8CF4F183038D9EE004A3CD8 /* Search.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = Search.xctestplan; sourceTree = "<group>"; };
+		A8CF4F193038DA3B004A3CD8 /* PastPurchases.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = PastPurchases.xctestplan; sourceTree = "<group>"; };
+		A8CF4F1A3038DA75004A3CD8 /* Store.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Store.xctestplan; sourceTree = "<group>"; };
+		A8CF4F1B3038DB41004A3CD8 /* Promotions.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Promotions.xctestplan; sourceTree = "<group>"; };
+		A8CF4F1C3038DBBD004A3CD8 /* ShopApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShopApp.xctestplan; sourceTree = "<group>"; };
+		A8CF4F1D3038DEB1004A3CD8 /* Account.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = Account.xctestplan; sourceTree = "<group>"; };
 		D04BD09F84664B4BCA4DA364 /* SearchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchApp.swift; sourceTree = "<group>"; };
 		D11046F7EA1AAA004621A801 /* PromotionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionsApp.swift; sourceTree = "<group>"; };
 		D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutApp.swift; sourceTree = "<group>"; };
-		DF9BEF72580C26D74ED78999 /* AccountApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AccountApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF9BEF72580C26D74ED78999 /* AccountApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = AccountApp.app; path = Account.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1DA51EE048AE9DF3B871C3E /* DesignSystemApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -405,6 +414,15 @@
 		B8FAAE3A6CF302E7D61C520A = {
 			isa = PBXGroup;
 			children = (
+				A8CF4F1D3038DEB1004A3CD8 /* Account.xctestplan */,
+				A8CF4F1C3038DBBD004A3CD8 /* ShopApp.xctestplan */,
+				A8CF4F1B3038DB41004A3CD8 /* Promotions.xctestplan */,
+				A8CF4F1A3038DA75004A3CD8 /* Store.xctestplan */,
+				A8CF4F193038DA3B004A3CD8 /* PastPurchases.xctestplan */,
+				A8CF4F183038D9EE004A3CD8 /* Search.xctestplan */,
+				A8CF4F163038D92D004A3CD8 /* Support.xctestplan */,
+				A8CF4F153038D8B9004A3CD8 /* Common.xctestplan */,
+				A8CF4F143038D83E004A3CD8 /* Checkout.xctestplan */,
 				CCD49911BAA672F79146165F /* Core */,
 				CDD558CDDF91E6881B43BB4A /* Features */,
 				5063A8D9F24F01C23C90AB4F /* Packages */,

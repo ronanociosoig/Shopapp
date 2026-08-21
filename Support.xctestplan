@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "8D36613B-B205-4493-8FC4-AAF564177F82",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SupportTests",
+        "name" : "SupportTests"
+      }
+    }
+  ],
+  "version" : 1
+}

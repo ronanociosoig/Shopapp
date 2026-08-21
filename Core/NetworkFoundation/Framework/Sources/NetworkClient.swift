@@ -2,13 +2,13 @@ import Foundation
 
 // MARK: - Protocol
 
-public protocol NetworkClientProtocol: Sendable {
+public protocol NetworkClient: Sendable {
     func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 
 // MARK: - Live
 
-public final class NetworkClient: NetworkClientProtocol {
+public final class DefaultNetworkClient: NetworkClient {
     private let session: URLSession
 
     public init(session: URLSession = .shared) {
@@ -22,7 +22,7 @@ public final class NetworkClient: NetworkClientProtocol {
 
 // MARK: - Unimplemented (for testing)
 
-public final class UnimplementedNetworkClient: NetworkClientProtocol {
+public final class UnimplementedNetworkClient: NetworkClient {
     public init() {}
 
     public func data(for request: URLRequest) async throws -> (Data, URLResponse) {
@@ -34,7 +34,7 @@ public final class UnimplementedNetworkClient: NetworkClientProtocol {
 
 /// Records every request and returns configurable stub data.
 /// Use in test targets to verify URL construction, query parameters, and response decoding.
-public final class MockNetworkClient: NetworkClientProtocol, @unchecked Sendable {
+public final class MockNetworkClient: NetworkClient, @unchecked Sendable {
     public var stubData: Data = Data()
     public var stubError: Error?
     public private(set) var receivedRequests: [URLRequest] = []

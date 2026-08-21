@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "E2B85B55-78B9-496B-B275-58D4F38F80F4",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "CheckoutTests",
+        "name" : "CheckoutTests"
+      }
+    }
+  ],
+  "version" : 1
+}

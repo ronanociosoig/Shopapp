@@ -2,17 +2,17 @@ import Foundation
 import NetworkFoundation
 
 /// Shared network helper for remote data sources.
-/// Wraps `NetworkClientProtocol` + a base URL and exposes typed GET/POST methods
+/// Wraps `NetworkClient` + a base URL and exposes typed GET/POST methods
 /// that decode the response body with `JSONDecoder`, removing the boilerplate that
 /// was previously duplicated in every module's remote data source.
 public struct RemoteDataSourceHelper: Sendable {
     public static let defaultBaseURL = URL(string: "http://localhost:8080/v1")!
 
-    public let client: NetworkClientProtocol
+    public let client: NetworkClient
     public let baseURL: URL
 
     public init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = defaultBaseURL
     ) {
         self.client  = client

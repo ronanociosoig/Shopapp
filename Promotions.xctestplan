@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "C05ADD47-8EAF-40A8-9026-BF1CCC257D9E",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "PromotionsTests",
+        "name" : "PromotionsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

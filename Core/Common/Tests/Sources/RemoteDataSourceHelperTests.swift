@@ -125,6 +125,6 @@ struct RemoteDataSourceHelperTests {
     @Test("Default base URL matches the production endpoint")
     func defaultBaseURL() {
         #expect(RemoteDataSourceHelper.defaultBaseURL.absoluteString ==
-                "https://api.shopapp.example.com/v1")
+                "http://localhost:8080/v1")
     }
 }

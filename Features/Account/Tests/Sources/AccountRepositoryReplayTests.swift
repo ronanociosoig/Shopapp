@@ -31,7 +31,7 @@ struct AccountRepositoryReplayTests {
     func fetchProfileDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchProfile.har), not a hand-authored stub.
-        let repo    = AccountRepository(client: NetworkClient())
+        let repo    = AccountRepository(client: DefaultNetworkClient())
         let profile = try await repo.fetchProfile()
         #expect(profile.email == "alex@example.com")
         #expect(profile.displayName == "Alex Johnson")
@@ -46,7 +46,7 @@ struct AccountRepositoryReplayTests {
     func fetchAddressesDecodesRealResponse() async throws {
         // A fresh in-memory address store guarantees the local cache is empty
         // so the repository actually hits the network instead of short-circuiting.
-        let repo      = AccountRepository(client: NetworkClient(), addressStore: InMemoryAddressStore())
+        let repo      = AccountRepository(client: DefaultNetworkClient(), addressStore: InMemoryAddressStore())
         let addresses = try await repo.fetchAddresses()
         #expect(addresses.count == 3)
         #expect(addresses.first?.city == "San Francisco")
@@ -59,7 +59,7 @@ struct AccountRepositoryReplayTests {
         .replay("fetchCards", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchCardsDecodesRealResponse() async throws {
-        let repo  = AccountRepository(client: NetworkClient())
+        let repo  = AccountRepository(client: DefaultNetworkClient())
         let cards = try await repo.fetchCards()
         #expect(cards.count == 1)
         #expect(cards.first?.lastFour == "4242")

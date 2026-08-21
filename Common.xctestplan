@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "99FC7329-0C06-4A6B-9B91-0001712B831E",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "CommonTests",
+        "name" : "CommonTests"
+      }
+    }
+  ],
+  "version" : 1
+}

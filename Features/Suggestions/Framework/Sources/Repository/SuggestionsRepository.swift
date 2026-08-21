@@ -14,7 +14,7 @@ final class RemoteSuggestionsDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = RemoteDataSourceHelper.defaultBaseURL
     ) {
         remote = RemoteDataSourceHelper(client: client, baseURL: baseURL)
@@ -33,7 +33,7 @@ final class RemoteSuggestionsDataSource: Sendable {
 public final class SuggestionsRepository: SuggestionsRepositoryProtocol {
     private let remote: RemoteSuggestionsDataSource
 
-    public init(client: NetworkClientProtocol = NetworkClient()) {
+    public init(client: NetworkClient = DefaultNetworkClient()) {
         self.remote = RemoteSuggestionsDataSource(client: client)
     }
 

@@ -52,7 +52,7 @@ struct PromotionsRepositoryTests {
     func fetchPromotionsDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchPromotions.har), not a hand-authored stub.
-        let repo       = PromotionsRepository(client: NetworkClient())
+        let repo       = PromotionsRepository(client: DefaultNetworkClient())
         let promotions = try await repo.fetchPromotions()
         #expect(promotions.count == 2)
         #expect(promotions.first?.title == "Weekend Flash Sale")

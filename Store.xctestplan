@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "76F4F259-A2D9-4FF6-94F6-AC2D108D5331",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StoreTests",
+        "name" : "StoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

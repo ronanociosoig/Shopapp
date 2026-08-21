@@ -14,7 +14,7 @@ final class RemotePromotionsDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
-        client: NetworkClientProtocol,
+        client: NetworkClient,
         baseURL: URL = RemoteDataSourceHelper.defaultBaseURL
     ) {
         remote = RemoteDataSourceHelper(client: client, baseURL: baseURL)
@@ -30,7 +30,7 @@ final class RemotePromotionsDataSource: Sendable {
 public final class PromotionsRepository: PromotionsRepositoryProtocol {
     private let remote: RemotePromotionsDataSource
 
-    public init(client: NetworkClientProtocol = NetworkClient()) {
+    public init(client: NetworkClient = DefaultNetworkClient()) {
         self.remote = RemotePromotionsDataSource(client: client)
     }
 
