@@ -25,7 +25,7 @@ struct PaymentFailedView: View {
             }
 
             VStack(spacing: 12) {
-                DSPrimaryButton(Strings.tryDifferentCard) {
+                PrimaryButton(Strings.tryDifferentCard) {
                     dismiss()
                     onRetry()
                 }

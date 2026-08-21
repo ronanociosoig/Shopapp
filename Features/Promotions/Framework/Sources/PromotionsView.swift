@@ -106,7 +106,7 @@ struct PromotionDetailView: View {
                 }
             }
             Section {
-                DSPrimaryButton(Strings.applyPromotion) { }
+                PrimaryButton(Strings.applyPromotion) { }
             }
             .listRowBackground(Color.clear)
             .listRowInsets(.init())

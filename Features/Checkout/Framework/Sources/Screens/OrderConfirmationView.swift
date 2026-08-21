@@ -52,7 +52,7 @@ struct OrderConfirmationView: View {
 
             Spacer()
 
-            DSPrimaryButton(Strings.continueShopping) { dismiss() }
+            PrimaryButton(Strings.continueShopping) { dismiss() }
                 .padding(.horizontal)
                 .padding(.bottom)
         }

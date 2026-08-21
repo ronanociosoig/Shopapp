@@ -202,7 +202,7 @@ struct PastOrderDetailView: View {
             // MARK: Repeat order
             if order.status != .cancelled {
                 Section {
-                    DSPrimaryButton(Strings.Detail.repeatOrderButton) {
+                    PrimaryButton(Strings.Detail.repeatOrderButton) {
                         model.repeatOrder(order)
                     }
                 }

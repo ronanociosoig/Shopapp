@@ -191,7 +191,7 @@ struct ProductDetailView: View {
                     .padding(.horizontal)
                 }
 
-                DSPrimaryButton(didAdd ? Strings.addedToCart : Strings.addToCart) {
+                PrimaryButton(didAdd ? Strings.addedToCart : Strings.addToCart) {
                     onAddToCart(wantsGuarantee)
                     didAdd = true
                     Task {

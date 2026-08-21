@@ -266,7 +266,7 @@ struct StoreProductDetailView: View {
                 }
 
                 if product.isAvailable {
-                    DSPrimaryButton(didAdd ? Strings.addedToCart : Strings.addToCart) {
+                    PrimaryButton(didAdd ? Strings.addedToCart : Strings.addToCart) {
                         model.addToCart(product, wantsGuarantee: wantsGuarantee)
                         didAdd = true
                         Task {

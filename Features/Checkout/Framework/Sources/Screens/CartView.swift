@@ -51,7 +51,7 @@ struct CartView<PromotionBanner: View>: View {
                 DSPriceLabel(model.subtotal)
             }
             .padding(.horizontal)
-            DSPrimaryButton(Strings.proceedToCheckout) {
+            PrimaryButton(Strings.proceedToCheckout) {
                 model.proceedToAddress()
             }
             .padding(.horizontal)

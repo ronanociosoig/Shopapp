@@ -133,7 +133,7 @@ struct ComponentCatalog: View {
     var body: some View {
         List {
             Section(Strings.Components.buttonsSection) {
-                DSPrimaryButton(Strings.Components.primaryButton) { }
+                PrimaryButton(Strings.Components.primaryButton) { }
             }
             .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
 

@@ -52,7 +52,7 @@ public struct ErrorView: View {
 
 // MARK: - Primary Button
 
-public struct DSPrimaryButton: View {
+public struct PrimaryButton: View {
     public let title: String
     public let action: () -> Void
 
