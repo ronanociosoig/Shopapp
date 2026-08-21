@@ -19,9 +19,9 @@ public final class SuggestionsModel {
     /// Called by the composition root with (id, name, price, wantsExtendedGuarantee).
     public var onAddToCart: ((UUID, String, Decimal, Bool) -> Void)?
 
-    private let repository: SuggestionsRepositoryProtocol
+    private let repository: SuggestionsRepository
 
-    public init(repository: SuggestionsRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: SuggestionsRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }

@@ -71,7 +71,7 @@ public final class AppModel {
         checkoutRepository:      any CheckoutRepository,
         promotionsRepository:    any PromotionsRepository,
         pastPurchasesRepository: any PastPurchasesRepositoryProtocol,
-        suggestionsRepository:   any SuggestionsRepositoryProtocol
+        suggestionsRepository:   any SuggestionsRepository
     ) {
         self.destination = destination
         self.selectedTab = selectedTab

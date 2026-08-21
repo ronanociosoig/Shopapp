@@ -1,7 +1,7 @@
 import Foundation
 import Suggestions
 
-public final class StubSuggestionsRepository: SuggestionsRepositoryProtocol {
+public final class StubSuggestionsRepository: SuggestionsRepository {
     private let products: [SuggestedProduct]
 
     public init(products: [SuggestedProduct] = SuggestedProduct.stubs) {

@@ -5,7 +5,7 @@ import SuggestionsTesting
 
 // MARK: - Helpers
 
-private final class FailingSuggestionsRepository: SuggestionsRepositoryProtocol {
+private final class FailingSuggestionsRepository: SuggestionsRepository {
     func fetchSuggestions(for userId: String?) async throws -> [SuggestedProduct] {
         throw URLError(.notConnectedToInternet)
     }

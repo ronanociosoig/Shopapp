@@ -28,7 +28,7 @@ struct SuggestionsRepositoryTests {
     func fetchSuggestionsDecodesResponse() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SuggestedProduct.stubs)
-        let repo        = SuggestionsRepository(client: client)
+        let repo        = DefaultSuggestionsRepository(client: client)
         let suggestions = try await repo.fetchSuggestions(for: nil)
         #expect(suggestions.count == SuggestedProduct.stubs.count)
     }
@@ -37,7 +37,7 @@ struct SuggestionsRepositoryTests {
     func fetchSuggestionsWithNoUserIdHasNoQuery() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SuggestedProduct]())
-        let repo = SuggestionsRepository(client: client)
+        let repo = DefaultSuggestionsRepository(client: client)
         _ = try await repo.fetchSuggestions(for: nil)
         #expect(client.receivedRequests.first?.url?.query == nil)
     }
@@ -46,7 +46,7 @@ struct SuggestionsRepositoryTests {
     func fetchSuggestionsWithUserIdAppendsParam() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SuggestedProduct]())
-        let repo = SuggestionsRepository(client: client)
+        let repo = DefaultSuggestionsRepository(client: client)
         _ = try await repo.fetchSuggestions(for: "user-42")
         let query = client.receivedRequests.first?.url?.query ?? ""
         #expect(query.contains("userId=user-42"))
@@ -61,7 +61,7 @@ struct SuggestionsRepositoryTests {
     func fetchSuggestionsDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchSuggestions.har), not a hand-authored stub.
-        let repo        = SuggestionsRepository(client: DefaultNetworkClient())
+        let repo        = DefaultSuggestionsRepository(client: DefaultNetworkClient())
         let suggestions = try await repo.fetchSuggestions(for: nil)
         #expect(!suggestions.isEmpty)
         #expect(suggestions.first?.name == "MacBook Pro 16\"")

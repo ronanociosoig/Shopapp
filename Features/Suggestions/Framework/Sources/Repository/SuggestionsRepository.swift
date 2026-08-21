@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol SuggestionsRepositoryProtocol: Sendable {
+public protocol SuggestionsRepository: Sendable {
     func fetchSuggestions(for userId: String?) async throws -> [SuggestedProduct]
 }
 
@@ -30,7 +30,7 @@ final class RemoteSuggestionsDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class SuggestionsRepository: SuggestionsRepositoryProtocol {
+public final class DefaultSuggestionsRepository: SuggestionsRepository {
     private let remote: RemoteSuggestionsDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
