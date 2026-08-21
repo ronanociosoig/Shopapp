@@ -37,7 +37,12 @@ public struct PromotionsView: View {
                 PromotionDetailView(promotion: promotion)
             }
         }
-        .task { await model.load() }
+        .task {
+            // Only auto-load from a fresh model — see AccountView/StoreView
+            // for the same guard, same reason.
+            guard !model.suppressAutoLoad, !model.isLoading, model.promotions.isEmpty else { return }
+            await model.load()
+        }
     }
 }
 
@@ -156,7 +161,12 @@ public struct PromotionBannerView: View {
                 }
             }
         }
-        .task { await model.load() }
+        .task {
+            // Only auto-load from a fresh model — see AccountView/StoreView
+            // for the same guard, same reason.
+            guard !model.suppressAutoLoad, !model.isLoading, model.promotions.isEmpty else { return }
+            await model.load()
+        }
     }
 }
 

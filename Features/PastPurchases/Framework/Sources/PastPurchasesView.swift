@@ -53,7 +53,14 @@ public struct PastPurchasesView: View {
                 }
             }
         }
-        .task { await model.load() }
+        .task {
+            // Only auto-load from a fresh model — see AccountView/StoreView
+            // for the same guard, same reason: without it, .task fires on
+            // every appearance and clobbers state a caller (or a test)
+            // already set explicitly.
+            guard !model.suppressAutoLoad, !model.isLoading, model.orders.isEmpty else { return }
+            await model.load()
+        }
     }
 }
 

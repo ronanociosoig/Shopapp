@@ -10,6 +10,13 @@ public final class AccountModel {
     var isLoading = false
     var destination: Destination?
 
+    /// Lets a caller (in practice, a snapshot test) opt a model out of
+    /// `AccountView`'s auto-load entirely. Needed because "not loaded yet"
+    /// and "signed out" both look identical from the outside — nil profile,
+    /// empty addresses/cards — so a guard keyed on that state alone can't
+    /// tell the two apart. Production code never needs to touch this.
+    var suppressAutoLoad = false
+
     private let repository: AccountRepositoryProtocol
 
     public init(repository: AccountRepositoryProtocol, destination: Destination? = nil) {
@@ -29,6 +36,11 @@ public final class AccountModel {
     var isSignedIn: Bool               { profile != nil }
 
     public func load() async {
+        // Self-guarding rather than relying on every call site to check first —
+        // AccountView's own .task and RootView's .task both trigger this
+        // independently, and both need the same protection against
+        // clobbering state a caller (or a test) already set explicitly.
+        guard !suppressAutoLoad, !isLoading, profile == nil, addresses.isEmpty, cards.isEmpty else { return }
         isLoading = true
         defer { isLoading = false }
         let repo = repository

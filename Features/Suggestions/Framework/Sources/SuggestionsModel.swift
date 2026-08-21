@@ -8,6 +8,12 @@ public final class SuggestionsModel {
     var isLoading                    = false
     var destination: Destination?
 
+    /// Lets a caller (in practice, a snapshot test) opt a model out of
+    /// SuggestionsView's auto-load entirely — "not loaded yet" and "loaded,
+    /// genuinely no products" both look like an empty array from the
+    /// outside, so a guard keyed on that state alone can't tell them apart.
+    var suppressAutoLoad = false
+
     /// Called by the composition root to route add-to-cart events to the Checkout module.
     /// Typed on Foundation primitives so the Suggestions module stays independent of Checkout.
     /// Called by the composition root with (id, name, price, wantsExtendedGuarantee).

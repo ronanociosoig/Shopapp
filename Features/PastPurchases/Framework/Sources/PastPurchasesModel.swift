@@ -6,6 +6,12 @@ public final class PastPurchasesModel {
     var orders: [PastOrder]       = []
     var isLoading                  = false
     var destination: Destination?
+
+    /// Lets a caller (in practice, a snapshot test) opt a model out of
+    /// PastPurchasesView's auto-load entirely — "not loaded yet" and
+    /// "loaded, genuinely no orders" both look like an empty array from the
+    /// outside, so a guard keyed on that state alone can't tell them apart.
+    var suppressAutoLoad = false
     /// Set to `true` after a repeat-order action; the composition root
     /// observes this to switch the tab bar to the cart tab.
     public var shouldNavigateToCart       = false

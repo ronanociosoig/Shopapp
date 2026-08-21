@@ -33,6 +33,10 @@ public struct AccountView: View {
                 SavedCardsView(model: model)
             }
         }
+        // load() itself guards against firing on every appearance and
+        // clobbering state a caller (or a test) already set explicitly —
+        // see AccountModel.load(). RootView's own .task calls the same
+        // load() independently and relies on the same guard.
         .task { await model.load() }
     }
 

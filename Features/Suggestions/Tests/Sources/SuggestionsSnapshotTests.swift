@@ -44,6 +44,7 @@ struct SuggestionsSnapshotTests {
     @Test("Suggestions view renders correctly when empty")
     func emptyState() async throws {
         let model = SuggestionsModel()
+        model.suppressAutoLoad = true
         assertSnapshot(
             of: SuggestionsView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),

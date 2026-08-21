@@ -50,6 +50,7 @@ struct PastPurchasesSnapshotTests {
     @Test("Past purchases view renders correctly when empty")
     func emptyState() async throws {
         let model = PastPurchasesModel()
+        model.suppressAutoLoad = true
         assertSnapshot(
             of: PastPurchasesView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),

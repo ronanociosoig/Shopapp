@@ -46,6 +46,10 @@ public struct RootView: View {
                 .tag(AppModel.Tab.orders)
         }
         .task {
+            // load() guards itself against clobbering state a caller (or a
+            // test) already set explicitly — see AccountModel.load(). This
+            // fires independently of AccountView's own .task, which calls
+            // the same load() and relies on the same guard.
             await model.accountModel.load()
             model.syncAddresses()
         }

@@ -69,11 +69,31 @@ struct StoreSnapshotTests {
         let model = StoreModel()
         model.loadState = .loaded(StoreProduct.stubs)
         model.destination = destination
-        assertSnapshot(
-            of: StoreView(model: model),
-            as: .image(layout: .device(config: .iPhone13Pro)),
-            named: snapshotName(destination)
-        )
+
+        switch destination {
+        case .productDetail:
+            assertSnapshot(
+                of: StoreView(model: model),
+                as: .image(layout: .device(config: .iPhone13Pro)),
+                named: snapshotName(destination)
+            )
+        case .categoryFilter:
+            // swift-snapshot-testing's off-screen capture pass doesn't mount
+            // .sheet content, so StoreView with this destination active
+            // renders as if nothing were presented — a known limitation, not
+            // a bug in StoreView. Asserting on StoreView here either fails
+            // forever or, worse, lets a first run silently auto-record a
+            // baseline that doesn't show the filter at all (confirmed: it
+            // captures the product grid underneath). Assert on the sheet's
+            // actual content view directly instead — same coverage of what
+            // the screen looks like, without depending on sheet presentation
+            // working in an off-screen render.
+            assertSnapshot(
+                of: CategoryFilterView(model: model),
+                as: .image(layout: .device(config: .iPhone13Pro)),
+                named: snapshotName(destination)
+            )
+        }
     }
 
     // MARK: - Composed with Replay

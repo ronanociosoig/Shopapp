@@ -44,6 +44,7 @@ struct PromotionsSnapshotTests {
     @Test("Promotions view renders correctly when empty")
     func emptyState() async throws {
         let model = PromotionsModel()
+        model.suppressAutoLoad = true
         assertSnapshot(
             of: PromotionsView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),

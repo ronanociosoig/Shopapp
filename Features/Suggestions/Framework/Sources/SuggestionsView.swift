@@ -40,7 +40,12 @@ public struct SuggestionsView: View {
                 model.addToCart(product, wantsGuarantee: wantsGuarantee)
             })
         }
-        .task { await model.load() }
+        .task {
+            // Only auto-load from a fresh model — see AccountView/StoreView
+            // for the same guard, same reason.
+            guard !model.suppressAutoLoad, !model.isLoading, model.products.isEmpty else { return }
+            await model.load()
+        }
     }
 }
 

@@ -36,7 +36,13 @@ struct AccountSnapshotTests {
 
     @Test("Account view renders correctly when signed out")
     func signedOut() async throws {
+        // "Not loaded yet" and "signed out" are both nil profile / empty
+        // addresses+cards — indistinguishable from the outside — so
+        // AccountView's own guard can't tell this state apart from a
+        // genuinely fresh model that should auto-load. Opt out explicitly
+        // instead of racing AccountView's .task to capture before it fires.
         let model = AccountModel()
+        model.suppressAutoLoad = true
         assertSnapshot(
             of: AccountView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),
