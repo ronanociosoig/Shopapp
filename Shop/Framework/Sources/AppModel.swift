@@ -67,7 +67,7 @@ public final class AppModel {
         selectedTab: Tab = .store,
         storeRepository:         any StoreRepository,
         searchRepository:        any SearchRepositoryProtocol,
-        accountRepository:       any AccountRepositoryProtocol,
+        accountRepository:       any AccountRepository,
         checkoutRepository:      any CheckoutRepositoryProtocol,
         promotionsRepository:    any PromotionsRepositoryProtocol,
         pastPurchasesRepository: any PastPurchasesRepositoryProtocol,

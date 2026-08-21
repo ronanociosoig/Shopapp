@@ -17,7 +17,7 @@ struct AccountRepositoryPersistenceTests {
 
     init() {
         store = InMemoryAddressStore()
-        repository = AccountRepository(
+        repository = DefaultAccountRepository(
             client: UnimplementedNetworkClient(),
             addressStore: store
         )

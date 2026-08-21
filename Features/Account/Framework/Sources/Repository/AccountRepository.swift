@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol AccountRepositoryProtocol: Sendable {
+public protocol AccountRepository: Sendable {
     func fetchProfile() async throws -> UserProfile
     func fetchAddresses() async throws -> [SavedAddress]
     func fetchCards() async throws -> [SavedCard]
@@ -75,7 +75,7 @@ final class LocalAccountDataSource: @unchecked Sendable {
 
 // MARK: - Live repository
 
-public final class AccountRepository: AccountRepositoryProtocol {
+public final class DefaultAccountRepository: AccountRepository {
     private let remote: RemoteAccountDataSource
     private let addressStore: AddressStoreProtocol
     // In-memory cache for profile and cards (not persisted across launches)

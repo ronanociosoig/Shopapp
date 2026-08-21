@@ -17,9 +17,9 @@ public final class AccountModel {
     /// tell the two apart. Production code never needs to touch this.
     var suppressAutoLoad = false
 
-    private let repository: AccountRepositoryProtocol
+    private let repository: AccountRepository
 
-    public init(repository: AccountRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: AccountRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }

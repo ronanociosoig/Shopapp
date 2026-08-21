@@ -12,7 +12,7 @@ struct AccountRepositoryCachingTests {
     func fetchProfileDecodesResponse() async throws {
         let client = MockNetworkClient()
         try client.setJSON(UserProfile.stub)
-        let repo    = AccountRepository(client: client)
+        let repo    = DefaultAccountRepository(client: client)
         let profile = try await repo.fetchProfile()
         #expect(profile.email == UserProfile.stub.email)
     }
@@ -21,7 +21,7 @@ struct AccountRepositoryCachingTests {
     func fetchProfileCachesOnSecondCall() async throws {
         let client = MockNetworkClient()
         try client.setJSON(UserProfile.stub)
-        let repo = AccountRepository(client: client)
+        let repo = DefaultAccountRepository(client: client)
         _ = try await repo.fetchProfile()
         _ = try await repo.fetchProfile()
         #expect(client.receivedRequests.filter { $0.url?.path.contains("profile") == true }.count == 1)
@@ -33,7 +33,7 @@ struct AccountRepositoryCachingTests {
     func fetchAddressesDecodesResponse() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SavedAddress.stubs)
-        let repo      = AccountRepository(client: client, addressStore: InMemoryAddressStore())
+        let repo      = DefaultAccountRepository(client: client, addressStore: InMemoryAddressStore())
         let addresses = try await repo.fetchAddresses()
         #expect(addresses.count == SavedAddress.stubs.count)
     }
@@ -44,7 +44,7 @@ struct AccountRepositoryCachingTests {
     func fetchCardsDecodesResponse() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SavedCard.stub])
-        let repo  = AccountRepository(client: client)
+        let repo  = DefaultAccountRepository(client: client)
         let cards = try await repo.fetchCards()
         #expect(cards.count == 1)
     }
@@ -53,7 +53,7 @@ struct AccountRepositoryCachingTests {
     func fetchCardsCachesOnSecondCall() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SavedCard.stub])
-        let repo = AccountRepository(client: client)
+        let repo = DefaultAccountRepository(client: client)
         _ = try await repo.fetchCards()
         _ = try await repo.fetchCards()
         #expect(client.receivedRequests.filter { $0.url?.path.contains("cards") == true }.count == 1)
@@ -65,7 +65,7 @@ struct AccountRepositoryCachingTests {
     func updateProfileReturnsUpdatedProfile() async throws {
         let client  = MockNetworkClient()
         try client.setJSON(UserProfile.stub)
-        let repo    = AccountRepository(client: client)
+        let repo    = DefaultAccountRepository(client: client)
         _           = try await repo.fetchProfile()
         let updated = try await repo.updateProfile(UserProfile.stub)
         #expect(updated.email == UserProfile.stub.email)
@@ -76,7 +76,7 @@ struct AccountRepositoryCachingTests {
         let client = MockNetworkClient()
         // First fetch populates the cache
         try client.setJSON(UserProfile.stub)
-        let repo = AccountRepository(client: client)
+        let repo = DefaultAccountRepository(client: client)
         _ = try await repo.fetchProfile()
         // Update the profile
         let updatedProfile = UserProfile(

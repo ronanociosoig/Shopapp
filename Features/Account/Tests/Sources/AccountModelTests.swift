@@ -224,7 +224,7 @@ struct AccountModelTests {
 // MARK: - Test doubles
 
 /// Repository whose fetch calls always throw so we can test error-path behaviour.
-private final class FailingAccountRepository: AccountRepositoryProtocol, @unchecked Sendable {
+private final class FailingAccountRepository: AccountRepository, @unchecked Sendable {
     private struct FetchError: Error {}
 
     func fetchProfile()                              async throws -> UserProfile   { throw FetchError() }
