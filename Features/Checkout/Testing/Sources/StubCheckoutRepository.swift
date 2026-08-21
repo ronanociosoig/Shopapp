@@ -10,7 +10,7 @@ public final class StubSelectedAddressStore: SelectedAddressStoreProtocol, @unch
     public func saveSelectedID(_ id: UUID?) { storedID = id }
 }
 
-public final class StubCheckoutRepository: CheckoutRepositoryProtocol {
+public final class StubCheckoutRepository: CheckoutRepository {
     private let error: Error?
     private let delay: Duration
 

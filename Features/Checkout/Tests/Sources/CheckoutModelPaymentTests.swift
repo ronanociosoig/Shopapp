@@ -12,7 +12,7 @@ struct CheckoutModelPaymentTests {
     private func makeModel(
         error: Error? = nil
     ) -> CheckoutModel {
-        let repo: CheckoutRepositoryProtocol = error.map { StubCheckoutRepository(throwing: $0) }
+        let repo: CheckoutRepository = error.map { StubCheckoutRepository(throwing: $0) }
             ?? StubCheckoutRepository(delay: .zero)
         return CheckoutModel(repository: repo)
     }

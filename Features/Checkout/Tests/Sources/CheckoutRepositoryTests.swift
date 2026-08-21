@@ -33,7 +33,7 @@ struct CheckoutRepositoryTests {
         // Replays/placeOrder.har), not a hand-authored stub. This is also the
         // regression test for the bug where `placeOrder` posted an empty body
         // and silently dropped the cart/address/payment details.
-        let repo = CheckoutRepository(client: DefaultNetworkClient())
+        let repo = DefaultCheckoutRepository(client: DefaultNetworkClient())
         let order = try await repo.placeOrder(
             items: CartItem.stubs,
             address: .stub,
@@ -50,7 +50,7 @@ struct CheckoutRepositoryTests {
     func placeOrderSendsRequestBody() async throws {
         let client = MockNetworkClient()
         try client.setJSON(PlacedOrder.stub)
-        let repo = CheckoutRepository(client: client)
+        let repo = DefaultCheckoutRepository(client: client)
         _ = try await repo.placeOrder(
             items: CartItem.stubs,
             address: .stub,

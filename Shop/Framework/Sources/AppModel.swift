@@ -68,7 +68,7 @@ public final class AppModel {
         storeRepository:         any StoreRepository,
         searchRepository:        any SearchRepository,
         accountRepository:       any AccountRepository,
-        checkoutRepository:      any CheckoutRepositoryProtocol,
+        checkoutRepository:      any CheckoutRepository,
         promotionsRepository:    any PromotionsRepositoryProtocol,
         pastPurchasesRepository: any PastPurchasesRepositoryProtocol,
         suggestionsRepository:   any SuggestionsRepositoryProtocol

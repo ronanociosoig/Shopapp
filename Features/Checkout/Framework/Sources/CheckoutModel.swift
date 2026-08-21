@@ -41,7 +41,7 @@ public final class CheckoutModel {
     /// The UUID of the shipping address the user last selected, persisted across launches.
     var selectedAddressID: UUID?
 
-    private let repository: CheckoutRepositoryProtocol
+    private let repository: CheckoutRepository
     private let selectedAddressStore: SelectedAddressStoreProtocol
 
     /// Called after a successful order placement with the confirmed order and
@@ -52,7 +52,7 @@ public final class CheckoutModel {
     public init(
         cart: [CartItem] = [],
         destination: Destination? = nil,
-        repository: CheckoutRepositoryProtocol,
+        repository: CheckoutRepository,
         selectedAddressStore: SelectedAddressStoreProtocol = UserDefaultsSelectedAddressStore()
     ) {
         self.cart                 = cart

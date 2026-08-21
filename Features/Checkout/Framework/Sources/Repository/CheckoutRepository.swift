@@ -39,7 +39,7 @@ public final class UserDefaultsSelectedAddressStore: SelectedAddressStoreProtoco
 
 // MARK: - Protocol
 
-public protocol CheckoutRepositoryProtocol: Sendable {
+public protocol CheckoutRepository: Sendable {
     func placeOrder(
         items: [CartItem],
         address: ShippingAddress,
@@ -81,7 +81,7 @@ final class RemoteCheckoutDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class CheckoutRepository: CheckoutRepositoryProtocol {
+public final class DefaultCheckoutRepository: CheckoutRepository {
     private let remote: RemoteCheckoutDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
