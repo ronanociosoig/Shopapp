@@ -171,9 +171,6 @@ property, it gets a snapshot test, not an XCUITest.
 
 ## Known gaps (see README "Areas for improvement" for detail)
 
-- Stub repositories currently still live in production framework targets (not yet split into
-  `XxxTesting`-only) for some modules — check before assuming a given module's stub is already
-  test-only.
 - `AppModel.init`'s cross-module wiring (`onAddToCart`, `onOrderPlaced`, `onRepeatOrder`,
   `syncAddresses`) and `RootView`'s signal-property `.onChange` → `Destination` mapping are untested.
 - `SearchView.FiltersView` category selection is local `@State` and doesn't write back to

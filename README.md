@@ -276,6 +276,48 @@ Every feature module has tests across four tiers.
 
 **Storage and repository tests** (`*StoreTests`, `*RepositoryTests`) — persistence round-trips and network decoding, isolated to their own tier.
 
+### Response-fidelity tests via Replay
+
+Seven of the eight feature modules (`SupportTests` is the exception) also use [Replay](https://github.com/mattt/Replay) to test response fidelity — whether a repository decodes what the server actually returns, not just what a hand-typed stub claims it returns. Each fixture is a recorded HTTP Archive (`.har`), committed under `Features/<Module>/Tests/Sources/Replays/`, and replayed byte-for-byte on every run — offline, with no server required:
+
+```swift
+@Test(
+    "fetchProducts decodes the remote response",
+    .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
+)
+func fetchProductsDecodesResponse() async throws {
+    let repo     = StoreRepository(client: NetworkClient())
+    let products = try await repo.fetchProducts(category: nil)
+    #expect(products.count == 88)
+}
+```
+
+Redaction filters (`.headers(removing: ["Authorization", "Cookie"])`, `.queryParameters(removing: ["token", "api_key"])`) are applied at record time to every fixture, as a blanket policy rather than case by case — `ShopAppServer` has no authenticated endpoints today, so this is currently a no-op, but the policy shouldn't depend on someone remembering which endpoint has secrets.
+
+`MockNetworkClient` and Replay fixtures cover different guarantees and both stay in use side by side: `MockNetworkClient` validates request construction (URLs, query parameters, caching, call counts); Replay validates response fidelity against a real recorded contract.
+
+Recording a new or updated fixture requires `xcodebuild test`, not `swift test` — this project is iOS-only and uses UIKit-only SwiftUI APIs, so a macOS host build fails outright, and `swift package replay record` (which shells out to `swift test`) doesn't work here either. `REPLAY_RECORD_MODE` also can't be set via a shell prefix, because `xcodebuild test` launches the test process inside the simulator and doesn't inherit shell environment variables the way `swift test` does. `scripts/replay-record.sh` toggles the mode on the test scheme's own `EnvironmentVariables` block instead of a shell prefix.
+
+The three tiers above also compose directly: a Replay-recorded response feeds a real repository call, which feeds a real view render, which is snapshotted — navigation state, network response, and rendered output, all verified in one offline test:
+
+```swift
+@Test(
+    "Root view renders real recorded product data end-to-end",
+    .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
+)
+func rootViewRendersRealRecordedData() async throws {
+    let model = StoreModel(repository: StoreRepository(client: NetworkClient()))
+    await model.load()
+    assertSnapshot(
+        of: StoreView(model: model),
+        as: .image(layout: .device(config: .iPhone13Pro)),
+        named: "loaded_from_replay"
+    )
+}
+```
+
+Awaiting `model.load()` to full completion before constructing the view is what makes this deterministic — the async work finishes before the render happens, so there's no timing gap to work around.
+
 ### Structural coverage via `CaseIterable`
 
 The snapshot tests for each module extend `Destination` with `CaseIterable` and parametrize the test over `allCases`:
@@ -355,18 +397,6 @@ This only works because `AppModel` is injected. Had `RootView` created its own `
 ---
 
 ## Areas for improvement
-
-### Stubs in production targets
-
-Every feature module ships its stub repository alongside its production code:
-
-```
-Features/Store/Framework/Sources/
-    Repository/StoreRepository.swift      ← production
-    Repository/StubStoreRepository.swift  ← stub
-```
-
-`StubStoreRepository` is linked into `ShopApp.app` in release builds. This increases binary size and exposes test infrastructure to the production environment. The correct structure is a separate `StoreTestSupport` library product in `Package.swift` that test targets and micro-app targets depend on, while the main app target does not.
 
 ### Composition-root wiring is untested
 
