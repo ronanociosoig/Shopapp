@@ -27,7 +27,7 @@ struct ShopAppMain: App {
             accountRepository:       StubAccountRepository(),
             checkoutRepository:      isUITesting ? StubCheckoutRepository(delay: .zero) : StubCheckoutRepository(),
             promotionsRepository:    StubPromotionsRepository(),
-            pastPurchasesRepository: PastPurchasesRepository(),
+            pastPurchasesRepository: DefaultPastPurchasesRepository(),
             suggestionsRepository:   StubSuggestionsRepository()
         )
     }

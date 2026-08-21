@@ -5,7 +5,7 @@ import PastPurchasesTesting
 
 // MARK: - Helpers
 
-private final class FailingPastPurchasesRepository: PastPurchasesRepositoryProtocol {
+private final class FailingPastPurchasesRepository: PastPurchasesRepository {
     func fetchOrders() async throws -> [PastOrder] { throw URLError(.notConnectedToInternet) }
     func saveOrder(_ order: PastOrder) async throws { throw URLError(.notConnectedToInternet) }
     func deleteOrder(id: UUID) async throws { throw URLError(.notConnectedToInternet) }

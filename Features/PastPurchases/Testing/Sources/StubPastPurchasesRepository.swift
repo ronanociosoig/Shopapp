@@ -1,7 +1,7 @@
 import Foundation
 import PastPurchases
 
-public final class StubPastPurchasesRepository: PastPurchasesRepositoryProtocol, @unchecked Sendable {
+public final class StubPastPurchasesRepository: PastPurchasesRepository, @unchecked Sendable {
     public private(set) var orders: [PastOrder]
 
     public init(orders: [PastOrder] = PastOrder.stubs) {

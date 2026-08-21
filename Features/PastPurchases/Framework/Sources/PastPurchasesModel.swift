@@ -27,9 +27,9 @@ public final class PastPurchasesModel {
     /// observes this to present the Rate Order sheet and resets it afterwards.
     public var orderToRate: PastOrder?
 
-    private let repository: PastPurchasesRepositoryProtocol
+    private let repository: PastPurchasesRepository
 
-    public init(repository: PastPurchasesRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: PastPurchasesRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }

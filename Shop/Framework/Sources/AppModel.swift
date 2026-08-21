@@ -70,7 +70,7 @@ public final class AppModel {
         accountRepository:       any AccountRepository,
         checkoutRepository:      any CheckoutRepository,
         promotionsRepository:    any PromotionsRepository,
-        pastPurchasesRepository: any PastPurchasesRepositoryProtocol,
+        pastPurchasesRepository: any PastPurchasesRepository,
         suggestionsRepository:   any SuggestionsRepository
     ) {
         self.destination = destination

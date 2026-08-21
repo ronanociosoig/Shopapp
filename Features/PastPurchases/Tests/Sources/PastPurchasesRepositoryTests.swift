@@ -25,7 +25,7 @@ struct PastPurchasesRepositoryTests {
     func fetchOrdersUsesRemoteWhenStoreIsEmpty() async throws {
         let remote = MockRemotePastPurchasesDataSource(orders: PastOrder.stubs)
         let store  = StubOrderStore(orders: [])
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         let orders = try await repo.fetchOrders()
         #expect(orders.count == PastOrder.stubs.count)
     }
@@ -35,7 +35,7 @@ struct PastPurchasesRepositoryTests {
         let localOrder = PastOrder.stub
         let remote = MockRemotePastPurchasesDataSource(orders: [])
         let store  = StubOrderStore(orders: [localOrder])
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         let orders = try await repo.fetchOrders()
         // The local order should be present (possibly with refreshed status)
         #expect(orders.contains(where: { $0.id == localOrder.id }))
@@ -50,7 +50,7 @@ struct PastPurchasesRepositoryTests {
         // placedAt is already old, so mock will return .delivered
         let store  = StubOrderStore(orders: [order])
         let remote = MockRemotePastPurchasesDataSource(orders: [order])
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         let orders = try await repo.fetchOrders()
         // The stub is from 2026-03-15 which is well in the past → delivered
         #expect(orders[0].status == .delivered)
@@ -61,7 +61,7 @@ struct PastPurchasesRepositoryTests {
         let order  = PastOrder.stub           // old order → will be refreshed to .delivered
         let store  = StubOrderStore(orders: [order])
         let remote = MockRemotePastPurchasesDataSource(orders: [order])
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         _ = try await repo.fetchOrders()
         // Status should have been written back into the store
         #expect(store.storedOrders[0].status == .delivered)
@@ -74,7 +74,7 @@ struct PastPurchasesRepositoryTests {
         let existing = PastOrder.stubs[0]
         let store    = StubOrderStore(orders: [existing])
         let remote   = MockRemotePastPurchasesDataSource()
-        let repo     = PastPurchasesRepository(remote: remote, store: store)
+        let repo     = DefaultPastPurchasesRepository(remote: remote, store: store)
         let newOrder = PastOrder.stubs[1]
         try await repo.saveOrder(newOrder)
         #expect(store.storedOrders[0].id == newOrder.id)
@@ -84,7 +84,7 @@ struct PastPurchasesRepositoryTests {
     func saveOrderPreservesExistingOrders() async throws {
         let store  = StubOrderStore(orders: PastOrder.stubs)
         let remote = MockRemotePastPurchasesDataSource()
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         let fresh  = PastOrder(
             placedAt: Date(), estimatedDelivery: Date(),
             lines: [], deliveryOptionName: "Standard",
@@ -101,7 +101,7 @@ struct PastPurchasesRepositoryTests {
     func deleteOrderRemovesOrder() async throws {
         let store  = StubOrderStore(orders: PastOrder.stubs)
         let remote = MockRemotePastPurchasesDataSource()
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         let target = PastOrder.stubs[0]
         try await repo.deleteOrder(id: target.id)
         #expect(!store.storedOrders.contains(where: { $0.id == target.id }))
@@ -111,7 +111,7 @@ struct PastPurchasesRepositoryTests {
     func deleteOrderUnknownIdIsNoop() async throws {
         let store  = StubOrderStore(orders: PastOrder.stubs)
         let remote = MockRemotePastPurchasesDataSource()
-        let repo   = PastPurchasesRepository(remote: remote, store: store)
+        let repo   = DefaultPastPurchasesRepository(remote: remote, store: store)
         try await repo.deleteOrder(id: UUID())
         #expect(store.storedOrders.count == PastOrder.stubs.count)
     }

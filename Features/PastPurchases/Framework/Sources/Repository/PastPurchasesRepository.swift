@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol PastPurchasesRepositoryProtocol: Sendable {
+public protocol PastPurchasesRepository: Sendable {
     func fetchOrders() async throws -> [PastOrder]
     func saveOrder(_ order: PastOrder) async throws
     func deleteOrder(id: UUID) async throws
@@ -98,7 +98,7 @@ public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSou
 
 // MARK: - Live repository
 
-public final class PastPurchasesRepository: PastPurchasesRepositoryProtocol {
+public final class DefaultPastPurchasesRepository: PastPurchasesRepository {
     private let remote: any RemotePastPurchasesDataSourceProtocol
     private let store: OrderStoreProtocol
 
@@ -118,10 +118,10 @@ public final class PastPurchasesRepository: PastPurchasesRepositoryProtocol {
         self.store  = store
     }
 
-    /// A `PastPurchasesRepository` backed by mock remote data, going through
+    /// A `DefaultPastPurchasesRepository` backed by mock remote data, going through
     /// the full local-store and status-refresh pipeline.
-    public static func mock(store: OrderStoreProtocol = UserDefaultsOrderStore()) -> PastPurchasesRepository {
-        PastPurchasesRepository(remote: MockRemotePastPurchasesDataSource(), store: store)
+    public static func mock(store: OrderStoreProtocol = UserDefaultsOrderStore()) -> DefaultPastPurchasesRepository {
+        DefaultPastPurchasesRepository(remote: MockRemotePastPurchasesDataSource(), store: store)
     }
 
     /// Loads orders from the local store (or remote on first launch), then
