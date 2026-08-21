@@ -119,7 +119,7 @@ struct OrderOptionsView: View {
             HStack {
                 Text(Strings.Summary.total).font(.headline)
                 Spacer()
-                DSPriceLabel(model.checkoutTotal)
+                PriceLabel(model.checkoutTotal)
             }
         }
     }

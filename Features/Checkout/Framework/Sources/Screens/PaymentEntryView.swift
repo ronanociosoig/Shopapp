@@ -34,7 +34,7 @@ struct PaymentEntryView: View {
                 HStack {
                     Text(Strings.orderTotal)
                     Spacer()
-                    DSPriceLabel(model.subtotal)
+                    PriceLabel(model.subtotal)
                 }
             }
         }

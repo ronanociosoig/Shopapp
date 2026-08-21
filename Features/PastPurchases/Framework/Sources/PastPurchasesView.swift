@@ -75,7 +75,7 @@ struct PastOrderRow: View {
                 Text(Strings.orderNumber(order.id.uuidString.prefix(8).uppercased()))
                     .font(.subheadline.weight(.medium).monospacedDigit())
                 Spacer()
-                DSPriceLabel(order.total)
+                PriceLabel(order.total)
             }
             HStack(spacing: 12) {
                 Text(Strings.itemCount(order.itemCount))
@@ -138,7 +138,7 @@ struct PastOrderDetailView: View {
                             Text(line.name)
                                 .font(.subheadline)
                             Spacer()
-                            DSPriceLabel(line.subtotal)
+                            PriceLabel(line.subtotal)
                         }
                         HStack(spacing: 8) {
                             Text(Strings.Detail.quantityLabel(line.quantity))
@@ -183,7 +183,7 @@ struct PastOrderDetailView: View {
                 HStack {
                     Text(Strings.Detail.totalLabel).font(.headline)
                     Spacer()
-                    DSPriceLabel(order.total)
+                    PriceLabel(order.total)
                 }
             }
 

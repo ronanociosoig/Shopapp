@@ -83,7 +83,7 @@ struct SuggestionCard: View {
                 .font(.caption.weight(.medium))
                 .lineLimit(2)
                 .frame(width: 140, alignment: .leading)
-            DSPriceLabel(product.price)
+            PriceLabel(product.price)
         }
     }
 }
@@ -111,7 +111,7 @@ struct SuggestedProductDetailView: View {
                     HStack {
                         Text(product.name).font(.title2.bold())
                         Spacer()
-                        DSPriceLabel(product.price)
+                        PriceLabel(product.price)
                     }
                     Text(product.category)
                         .font(.caption)

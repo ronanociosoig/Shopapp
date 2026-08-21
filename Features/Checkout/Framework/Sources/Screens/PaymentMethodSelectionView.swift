@@ -47,7 +47,7 @@ struct PaymentMethodSelectionView: View {
                 HStack {
                     Text(Strings.orderTotal)
                     Spacer()
-                    DSPriceLabel(model.checkoutTotal)
+                    PriceLabel(model.checkoutTotal)
                 }
             }
         }

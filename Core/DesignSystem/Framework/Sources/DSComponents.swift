@@ -76,7 +76,7 @@ public struct PrimaryButton: View {
 
 // MARK: - Price
 
-public struct DSPriceLabel: View {
+public struct PriceLabel: View {
     public let amount: Decimal
 
     public init(_ amount: Decimal) {

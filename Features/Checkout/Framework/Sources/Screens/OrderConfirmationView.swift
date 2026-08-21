@@ -42,7 +42,7 @@ struct OrderConfirmationView: View {
                     Text(Strings.totalCharged)
                         .font(.headline)
                     Spacer()
-                    DSPriceLabel(order.total)
+                    PriceLabel(order.total)
                 }
             }
             .padding()

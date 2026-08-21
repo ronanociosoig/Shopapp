@@ -151,7 +151,7 @@ struct ComponentCatalog: View {
                 HStack {
                     Text(Strings.Components.priceLabel)
                     Spacer()
-                    DSPriceLabel(299.99)
+                    PriceLabel(299.99)
                 }
             }
         }

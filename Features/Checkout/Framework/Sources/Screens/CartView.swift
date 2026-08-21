@@ -48,7 +48,7 @@ struct CartView<PromotionBanner: View>: View {
                 Text(Strings.subtotal(count: model.itemCount))
                     .foregroundStyle(.secondary)
                 Spacer()
-                DSPriceLabel(model.subtotal)
+                PriceLabel(model.subtotal)
             }
             .padding(.horizontal)
             PrimaryButton(Strings.proceedToCheckout) {
@@ -84,7 +84,7 @@ struct CartItemRow: View {
                 Text(item.product.name)
                     .font(.subheadline.weight(.medium))
                     .lineLimit(2)
-                DSPriceLabel(item.subtotal)
+                PriceLabel(item.subtotal)
             }
 
             Spacer()

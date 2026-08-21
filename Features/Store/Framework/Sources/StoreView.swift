@@ -167,7 +167,7 @@ struct StoreProductCard: View {
             Text(product.name)
                 .font(.subheadline.weight(.medium))
                 .lineLimit(2)
-            DSPriceLabel(product.price)
+            PriceLabel(product.price)
         }
         .opacity(product.isAvailable ? 1 : 0.6)
     }
@@ -195,7 +195,7 @@ struct StoreProductDetailView: View {
                     HStack {
                         Text(product.name).font(.title2.bold())
                         Spacer()
-                        DSPriceLabel(product.price)
+                        PriceLabel(product.price)
                     }
                     Text(product.category)
                         .font(.caption)

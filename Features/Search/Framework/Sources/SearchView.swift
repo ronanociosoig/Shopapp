@@ -95,7 +95,7 @@ struct ProductRowView: View {
             Text(product.category)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            DSPriceLabel(product.price)
+            PriceLabel(product.price)
         }
         .padding(.vertical, 4)
     }
@@ -121,7 +121,7 @@ struct ProductDetailView: View {
                     HStack {
                         Text(product.name).font(.title2.bold())
                         Spacer()
-                        DSPriceLabel(product.price)
+                        PriceLabel(product.price)
                     }
                     Text(product.category)
                         .font(.caption)
