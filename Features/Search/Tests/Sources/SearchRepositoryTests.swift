@@ -31,7 +31,7 @@ struct SearchRepositoryTests {
     func searchDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/search.har), not a hand-authored stub.
-        let repo    = SearchRepository(client: DefaultNetworkClient())
+        let repo    = DefaultSearchRepository(client: DefaultNetworkClient())
         let results = try await repo.search(query: "MacBook")
         #expect(!results.isEmpty)
         #expect(results.allSatisfy { $0.name.lowercased().contains("macbook") })
@@ -42,7 +42,7 @@ struct SearchRepositoryTests {
         .replay("fetchByCategory", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchByCategoryDecodesRealResponse() async throws {
-        let repo    = SearchRepository(client: DefaultNetworkClient())
+        let repo    = DefaultSearchRepository(client: DefaultNetworkClient())
         let results = try await repo.fetchByCategory("Electronics")
         #expect(!results.isEmpty)
         #expect(results.allSatisfy { $0.category == "Electronics" })
@@ -54,7 +54,7 @@ struct SearchRepositoryTests {
     func searchDecodesResponse() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SearchProduct.stubs)
-        let repo    = SearchRepository(client: client)
+        let repo    = DefaultSearchRepository(client: client)
         let results = try await repo.search(query: "MacBook")
         #expect(!results.isEmpty)
     }
@@ -63,7 +63,7 @@ struct SearchRepositoryTests {
     func searchAppendsQueryParam() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SearchProduct]())
-        let repo = SearchRepository(client: client)
+        let repo = DefaultSearchRepository(client: client)
         _ = try await repo.search(query: "chair")
         let query = client.receivedRequests.first?.url?.query ?? ""
         #expect(query.contains("q=chair"))
@@ -73,7 +73,7 @@ struct SearchRepositoryTests {
     func searchCachesResult() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SearchProduct.stubs)
-        let repo = SearchRepository(client: client)
+        let repo = DefaultSearchRepository(client: client)
         _ = try await repo.search(query: "desk")
         _ = try await repo.search(query: "desk")
         #expect(client.receivedRequests.count == 1)
@@ -83,7 +83,7 @@ struct SearchRepositoryTests {
     func differentQueriesMakeIndependentRequests() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SearchProduct]())
-        let repo = SearchRepository(client: client)
+        let repo = DefaultSearchRepository(client: client)
         _ = try await repo.search(query: "laptop")
         _ = try await repo.search(query: "chair")
         _ = try await repo.search(query: "laptop") // cache hit
@@ -96,7 +96,7 @@ struct SearchRepositoryTests {
     func fetchCategoriesReturnsSortedUnique() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SearchProduct.stubs)
-        let repo       = SearchRepository(client: client)
+        let repo       = DefaultSearchRepository(client: client)
         let categories = try await repo.fetchCategories()
         #expect(categories == categories.sorted())
         #expect(Set(categories).count == categories.count)
@@ -106,7 +106,7 @@ struct SearchRepositoryTests {
     func fetchCategoriesIncludesAllCatalogueCategories() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SearchProduct.stubs)
-        let repo       = SearchRepository(client: client)
+        let repo       = DefaultSearchRepository(client: client)
         let categories = try await repo.fetchCategories()
         let expected   = Set(SearchProduct.stubs.map(\.category))
         #expect(Set(categories) == expected)
@@ -116,7 +116,7 @@ struct SearchRepositoryTests {
     func fetchCategoriesUsesEmptyQuery() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SearchProduct]())
-        let repo = SearchRepository(client: client)
+        let repo = DefaultSearchRepository(client: client)
         _ = try await repo.fetchCategories()
         let query = client.receivedRequests.first?.url?.query ?? ""
         #expect(query.contains("q=") || query.contains("q&") || query == "q=")
@@ -129,7 +129,7 @@ struct SearchRepositoryTests {
         let client = MockNetworkClient()
         let electronics = SearchProduct.electronics
         try client.setJSON(electronics)
-        let repo    = SearchRepository(client: client)
+        let repo    = DefaultSearchRepository(client: client)
         let results = try await repo.fetchByCategory("Electronics")
         #expect(results.count == electronics.count)
     }
@@ -138,7 +138,7 @@ struct SearchRepositoryTests {
     func fetchByCategoryAppendsParam() async throws {
         let client = MockNetworkClient()
         try client.setJSON([SearchProduct]())
-        let repo = SearchRepository(client: client)
+        let repo = DefaultSearchRepository(client: client)
         _ = try await repo.fetchByCategory("Furniture")
         let query = client.receivedRequests.first?.url?.query ?? ""
         #expect(query.contains("category=Furniture"))
@@ -148,7 +148,7 @@ struct SearchRepositoryTests {
     func fetchByCategoryCachesResult() async throws {
         let client = MockNetworkClient()
         try client.setJSON(SearchProduct.electronics)
-        let repo = SearchRepository(client: client)
+        let repo = DefaultSearchRepository(client: client)
         _ = try await repo.fetchByCategory("Electronics")
         _ = try await repo.fetchByCategory("Electronics")
         #expect(client.receivedRequests.count == 1)

@@ -5,7 +5,7 @@ import SearchTesting
 
 // MARK: - Stub helpers
 
-private final class FailingSearchRepository: SearchRepositoryProtocol {
+private final class FailingSearchRepository: SearchRepository {
     func search(query: String) async throws -> [SearchProduct] { throw URLError(.notConnectedToInternet) }
     func fetchCategories() async throws -> [String] { [] }
     func fetchByCategory(_ category: String) async throws -> [SearchProduct] { [] }

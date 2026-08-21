@@ -23,7 +23,7 @@ struct ShopAppMain: App {
             // destination: .support,
             // selectedTab: .orders,
             storeRepository:         isUITesting ? StubStoreRepository()              : DefaultStoreRepository(),
-            searchRepository:        SearchRepository(),
+            searchRepository:        DefaultSearchRepository(),
             accountRepository:       StubAccountRepository(),
             checkoutRepository:      isUITesting ? StubCheckoutRepository(delay: .zero) : StubCheckoutRepository(),
             promotionsRepository:    StubPromotionsRepository(),

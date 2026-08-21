@@ -66,7 +66,7 @@ public final class AppModel {
         destination: Destination? = nil,
         selectedTab: Tab = .store,
         storeRepository:         any StoreRepository,
-        searchRepository:        any SearchRepositoryProtocol,
+        searchRepository:        any SearchRepository,
         accountRepository:       any AccountRepository,
         checkoutRepository:      any CheckoutRepositoryProtocol,
         promotionsRepository:    any PromotionsRepositoryProtocol,

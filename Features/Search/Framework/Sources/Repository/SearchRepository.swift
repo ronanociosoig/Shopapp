@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol SearchRepositoryProtocol: Sendable {
+public protocol SearchRepository: Sendable {
     func search(query: String) async throws -> [SearchProduct]
     func fetchCategories() async throws -> [String]
     func fetchByCategory(_ category: String) async throws -> [SearchProduct]
@@ -52,7 +52,7 @@ final class LocalSearchDataSource: @unchecked Sendable {
 
 // MARK: - Live repository
 
-public final class SearchRepository: SearchRepositoryProtocol {
+public final class DefaultSearchRepository: SearchRepository {
     private let remote: any RemoteSearchDataSourceProtocol
     private let local  = LocalSearchDataSource()
 

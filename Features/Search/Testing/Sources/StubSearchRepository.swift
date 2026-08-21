@@ -1,7 +1,7 @@
 import Foundation
 import Search
 
-public final class StubSearchRepository: SearchRepositoryProtocol {
+public final class StubSearchRepository: SearchRepository {
     private let result: Result<[SearchProduct], Error>
 
     public init(returning products: [SearchProduct] = SearchProduct.stubs) {

@@ -25,9 +25,9 @@ public final class SearchModel {
     /// Called by the composition root with (id, name, price, wantsExtendedGuarantee).
     public var onAddToCart: ((UUID, String, Decimal, Bool) -> Void)?
 
-    private let repository: SearchRepositoryProtocol
+    private let repository: SearchRepository
 
-    public init(repository: SearchRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: SearchRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }
