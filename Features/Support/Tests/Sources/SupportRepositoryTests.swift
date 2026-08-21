@@ -11,7 +11,7 @@ struct SupportRepositoryTests {
     @Test("submitTicket sends a POST request to the tickets endpoint")
     func submitTicketSendsPostRequest() async throws {
         let client = MockNetworkClient()
-        let repo   = SupportRepository(client: client)
+        let repo   = DefaultSupportRepository(client: client)
         let ticket = SupportTicket(topic: "FAQs", message: "How do returns work?")
         try await repo.submitTicket(ticket)
         let request = try #require(client.receivedRequests.first)
@@ -26,7 +26,7 @@ struct SupportRepositoryTests {
     @Test("submitTicket sends the topic and message as a JSON body")
     func submitTicketSendsRequestBody() async throws {
         let client = MockNetworkClient()
-        let repo   = SupportRepository(client: client)
+        let repo   = DefaultSupportRepository(client: client)
         let ticket = SupportTicket(topic: "Order Issues", message: "Where is my order?")
         try await repo.submitTicket(ticket)
 

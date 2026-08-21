@@ -4,7 +4,7 @@ import Common
 
 // MARK: - Protocol
 
-public protocol SupportRepositoryProtocol: Sendable {
+public protocol SupportRepository: Sendable {
     func submitTicket(_ ticket: SupportTicket) async throws
     func fetchTickets() async throws -> [SupportTicket]
 }
@@ -30,7 +30,7 @@ final class RemoteSupportDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class SupportRepository: SupportRepositoryProtocol {
+public final class DefaultSupportRepository: SupportRepository {
     private let remote: RemoteSupportDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
