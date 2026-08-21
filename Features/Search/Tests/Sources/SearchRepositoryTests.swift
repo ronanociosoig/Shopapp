@@ -31,7 +31,7 @@ struct SearchRepositoryTests {
     func searchDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/search.har), not a hand-authored stub.
-        let repo    = SearchRepository(client: NetworkClient())
+        let repo    = SearchRepository(client: DefaultNetworkClient())
         let results = try await repo.search(query: "MacBook")
         #expect(!results.isEmpty)
         #expect(results.allSatisfy { $0.name.lowercased().contains("macbook") })
@@ -42,7 +42,7 @@ struct SearchRepositoryTests {
         .replay("fetchByCategory", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchByCategoryDecodesRealResponse() async throws {
-        let repo    = SearchRepository(client: NetworkClient())
+        let repo    = SearchRepository(client: DefaultNetworkClient())
         let results = try await repo.fetchByCategory("Electronics")
         #expect(!results.isEmpty)
         #expect(results.allSatisfy { $0.category == "Electronics" })

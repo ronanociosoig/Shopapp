@@ -61,7 +61,7 @@ struct SuggestionsRepositoryTests {
     func fetchSuggestionsDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchSuggestions.har), not a hand-authored stub.
-        let repo        = SuggestionsRepository(client: NetworkClient())
+        let repo        = SuggestionsRepository(client: DefaultNetworkClient())
         let suggestions = try await repo.fetchSuggestions(for: nil)
         #expect(!suggestions.isEmpty)
         #expect(suggestions.first?.name == "MacBook Pro 16\"")

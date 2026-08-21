@@ -61,7 +61,7 @@ struct PastPurchasesRepositoryNetworkTests {
     func fetchOrdersDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchOrders.har), not a hand-authored stub.
-        let source = RemotePastPurchasesDataSource(client: NetworkClient())
+        let source = RemotePastPurchasesDataSource(client: DefaultNetworkClient())
         let orders = try await source.fetchOrders()
         #expect(orders.count == 2)
         #expect(orders.first?.lines.first?.name == "MacBook Pro 16\"")
@@ -72,7 +72,7 @@ struct PastPurchasesRepositoryNetworkTests {
         .replay("fetchOrderStatus", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchOrderStatusDecodesRealResponse() async throws {
-        let source = RemotePastPurchasesDataSource(client: NetworkClient())
+        let source = RemotePastPurchasesDataSource(client: DefaultNetworkClient())
         let id     = UUID(uuidString: "00000000-0000-0000-0009-000000000001")!
         let status = try await source.fetchOrderStatus(for: id)
         #expect(status == .delivered)

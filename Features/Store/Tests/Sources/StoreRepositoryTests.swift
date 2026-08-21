@@ -35,7 +35,7 @@ struct StoreRepositoryTests {
         // Response fidelity test: real traffic recorded from ShopAppServer (see
         // Replays/fetchProducts.har), not a hand-authored stub. Request-construction
         // and caching behavior are still covered by MockNetworkClient below.
-        let repo     = StoreRepository(client: NetworkClient())
+        let repo     = StoreRepository(client: DefaultNetworkClient())
         let products = try await repo.fetchProducts(category: nil)
         #expect(products.count == 88)
     }
@@ -90,7 +90,7 @@ struct StoreRepositoryTests {
         // Response fidelity test: real traffic recorded from ShopAppServer (see
         // Replays/fetchProduct.har). The ID matches ShopAppServer's SeedData product 1.
         let id     = UUID(uuidString: "00000000-0000-0000-0001-000000000001")!
-        let repo   = StoreRepository(client: NetworkClient())
+        let repo   = StoreRepository(client: DefaultNetworkClient())
         let result = try await repo.fetchProduct(id: id)
         #expect(result.id == id)
         #expect(result.name == "MacBook Pro 16\"")

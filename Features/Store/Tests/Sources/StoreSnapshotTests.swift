@@ -112,7 +112,7 @@ struct StoreSnapshotTests {
         .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func rootViewRendersRealRecordedData() async throws {
-        let model = StoreModel(repository: StoreRepository(client: NetworkClient()))
+        let model = StoreModel(repository: StoreRepository(client: DefaultNetworkClient()))
         await model.load()
         assertSnapshot(
             of: StoreView(model: model),

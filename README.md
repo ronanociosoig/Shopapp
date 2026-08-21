@@ -286,7 +286,7 @@ Seven of the eight feature modules (`SupportTests` is the exception) also use [R
     .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
 )
 func fetchProductsDecodesResponse() async throws {
-    let repo     = StoreRepository(client: NetworkClient())
+    let repo     = StoreRepository(client: DefaultNetworkClient())
     let products = try await repo.fetchProducts(category: nil)
     #expect(products.count == 88)
 }
@@ -306,7 +306,7 @@ The three tiers above also compose directly: a Replay-recorded response feeds a 
     .replay("fetchProducts", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
 )
 func rootViewRendersRealRecordedData() async throws {
-    let model = StoreModel(repository: StoreRepository(client: NetworkClient()))
+    let model = StoreModel(repository: StoreRepository(client: DefaultNetworkClient()))
     await model.load()
     assertSnapshot(
         of: StoreView(model: model),
