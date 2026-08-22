@@ -10,7 +10,7 @@ public protocol PromotionsRepository: Sendable {
 
 // MARK: - Remote data source
 
-final class RemotePromotionsDataSource: Sendable {
+struct RemotePromotionsDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -27,7 +27,7 @@ final class RemotePromotionsDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class DefaultPromotionsRepository: PromotionsRepository {
+public struct DefaultPromotionsRepository: PromotionsRepository {
     private let remote: RemotePromotionsDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
