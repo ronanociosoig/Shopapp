@@ -42,7 +42,7 @@ public final class CheckoutModel {
     var selectedAddressID: UUID?
 
     private let repository: CheckoutRepository
-    private let selectedAddressStore: SelectedAddressStoreProtocol
+    private let selectedAddressStore: SelectedAddressStore
 
     /// Called after a successful order placement with the confirmed order and
     /// the set of product IDs for which the user opted into the extended guarantee.
@@ -53,7 +53,7 @@ public final class CheckoutModel {
         cart: [CartItem] = [],
         destination: Destination? = nil,
         repository: CheckoutRepository,
-        selectedAddressStore: SelectedAddressStoreProtocol = UserDefaultsSelectedAddressStore()
+        selectedAddressStore: SelectedAddressStore = UserDefaultsSelectedAddressStore()
     ) {
         self.cart                 = cart
         self.destination          = destination

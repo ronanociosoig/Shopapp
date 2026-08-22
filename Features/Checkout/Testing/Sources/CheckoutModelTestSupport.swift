@@ -5,7 +5,7 @@ public extension CheckoutModel {
     convenience init(
         cart: [CartItem] = [],
         destination: Destination? = nil,
-        selectedAddressStore: SelectedAddressStoreProtocol = StubSelectedAddressStore()
+        selectedAddressStore: SelectedAddressStore = StubSelectedAddressStore()
     ) {
         self.init(
             cart: cart,

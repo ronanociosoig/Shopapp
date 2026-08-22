@@ -6,13 +6,13 @@ import Common
 
 /// Abstracts persistence of the user's last-chosen shipping address ID.
 /// Inject a custom implementation in tests to avoid touching real UserDefaults.
-public protocol SelectedAddressStoreProtocol: Sendable {
+public protocol SelectedAddressStore: Sendable {
     func loadSelectedID() -> UUID?
     func saveSelectedID(_ id: UUID?)
 }
 
 /// Persists the selected shipping address UUID as a string in `UserDefaults`.
-public final class UserDefaultsSelectedAddressStore: SelectedAddressStoreProtocol, @unchecked Sendable {
+public final class UserDefaultsSelectedAddressStore: SelectedAddressStore, @unchecked Sendable {
     private let defaults: UserDefaults
     private let key: String
 

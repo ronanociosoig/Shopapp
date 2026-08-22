@@ -1,7 +1,7 @@
 import Foundation
 import Checkout
 
-public final class StubSelectedAddressStore: SelectedAddressStoreProtocol, @unchecked Sendable {
+public final class StubSelectedAddressStore: SelectedAddressStore, @unchecked Sendable {
     public private(set) var storedID: UUID?
 
     public init(id: UUID? = nil) { storedID = id }
