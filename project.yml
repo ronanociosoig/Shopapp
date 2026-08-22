@@ -222,7 +222,7 @@ targets:
       - package: ShopApp
         product: Search
       - package: ShopApp
-        product: SearchTesting
+        product: SearchScenarios
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.search

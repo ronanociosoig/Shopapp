@@ -34,6 +34,16 @@ let package = Package(
         .library(name: "SuggestionsTesting",  targets: ["SuggestionsTesting"]),
         .library(name: "PastPurchasesTesting",targets: ["PastPurchasesTesting"]),
         .library(name: "SupportTesting",      targets: ["SupportTesting"]),
+
+        // MARK: - Scenario / micro-app-support libraries
+        //
+        // A third tier alongside production (Store, …) and test (StoreTesting, …):
+        // named, realistic states a micro-app can launch into, backed by their own
+        // independent fake data. Deliberately does not depend on the Testing tier —
+        // conflating "what a test needs" with "what a micro-app demo needs" is the
+        // problem this tier exists to avoid. Pilot: Search only, for now.
+
+        .library(name: "SearchScenarios",     targets: ["SearchScenarios"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.10.0", traits: ["CasePaths"]),
@@ -160,6 +170,15 @@ let package = Package(
             dependencies: ["Search"],
             path: "Features/Search/Testing/Sources"
         ),
+
+        // MARK: - Scenario / micro-app-support targets
+
+        .target(
+            name: "SearchScenarios",
+            dependencies: ["Search"],
+            path: "Features/Search/Scenarios/Sources"
+        ),
+
         .target(
             name: "CheckoutTesting",
             dependencies: ["Checkout"],

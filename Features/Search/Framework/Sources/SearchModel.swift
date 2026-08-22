@@ -32,6 +32,27 @@ public final class SearchModel {
         self.destination = destination
     }
 
+    /// Constructs a model already in a specific result state, without going through the
+    /// real `search()` flow — for scenario/dev-support callers (e.g. a micro-app's scenario
+    /// picker) that need a model showing "results loaded" or "search failed" on launch, and
+    /// can't reach `search()`/`SearchState` directly since both are internal to this module.
+    /// `SearchState` itself stays internal — this is the narrowest surface that closes the gap.
+    public convenience init(
+        repository: SearchRepository,
+        query: String = "",
+        results: [SearchProduct]? = nil,
+        failureMessage: String? = nil,
+        destination: Destination? = nil
+    ) {
+        self.init(repository: repository, destination: destination)
+        self.query = query
+        if let failureMessage {
+            searchState = .error(failureMessage)
+        } else if let results {
+            searchState = results.isEmpty ? .empty : .results(results)
+        }
+    }
+
     @CasePathable
     public enum Destination: Equatable, Sendable {
         case productDetail(SearchProduct)
