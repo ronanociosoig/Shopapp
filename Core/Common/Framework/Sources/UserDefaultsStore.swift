@@ -3,7 +3,13 @@ import Foundation
 /// Generic UserDefaults persistence for `Codable` arrays.
 /// Each feature module's domain-specific store wraps this to satisfy
 /// its own typed protocol without repeating the encode/decode boilerplate.
-public final class UserDefaultsStore<T: Codable>: @unchecked Sendable {
+///
+/// A struct, not a class — it holds no mutable state of its own; every
+/// load/save call goes straight to UserDefaults, which owns the actual
+/// storage. @unchecked Sendable remains because this toolchain doesn't
+/// recognize UserDefaults itself as Sendable, despite Apple documenting
+/// it as thread-safe — unrelated to whether this type is a class or struct.
+public struct UserDefaultsStore<T: Codable>: @unchecked Sendable {
     private let defaults: UserDefaults
     private let key: String
 
