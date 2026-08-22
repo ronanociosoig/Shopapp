@@ -12,7 +12,10 @@ public protocol SelectedAddressStore: Sendable {
 }
 
 /// Persists the selected shipping address UUID as a string in `UserDefaults`.
-public final class UserDefaultsSelectedAddressStore: SelectedAddressStore, @unchecked Sendable {
+// @unchecked Sendable here is about UserDefaults specifically — it's documented
+// thread-safe by Apple but this toolchain doesn't recognize it as Sendable, not
+// about needing reference semantics; struct is still the right type otherwise.
+public struct UserDefaultsSelectedAddressStore: SelectedAddressStore, @unchecked Sendable {
     private let defaults: UserDefaults
     private let key: String
 
@@ -51,7 +54,7 @@ public protocol CheckoutRepository: Sendable {
 
 // MARK: - Remote data source
 
-final class RemoteCheckoutDataSource: Sendable {
+struct RemoteCheckoutDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -81,7 +84,7 @@ final class RemoteCheckoutDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class DefaultCheckoutRepository: CheckoutRepository {
+public struct DefaultCheckoutRepository: CheckoutRepository {
     private let remote: RemoteCheckoutDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
