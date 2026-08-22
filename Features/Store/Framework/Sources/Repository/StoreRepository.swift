@@ -11,7 +11,7 @@ public protocol StoreRepository: Sendable {
 
 // MARK: - Remote data source
 
-final class RemoteStoreDataSource: Sendable {
+struct RemoteStoreDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -50,7 +50,7 @@ struct LocalStoreDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class DefaultStoreRepository: StoreRepository {
+public struct DefaultStoreRepository: StoreRepository {
     private let remote: RemoteStoreDataSource
     private let local  = LocalStoreDataSource()
 
