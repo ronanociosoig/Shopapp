@@ -14,7 +14,7 @@ public protocol PastPurchasesRepository: Sendable {
 
 /// Abstracts over the order persistence back-end.
 /// Inject a custom implementation in tests to avoid touching real UserDefaults.
-public protocol OrderStoreProtocol: Sendable {
+public protocol OrderStore: Sendable {
     func loadOrders() -> [PastOrder]
     func saveOrders(_ orders: [PastOrder])
     func deleteOrder(id: UUID)
@@ -23,7 +23,7 @@ public protocol OrderStoreProtocol: Sendable {
 // MARK: - UserDefaults Order Store
 
 /// Persists `PastOrder` values as JSON in `UserDefaults`, newest first.
-public final class UserDefaultsOrderStore: OrderStoreProtocol, @unchecked Sendable {
+public final class UserDefaultsOrderStore: OrderStore, @unchecked Sendable {
     private let store: UserDefaultsStore<PastOrder>
 
     public init(
@@ -100,11 +100,11 @@ public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSou
 
 public final class DefaultPastPurchasesRepository: PastPurchasesRepository {
     private let remote: any RemotePastPurchasesDataSourceProtocol
-    private let store: OrderStoreProtocol
+    private let store: OrderStore
 
     public init(
         client: NetworkClient = DefaultNetworkClient(),
-        store: OrderStoreProtocol = UserDefaultsOrderStore()
+        store: OrderStore = UserDefaultsOrderStore()
     ) {
         self.remote = RemotePastPurchasesDataSource(client: client)
         self.store  = store
@@ -112,7 +112,7 @@ public final class DefaultPastPurchasesRepository: PastPurchasesRepository {
 
     init(
         remote: some RemotePastPurchasesDataSourceProtocol,
-        store: OrderStoreProtocol = UserDefaultsOrderStore()
+        store: OrderStore = UserDefaultsOrderStore()
     ) {
         self.remote = remote
         self.store  = store
@@ -120,7 +120,7 @@ public final class DefaultPastPurchasesRepository: PastPurchasesRepository {
 
     /// A `DefaultPastPurchasesRepository` backed by mock remote data, going through
     /// the full local-store and status-refresh pipeline.
-    public static func mock(store: OrderStoreProtocol = UserDefaultsOrderStore()) -> DefaultPastPurchasesRepository {
+    public static func mock(store: OrderStore = UserDefaultsOrderStore()) -> DefaultPastPurchasesRepository {
         DefaultPastPurchasesRepository(remote: MockRemotePastPurchasesDataSource(), store: store)
     }
 

@@ -4,7 +4,7 @@ import Foundation
 
 // MARK: - Test double
 
-private final class StubOrderStore: OrderStoreProtocol, @unchecked Sendable {
+private final class StubOrderStore: OrderStore, @unchecked Sendable {
     var storedOrders: [PastOrder]
 
     init(orders: [PastOrder] = []) { storedOrders = orders }
