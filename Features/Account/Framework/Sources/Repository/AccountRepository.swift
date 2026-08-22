@@ -27,7 +27,7 @@ public protocol AddressStore: Sendable {
 // MARK: - UserDefaults Address Store
 
 /// Persists `SavedAddress` values as JSON in `UserDefaults`.
-public final class UserDefaultsAddressStore: AddressStore, @unchecked Sendable {
+public struct UserDefaultsAddressStore: AddressStore, @unchecked Sendable {
     private let store: UserDefaultsStore<SavedAddress>
 
     public init(
@@ -43,7 +43,7 @@ public final class UserDefaultsAddressStore: AddressStore, @unchecked Sendable {
 
 // MARK: - Remote data source
 
-final class RemoteAccountDataSource: Sendable {
+struct RemoteAccountDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -82,7 +82,7 @@ actor LocalAccountDataSource {
 
 // MARK: - Live repository
 
-public final class DefaultAccountRepository: AccountRepository {
+public struct DefaultAccountRepository: AccountRepository {
     private let remote: RemoteAccountDataSource
     private let addressStore: AddressStore
     // In-memory cache for profile and cards (not persisted across launches)
