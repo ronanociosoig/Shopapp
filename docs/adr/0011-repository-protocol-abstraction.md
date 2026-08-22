@@ -11,7 +11,7 @@ The standard solution is to abstract the data layer behind a protocol. The quest
 
 ## Decision
 
-Each feature module defines a single `XxxRepositoryProtocol` that expresses all data operations the module's model needs. The protocol sits in the feature's framework target alongside the model:
+Each feature module defines a single `XxxRepository` protocol that expresses all data operations the module's model needs. The protocol sits in the feature's framework target alongside the model:
 
 ```swift
 // In Store module
@@ -22,9 +22,9 @@ public protocol StoreRepository: Sendable {
 ```
 
 Note the name: the protocol is `StoreRepository`, not `StoreRepositoryProtocol`. Every feature module's
-repository protocol (and `Account`'s `AddressStore`) was renamed to drop the `Protocol` suffix, following
-the Swift API Design Guidelines' advice against restating a type's kind in its own name — see ADR-0013
-for the naming convention itself.
+repository protocol was renamed to drop the `Protocol` suffix, following the Swift API Design
+Guidelines' standard advice against restating a type's kind in its own name — a naming convention, not
+an architectural decision, so it isn't recorded as its own ADR.
 
 The framework target provides one concrete implementation — the live repository — which is the only type the production app uses. It may compose multiple internal data sources (remote and local cache) but those are implementation details, not part of the protocol:
 
