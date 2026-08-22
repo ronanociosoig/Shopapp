@@ -19,7 +19,7 @@ protocol RemoteSearchDataSource: Sendable {
 
 // MARK: - Remote data source
 
-final class DefaultRemoteSearchDataSource: RemoteSearchDataSource, Sendable {
+struct DefaultRemoteSearchDataSource: RemoteSearchDataSource, Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -54,7 +54,7 @@ struct LocalSearchDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class DefaultSearchRepository: SearchRepository {
+public struct DefaultSearchRepository: SearchRepository {
     private let remote: any RemoteSearchDataSource
     private let local  = LocalSearchDataSource()
 
