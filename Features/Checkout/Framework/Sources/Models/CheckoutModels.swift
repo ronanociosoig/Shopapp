@@ -250,7 +250,11 @@ public extension ShippingAddress {
 /// Each value represents one screen in the sequential checkout funnel.
 /// Appended to `CheckoutModel.path` to push screens onto the NavigationStack.
 /// The user can navigate back through the stack at any point.
-enum CheckoutStep: Hashable, Sendable {
+///
+/// Public only because it is a parameter type of `CheckoutModel`'s `@_spi(Scenarios)`
+/// convenience init — ordinary consumers of `Checkout` have no legitimate reason to
+/// construct a mid-funnel `path` themselves and don't see that initializer at all.
+public enum CheckoutStep: Hashable, Sendable {
     case address
     case orderOptions(ShippingAddress)
     case paymentMethod(ShippingAddress)

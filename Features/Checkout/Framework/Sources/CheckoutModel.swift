@@ -62,6 +62,39 @@ public final class CheckoutModel {
         self.selectedAddressID    = selectedAddressStore.loadSelectedID()
     }
 
+    /// Reaches any funnel state directly — including mid-`path` screens the
+    /// designated init above has no parameter for — without exposing `path`,
+    /// `deliveryOption`, or the funnel's step-advancing methods as ordinary
+    /// public API. `@_spi` rather than a second plain-public init because,
+    /// unlike `destination` (inert data), `path` carries sequencing invariants
+    /// a caller could otherwise violate (e.g. `.paymentEntry` for an address
+    /// absent from `savedAddresses`); gating it keeps that hole out of
+    /// `Checkout`'s real public surface and off its API diff, and reserves it
+    /// for the one caller — the micro-app's scenario builder — that has a
+    /// legitimate reason to teleport into the middle of the funnel.
+    @_spi(Scenarios)
+    public convenience init(
+        cart: [CartItem] = [],
+        path: [CheckoutStep] = [],
+        destination: Destination? = nil,
+        savedAddresses: [ShippingAddress] = [],
+        deliveryOption: DeliveryOption = .standard,
+        extendedGuaranteeItems: Set<UUID> = [],
+        repository: CheckoutRepository,
+        selectedAddressStore: SelectedAddressStore = UserDefaultsSelectedAddressStore()
+    ) {
+        self.init(
+            cart: cart,
+            destination: destination,
+            repository: repository,
+            selectedAddressStore: selectedAddressStore
+        )
+        self.path = path
+        self.savedAddresses = savedAddresses
+        self.deliveryOption = deliveryOption
+        self.extendedGuaranteeItems = extendedGuaranteeItems
+    }
+
     // MARK: - Computed
 
     /// The `ShippingAddress` that matches `selectedAddressID`, or `nil` if none.

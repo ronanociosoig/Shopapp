@@ -248,8 +248,6 @@ targets:
     dependencies:
       - package: ShopApp
         product: Checkout
-      - package: ShopApp
-        product: CheckoutTesting
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.checkout

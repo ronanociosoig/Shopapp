@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06D1CB4128A7AE950FACA791 /* CheckoutTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 0B6D9B44DAFE324C5905A49A /* CheckoutTesting */; };
 		0DA8792556B632C6D04317A1 /* CheckoutFunnelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */; };
 		10139F729786995A9B197E35 /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 59D2E2D39840DB552E818AC0 /* Checkout */; };
 		194D2ED485E44321F8A11EFD /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 8B4EF89E6414765AF69FB40C /* Checkout */; };
@@ -37,6 +36,7 @@
 		83389E374C4C0CF505F9C133 /* Promotions in Frameworks */ = {isa = PBXBuildFile; productRef = AD0B3E75E8B921C1D670326C /* Promotions */; };
 		92B3A02073658B20654FD4B7 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 4BBA7B20F61E864B7C3EF822 /* SnapshotTesting */; };
 		9CC0A8489DC4C991FD699EF7 /* ShopAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD4711B4DF11A1176E4908B /* ShopAppUITests.swift */; };
+		A0F7BAC52265ACBCA46AD26E /* CheckoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40490B6C30A53B94A2F1F77D /* CheckoutScenario.swift */; };
 		A2F536E6702D843FD2B94886 /* Promotions in Frameworks */ = {isa = PBXBuildFile; productRef = E208CD9E0C09F1123B7F65B1 /* Promotions */; };
 		A91641EB7A5AD16FBC3CA7D7 /* PastPurchasesTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CA7DF96E4F47C78B50D8EDC1 /* PastPurchasesTesting */; };
 		B96BA1232D76463AAE3823EA /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 3358B6CF875178EF090B7102 /* DesignSystem */; };
@@ -92,6 +92,7 @@
 		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CheckoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EA81447207387812C53C745 /* CheckoutAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CheckoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3752626176AA8E3AB2C31C32 /* ShopAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		40490B6C30A53B94A2F1F77D /* CheckoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutScenario.swift; sourceTree = "<group>"; };
 		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PromotionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DesignSystemApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		510466A867228A7F746D02EF /* ShopApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShopApp; path = .; sourceTree = SOURCE_ROOT; };
@@ -191,7 +192,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				194D2ED485E44321F8A11EFD /* Checkout in Frameworks */,
-				06D1CB4128A7AE950FACA791 /* CheckoutTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */,
+				40490B6C30A53B94A2F1F77D /* CheckoutScenario.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -774,7 +775,6 @@
 			name = CheckoutApp;
 			packageProductDependencies = (
 				8B4EF89E6414765AF69FB40C /* Checkout */,
-				0B6D9B44DAFE324C5905A49A /* CheckoutTesting */,
 			);
 			productName = CheckoutApp;
 			productReference = 29F2225CE4E42BDA26534616 /* CheckoutApp.app */;
@@ -893,6 +893,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AE577EB14B71D53365A28E8 /* CheckoutApp.swift in Sources */,
+				A0F7BAC52265ACBCA46AD26E /* CheckoutScenario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1722,10 +1723,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0B6D9B44DAFE324C5905A49A /* CheckoutTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CheckoutTesting;
-		};
 		1B8E8165E29A4C82F44F955A /* ShopCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopCore;

@@ -1,25 +1,42 @@
 import SwiftUI
 import Checkout
-import CheckoutTesting
 
 @main
 struct CheckoutApp: App {
-    // Micro-app entry point for the Checkout module.
-    // Pre-populated cart and a saved address make every screen of the funnel
-    // reachable immediately — no need to navigate from a product listing or
-    // set up an account first. delay: .zero keeps the processing step instant
-    // so manual testing and XCUITests don't wait for the simulated network call.
     var body: some Scene {
         WindowGroup {
-            CheckoutView(model: {
-                let model = CheckoutModel(
-                    cart: CartItem.stubs,
-                    //destination: .processing,
-                    repository: StubCheckoutRepository(delay: .zero)
-                )
-                model.savedAddresses = [.stub]
-                return model
-            }())
+            ScenarioListView()
+        }
+    }
+}
+
+/// Micro-app entry point for the Checkout module. The root screen is a list of
+/// scenarios, not a single hardcoded funnel state — picking one opens the real
+/// `CheckoutView` already configured in that state, via `CheckoutScenarioBuilder`.
+///
+/// Navigation follows the same convention as every feature model in this
+/// project (see AGENTS.md): one optional selection property drives the
+/// presentation, never `NavigationLink(destination:)`. It's a full-screen
+/// cover rather than a `navigationDestination(item:)` push, deliberately:
+/// `CheckoutView` owns its own internal `NavigationStack` (for the funnel), and
+/// nesting that as a *pushed* destination inside this list's own NavigationStack
+/// silently no-ops the push — confirmed with a real tap via `CheckoutAppUITests`,
+/// not just a screenshot. A cover gives `CheckoutView`'s stack its own
+/// presentation context instead of nesting it, which also better matches what a
+/// scenario actually is: launching straight into that state, not drilling down
+/// from the list.
+private struct ScenarioListView: View {
+    @State private var selectedScenario: CheckoutScenario?
+
+    var body: some View {
+        NavigationStack {
+            List(CheckoutScenario.allCases) { scenario in
+                Button(scenario.title) { selectedScenario = scenario }
+            }
+            .navigationTitle("Checkout Scenarios")
+        }
+        .fullScreenCover(item: $selectedScenario) { scenario in
+            CheckoutView(model: CheckoutScenarioBuilder().makeModel(for: scenario))
         }
     }
 }

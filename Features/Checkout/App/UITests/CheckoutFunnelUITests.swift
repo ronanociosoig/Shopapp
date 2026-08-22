@@ -31,6 +31,14 @@ final class CheckoutFunnelUITests: XCTestCase {
 
     func test_happyPath_completesCheckoutFromCartToConfirmation() throws {
 
+        // ── 0. Scenario picker ───────────────────────────────────────────────
+        // The micro-app's root screen is a scenario list (see CheckoutScenario);
+        // "Cart" is the pre-populated funnel starting point.
+        XCTAssertTrue(
+            app.navigationBars["Checkout Scenarios"].waitForExistence(timeout: 5)
+        )
+        app.buttons["Cart"].tap()
+
         // ── 1. Cart ───────────────────────────────────────────────────────────
         XCTAssertTrue(
             app.navigationBars["Your Cart"].waitForExistence(timeout: 5),
