@@ -15,29 +15,37 @@ Each feature module defines a single `XxxRepositoryProtocol` that expresses all 
 
 ```swift
 // In Store module
-public protocol StoreRepositoryProtocol: Sendable {
+public protocol StoreRepository: Sendable {
     func fetchProducts(category: String?) async throws -> [StoreProduct]
     func fetchProduct(id: UUID) async throws -> StoreProduct
 }
 ```
 
+Note the name: the protocol is `StoreRepository`, not `StoreRepositoryProtocol`. Every feature module's
+repository protocol (and `Account`'s `AddressStore`) was renamed to drop the `Protocol` suffix, following
+the Swift API Design Guidelines' advice against restating a type's kind in its own name — see ADR-0013
+for the naming convention itself.
+
 The framework target provides one concrete implementation — the live repository — which is the only type the production app uses. It may compose multiple internal data sources (remote and local cache) but those are implementation details, not part of the protocol:
 
 ```swift
-public final class StoreRepository: StoreRepositoryProtocol {
+public final class DefaultStoreRepository: StoreRepository {
     private let remote: RemoteStoreDataSource
     private let local  = LocalStoreDataSource()
     // ...
 }
 ```
 
+The live implementation carries the `Default` prefix precisely because the protocol claimed the plain
+name — this is the same pattern `NetworkFoundation` uses for `NetworkClient`/`DefaultNetworkClient`.
+
 The stub implementation lives in the companion `XxxTesting` target (ADR-0006). Feature models accept the protocol as an injected dependency:
 
 ```swift
 public final class StoreModel {
-    private let repository: StoreRepositoryProtocol
+    private let repository: StoreRepository
 
-    public init(repository: StoreRepositoryProtocol, destination: Destination? = nil) {
+    public init(repository: StoreRepository, destination: Destination? = nil) {
         self.repository = repository
         self.destination = destination
     }
