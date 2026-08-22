@@ -19,7 +19,7 @@ let replayFilters: [Filter] = [
     .queryParameters(removing: ["token", "api_key"]),
 ]
 
-// These tests exercise `RemotePastPurchasesDataSource` directly rather than
+// These tests exercise `DefaultRemotePastPurchasesDataSource` directly rather than
 // `PastPurchasesRepository`, because the public repository layers local-store
 // caching and a per-order status refresh loop on top of the network calls —
 // the network layer itself is what these tests target.
@@ -32,7 +32,7 @@ struct PastPurchasesRepositoryNetworkTests {
     func fetchOrdersSendsGetRequest() async throws {
         let client = MockNetworkClient()
         try client.setJSON([PastOrder]())
-        let source = RemotePastPurchasesDataSource(client: client)
+        let source = DefaultRemotePastPurchasesDataSource(client: client)
         _ = try await source.fetchOrders()
         let request = try #require(client.receivedRequests.first)
         #expect(request.url?.path.hasSuffix("/orders") == true)
@@ -44,7 +44,7 @@ struct PastPurchasesRepositoryNetworkTests {
     func fetchOrderStatusIncludesIDInPath() async throws {
         let client = MockNetworkClient()
         try client.setJSON(OrderStatus.delivered)
-        let source = RemotePastPurchasesDataSource(client: client)
+        let source = DefaultRemotePastPurchasesDataSource(client: client)
         let id     = UUID()
         _ = try await source.fetchOrderStatus(for: id)
         let path = client.receivedRequests.first?.url?.path ?? ""
@@ -61,7 +61,7 @@ struct PastPurchasesRepositoryNetworkTests {
     func fetchOrdersDecodesRealResponse() async throws {
         // Response fidelity test: real traffic recorded from ShopAppServer
         // (see Replays/fetchOrders.har), not a hand-authored stub.
-        let source = RemotePastPurchasesDataSource(client: DefaultNetworkClient())
+        let source = DefaultRemotePastPurchasesDataSource(client: DefaultNetworkClient())
         let orders = try await source.fetchOrders()
         #expect(orders.count == 2)
         #expect(orders.first?.lines.first?.name == "MacBook Pro 16\"")
@@ -72,7 +72,7 @@ struct PastPurchasesRepositoryNetworkTests {
         .replay("fetchOrderStatus", matching: .default, filters: replayFilters, rootURL: replaysRootURL)
     )
     func fetchOrderStatusDecodesRealResponse() async throws {
-        let source = RemotePastPurchasesDataSource(client: DefaultNetworkClient())
+        let source = DefaultRemotePastPurchasesDataSource(client: DefaultNetworkClient())
         let id     = UUID(uuidString: "00000000-0000-0000-0009-000000000001")!
         let status = try await source.fetchOrderStatus(for: id)
         #expect(status == .delivered)

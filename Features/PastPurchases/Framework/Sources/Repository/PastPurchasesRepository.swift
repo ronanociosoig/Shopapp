@@ -45,14 +45,14 @@ public final class UserDefaultsOrderStore: OrderStore, @unchecked Sendable {
 
 // MARK: - Remote data source protocol
 
-protocol RemotePastPurchasesDataSourceProtocol: Sendable {
+protocol RemotePastPurchasesDataSource: Sendable {
     func fetchOrders() async throws -> [PastOrder]
     func fetchOrderStatus(for orderID: UUID) async throws -> OrderStatus
 }
 
 // MARK: - Remote data source
 
-final class RemotePastPurchasesDataSource: RemotePastPurchasesDataSourceProtocol, Sendable {
+final class DefaultRemotePastPurchasesDataSource: RemotePastPurchasesDataSource, Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -75,7 +75,7 @@ final class RemotePastPurchasesDataSource: RemotePastPurchasesDataSourceProtocol
 
 /// Simulates remote order-status responses without a real network connection.
 /// Status is derived deterministically from the order's placement date.
-public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSourceProtocol, Sendable {
+public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSource, Sendable {
     private let orders: [PastOrder]
 
     public init(orders: [PastOrder] = PastOrder.stubs) {
@@ -99,19 +99,19 @@ public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSou
 // MARK: - Live repository
 
 public final class DefaultPastPurchasesRepository: PastPurchasesRepository {
-    private let remote: any RemotePastPurchasesDataSourceProtocol
+    private let remote: any RemotePastPurchasesDataSource
     private let store: OrderStore
 
     public init(
         client: NetworkClient = DefaultNetworkClient(),
         store: OrderStore = UserDefaultsOrderStore()
     ) {
-        self.remote = RemotePastPurchasesDataSource(client: client)
+        self.remote = DefaultRemotePastPurchasesDataSource(client: client)
         self.store  = store
     }
 
     init(
-        remote: some RemotePastPurchasesDataSourceProtocol,
+        remote: some RemotePastPurchasesDataSource,
         store: OrderStore = UserDefaultsOrderStore()
     ) {
         self.remote = remote
