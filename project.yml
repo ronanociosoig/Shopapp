@@ -221,8 +221,6 @@ targets:
     dependencies:
       - package: ShopApp
         product: Search
-      - package: ShopApp
-        product: SearchScenarios
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.search

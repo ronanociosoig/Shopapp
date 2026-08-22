@@ -24,6 +24,7 @@
 		5591C2D73799F6C1A38AF744 /* PromotionsTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 21EF7C3A568B219B7BD391B2 /* PromotionsTesting */; };
 		5D4D8B33FB64D6F29A8252B8 /* Suggestions in Frameworks */ = {isa = PBXBuildFile; productRef = A903C02E63913CDDC39840CD /* Suggestions */; };
 		5EF95E4456A5E4E781261455 /* RootSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0580246527A91B4F270829A2 /* RootSnapshotTests.swift */; };
+		5FD16DCED371B82EC160DFAC /* SearchScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE96CC7EDA7EF1DDCF51AE9 /* SearchScenario.swift */; };
 		629C79CF8476BB93E40CA882 /* SuggestionsTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 2F560470612E77E6DAE7651B /* SuggestionsTesting */; };
 		63AE96BFB11B3623A7D2F937 /* Search in Frameworks */ = {isa = PBXBuildFile; productRef = F229C2CC6D4E7A47FFD0B8DF /* Search */; };
 		66BD418AEC08A8DE1E616D4E /* PromotionsTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 2F9F6AA7C670A1A572F29F1E /* PromotionsTesting */; };
@@ -49,7 +50,6 @@
 		DD37A14C08DAE7EFAA51EAB8 /* StoreTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 230F22A05C96E4621D249E07 /* StoreTesting */; };
 		E2E7E0CBE6818B62AC4B7528 /* Account in Frameworks */ = {isa = PBXBuildFile; productRef = C14327C805FBD33D3CB8EFD8 /* Account */; };
 		E36E9526D379CB82B0F56B3E /* AccountApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DAAE2C9217523C1066D1E27 /* AccountApp.swift */; };
-		E3F3EE72EE78E1D3BFFA2DA6 /* SearchScenarios in Frameworks */ = {isa = PBXBuildFile; productRef = 491E03E36323FD294B0E9BF9 /* SearchScenarios */; };
 		F25E314E0CBCAF5F8565B719 /* Account in Frameworks */ = {isa = PBXBuildFile; productRef = 74C64115760D62F039D8A416 /* Account */; };
 		F8BBFFDB55446A8780AAC970 /* CheckoutTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 884720785B8AAE89F7C8970B /* CheckoutTesting */; };
 		F98286DAF92BDDFF8BAC74A8 /* Suggestions in Frameworks */ = {isa = PBXBuildFile; productRef = 47041F172F6957A31FB0ADB2 /* Suggestions */; };
@@ -103,6 +103,7 @@
 		D04BD09F84664B4BCA4DA364 /* SearchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchApp.swift; sourceTree = "<group>"; };
 		D11046F7EA1AAA004621A801 /* PromotionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionsApp.swift; sourceTree = "<group>"; };
 		D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutApp.swift; sourceTree = "<group>"; };
+		DDE96CC7EDA7EF1DDCF51AE9 /* SearchScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchScenario.swift; sourceTree = "<group>"; };
 		DF9BEF72580C26D74ED78999 /* AccountApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AccountApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1DA51EE048AE9DF3B871C3E /* DesignSystemApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -130,7 +131,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB06D133F912D1B9BA801112 /* Search in Frameworks */,
-				E3F3EE72EE78E1D3BFFA2DA6 /* SearchScenarios in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +356,7 @@
 			isa = PBXGroup;
 			children = (
 				D04BD09F84664B4BCA4DA364 /* SearchApp.swift */,
+				DDE96CC7EDA7EF1DDCF51AE9 /* SearchScenario.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -640,7 +641,6 @@
 			name = SearchApp;
 			packageProductDependencies = (
 				656D585663E2E8C8CBE72F4D /* Search */,
-				491E03E36323FD294B0E9BF9 /* SearchScenarios */,
 			);
 			productName = SearchApp;
 			productReference = 1E36F9E90AC91DB876855A21 /* SearchApp.app */;
@@ -909,6 +909,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				509419EDEA53034AE71143C8 /* SearchApp.swift in Sources */,
+				5FD16DCED371B82EC160DFAC /* SearchScenario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1760,10 +1761,6 @@
 		47041F172F6957A31FB0ADB2 /* Suggestions */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Suggestions;
-		};
-		491E03E36323FD294B0E9BF9 /* SearchScenarios */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SearchScenarios;
 		};
 		4BBA7B20F61E864B7C3EF822 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
