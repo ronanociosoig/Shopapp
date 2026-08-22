@@ -11,7 +11,7 @@ public protocol SupportRepository: Sendable {
 
 // MARK: - Remote data source
 
-final class RemoteSupportDataSource: Sendable {
+struct RemoteSupportDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -30,7 +30,7 @@ final class RemoteSupportDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class DefaultSupportRepository: SupportRepository {
+public struct DefaultSupportRepository: SupportRepository {
     private let remote: RemoteSupportDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
