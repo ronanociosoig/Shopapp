@@ -10,7 +10,7 @@ public protocol SuggestionsRepository: Sendable {
 
 // MARK: - Remote data source
 
-final class RemoteSuggestionsDataSource: Sendable {
+struct RemoteSuggestionsDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -30,7 +30,7 @@ final class RemoteSuggestionsDataSource: Sendable {
 
 // MARK: - Live repository
 
-public final class DefaultSuggestionsRepository: SuggestionsRepository {
+public struct DefaultSuggestionsRepository: SuggestionsRepository {
     private let remote: RemoteSuggestionsDataSource
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
