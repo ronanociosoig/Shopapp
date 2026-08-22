@@ -35,15 +35,17 @@ final class RemoteStoreDataSource: Sendable {
 
 // MARK: - Local data source (in-memory cache)
 
-final class LocalStoreDataSource: @unchecked Sendable {
+// A struct holding two actor references, not a class — no state of its own to
+// protect; LocalCache's own actor isolation is what makes concurrent access safe.
+struct LocalStoreDataSource: Sendable {
     private let productsCache = LocalCache<String, [StoreProduct]>()
     private let productCache  = LocalCache<UUID, StoreProduct>()
 
-    func cachedProducts(category: String?) -> [StoreProduct]? { productsCache.get(category ?? "all") }
-    func cachedProduct(id: UUID) -> StoreProduct? { productCache.get(id) }
+    func cachedProducts(category: String?) async -> [StoreProduct]? { await productsCache.get(category ?? "all") }
+    func cachedProduct(id: UUID) async -> StoreProduct? { await productCache.get(id) }
 
-    func store(_ products: [StoreProduct], category: String?) { productsCache.set(products, for: category ?? "all") }
-    func store(_ product: StoreProduct) { productCache.set(product, for: product.id) }
+    func store(_ products: [StoreProduct], category: String?) async { await productsCache.set(products, for: category ?? "all") }
+    func store(_ product: StoreProduct) async { await productCache.set(product, for: product.id) }
 }
 
 // MARK: - Live repository
@@ -57,16 +59,16 @@ public final class DefaultStoreRepository: StoreRepository {
     }
 
     public func fetchProducts(category: String?) async throws -> [StoreProduct] {
-        if let cached = local.cachedProducts(category: category) { return cached }
+        if let cached = await local.cachedProducts(category: category) { return cached }
         let products = try await remote.fetchProducts(category: category)
-        local.store(products, category: category)
+        await local.store(products, category: category)
         return products
     }
 
     public func fetchProduct(id: UUID) async throws -> StoreProduct {
-        if let cached = local.cachedProduct(id: id) { return cached }
+        if let cached = await local.cachedProduct(id: id) { return cached }
         let product = try await remote.fetchProduct(id: id)
-        local.store(product)
+        await local.store(product)
         return product
     }
 }

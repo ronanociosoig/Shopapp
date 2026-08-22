@@ -68,9 +68,16 @@ final class RemoteAccountDataSource: Sendable {
 
 // MARK: - Local cache (profile and cards only)
 
-final class LocalAccountDataSource: @unchecked Sendable {
-    var profile: UserProfile?
-    var cards: [SavedCard] = []
+// An actor, not a class — genuinely mutable state accessed from async
+// repository methods needs real isolation, same reasoning as LocalCache.
+actor LocalAccountDataSource {
+    private var profile: UserProfile?
+    private var cards: [SavedCard] = []
+
+    func getProfile() -> UserProfile? { profile }
+    func setProfile(_ profile: UserProfile) { self.profile = profile }
+    func getCards() -> [SavedCard] { cards }
+    func setCards(_ cards: [SavedCard]) { self.cards = cards }
 }
 
 // MARK: - Live repository
@@ -90,9 +97,9 @@ public final class DefaultAccountRepository: AccountRepository {
     }
 
     public func fetchProfile() async throws -> UserProfile {
-        if let cached = local.profile { return cached }
+        if let cached = await local.getProfile() { return cached }
         let profile = try await remote.fetchProfile()
-        local.profile = profile
+        await local.setProfile(profile)
         return profile
     }
 
@@ -105,14 +112,15 @@ public final class DefaultAccountRepository: AccountRepository {
     }
 
     public func fetchCards() async throws -> [SavedCard] {
-        if !local.cards.isEmpty { return local.cards }
+        let cached = await local.getCards()
+        if !cached.isEmpty { return cached }
         let cards = try await remote.fetchCards()
-        local.cards = cards
+        await local.setCards(cards)
         return cards
     }
 
     public func updateProfile(_ profile: UserProfile) async throws -> UserProfile {
-        local.profile = profile
+        await local.setProfile(profile)
         return profile
     }
 
@@ -135,7 +143,9 @@ public final class DefaultAccountRepository: AccountRepository {
     }
 
     public func removeCard(id: UUID) async throws {
-        local.cards.removeAll { $0.id == id }
+        var cards = await local.getCards()
+        cards.removeAll { $0.id == id }
+        await local.setCards(cards)
     }
 }
 

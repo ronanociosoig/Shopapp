@@ -40,14 +40,16 @@ final class DefaultRemoteSearchDataSource: RemoteSearchDataSource, Sendable {
 
 // MARK: - Local data source
 
-final class LocalSearchDataSource: @unchecked Sendable {
+// A struct holding two actor references, not a class — no state of its own to
+// protect; LocalCache's own actor isolation is what makes concurrent access safe.
+struct LocalSearchDataSource: Sendable {
     private let queryCache    = LocalCache<String, [SearchProduct]>()
     private let categoryCache = LocalCache<String, [SearchProduct]>()
 
-    func cachedResults(for query: String) -> [SearchProduct]? { queryCache.get(query) }
-    func cachedCategory(_ category: String) -> [SearchProduct]? { categoryCache.get(category) }
-    func store(_ results: [SearchProduct], forQuery query: String) { queryCache.set(results, for: query) }
-    func store(_ results: [SearchProduct], forCategory category: String) { categoryCache.set(results, for: category) }
+    func cachedResults(for query: String) async -> [SearchProduct]? { await queryCache.get(query) }
+    func cachedCategory(_ category: String) async -> [SearchProduct]? { await categoryCache.get(category) }
+    func store(_ results: [SearchProduct], forQuery query: String) async { await queryCache.set(results, for: query) }
+    func store(_ results: [SearchProduct], forCategory category: String) async { await categoryCache.set(results, for: category) }
 }
 
 // MARK: - Live repository
@@ -61,9 +63,9 @@ public final class DefaultSearchRepository: SearchRepository {
     }
 
     public func search(query: String) async throws -> [SearchProduct] {
-        if let cached = local.cachedResults(for: query) { return cached }
+        if let cached = await local.cachedResults(for: query) { return cached }
         let results = try await remote.search(query: query)
-        local.store(results, forQuery: query)
+        await local.store(results, forQuery: query)
         return results
     }
 
@@ -73,9 +75,9 @@ public final class DefaultSearchRepository: SearchRepository {
     }
 
     public func fetchByCategory(_ category: String) async throws -> [SearchProduct] {
-        if let cached = local.cachedCategory(category) { return cached }
+        if let cached = await local.cachedCategory(category) { return cached }
         let results = try await remote.fetchByCategory(category)
-        local.store(results, forCategory: category)
+        await local.store(results, forCategory: category)
         return results
     }
 }

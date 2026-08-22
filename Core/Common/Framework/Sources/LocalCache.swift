@@ -1,7 +1,9 @@
 /// Generic in-memory key-value cache.
 /// Used by feature repositories to avoid redundant network calls within a session.
-/// Not thread-safe — callers are responsible for confining access to one actor/queue.
-public final class LocalCache<Key: Hashable, Value> {
+/// An actor, not a class — mutable state accessed from concurrent async contexts
+/// (repositories called from more than one Task) needs real isolation, not a
+/// `class` wrapped in `@unchecked Sendable` on a promise that callers behave.
+public actor LocalCache<Key: Hashable, Value> {
     private var storage: [Key: Value] = [:]
 
     public init() {}
