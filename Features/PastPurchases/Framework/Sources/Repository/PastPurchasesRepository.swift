@@ -23,7 +23,7 @@ public protocol OrderStore: Sendable {
 // MARK: - UserDefaults Order Store
 
 /// Persists `PastOrder` values as JSON in `UserDefaults`, newest first.
-public final class UserDefaultsOrderStore: OrderStore, @unchecked Sendable {
+public struct UserDefaultsOrderStore: OrderStore, @unchecked Sendable {
     private let store: UserDefaultsStore<PastOrder>
 
     public init(
@@ -52,7 +52,7 @@ protocol RemotePastPurchasesDataSource: Sendable {
 
 // MARK: - Remote data source
 
-final class DefaultRemotePastPurchasesDataSource: RemotePastPurchasesDataSource, Sendable {
+struct DefaultRemotePastPurchasesDataSource: RemotePastPurchasesDataSource, Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -75,7 +75,7 @@ final class DefaultRemotePastPurchasesDataSource: RemotePastPurchasesDataSource,
 
 /// Simulates remote order-status responses without a real network connection.
 /// Status is derived deterministically from the order's placement date.
-public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSource, Sendable {
+public struct MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSource, Sendable {
     private let orders: [PastOrder]
 
     public init(orders: [PastOrder] = PastOrder.stubs) {
@@ -98,7 +98,7 @@ public final class MockRemotePastPurchasesDataSource: RemotePastPurchasesDataSou
 
 // MARK: - Live repository
 
-public final class DefaultPastPurchasesRepository: PastPurchasesRepository {
+public struct DefaultPastPurchasesRepository: PastPurchasesRepository {
     private let remote: any RemotePastPurchasesDataSource
     private let store: OrderStore
 
