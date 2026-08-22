@@ -29,7 +29,7 @@ an architectural decision, so it isn't recorded as its own ADR.
 The framework target provides one concrete implementation — the live repository — which is the only type the production app uses. It may compose multiple internal data sources (remote and local cache) but those are implementation details, not part of the protocol:
 
 ```swift
-public final class DefaultStoreRepository: StoreRepository {
+public struct DefaultStoreRepository: StoreRepository {
     private let remote: RemoteStoreDataSource
     private let local  = LocalStoreDataSource()
     // ...
@@ -38,6 +38,20 @@ public final class DefaultStoreRepository: StoreRepository {
 
 The live implementation carries the `Default` prefix precisely because the protocol claimed the plain
 name — this is the same pattern `NetworkFoundation` uses for `NetworkClient`/`DefaultNetworkClient`.
+
+Note the second thing about this type: it's a `struct`, not a class. Every `DefaultXRepository` and its
+internal `RemoteXDataSource` helper holds only `let` properties and delegates all mutation to whatever
+it wraps — none of them have identity or state of their own to protect, so per [the Swift Programming
+Language's own guidance](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/classesandstructures/)
+("prefer structures because they're easier to reason about, and use classes when they're appropriate or
+necessary — most of the custom types you define will be structures and enumerations"), struct is the
+correct default here, not class. Where a repository's internal cache genuinely holds mutable state
+accessed from concurrent `async` contexts (`LocalCache`, the in-memory cache `DefaultStoreRepository`'s
+`local` property wraps), that state lives in an `actor`, not a class leaning on `@unchecked Sendable` —
+an actor is the type built for exactly that problem. Like the naming convention above, this is a
+language-standard default being followed correctly, not a project-specific architectural decision, so
+it doesn't warrant its own ADR either — noted here only because the repository abstraction is the type
+this default applies to most visibly in this codebase.
 
 The stub implementation lives in the companion `XxxTesting` target (ADR-0006). Feature models accept the protocol as an injected dependency:
 
