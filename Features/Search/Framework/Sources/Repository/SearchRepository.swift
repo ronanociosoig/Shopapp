@@ -12,14 +12,14 @@ public protocol SearchRepository: Sendable {
 
 // MARK: - Remote data source protocol
 
-protocol RemoteSearchDataSourceProtocol: Sendable {
+protocol RemoteSearchDataSource: Sendable {
     func search(query: String) async throws -> [SearchProduct]
     func fetchByCategory(_ category: String) async throws -> [SearchProduct]
 }
 
 // MARK: - Remote data source
 
-final class RemoteSearchDataSource: RemoteSearchDataSourceProtocol, Sendable {
+final class DefaultRemoteSearchDataSource: RemoteSearchDataSource, Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -53,11 +53,11 @@ final class LocalSearchDataSource: @unchecked Sendable {
 // MARK: - Live repository
 
 public final class DefaultSearchRepository: SearchRepository {
-    private let remote: any RemoteSearchDataSourceProtocol
+    private let remote: any RemoteSearchDataSource
     private let local  = LocalSearchDataSource()
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
-        self.remote = RemoteSearchDataSource(client: client)
+        self.remote = DefaultRemoteSearchDataSource(client: client)
     }
 
     public func search(query: String) async throws -> [SearchProduct] {
