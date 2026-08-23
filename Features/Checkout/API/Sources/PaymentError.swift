@@ -10,7 +10,7 @@ public enum PaymentError: Error, Equatable, Identifiable, Sendable {
 
     public var id: String { localizedDescription }
 
-    var localizedDescription: String {
+    public var localizedDescription: String {
         switch self {
         case .cardDeclined:       return "Your card was declined. Please try a different card."
         case .insufficientFunds:  return "Insufficient funds. Please check your balance."
@@ -21,7 +21,7 @@ public enum PaymentError: Error, Equatable, Identifiable, Sendable {
         }
     }
 
-    var systemImage: String {
+    public var systemImage: String {
         switch self {
         case .cardDeclined, .expiredCard, .fraudSuspected: return "creditcard.trianglebadge.exclamationmark"
         case .insufficientFunds:                           return "banknote"

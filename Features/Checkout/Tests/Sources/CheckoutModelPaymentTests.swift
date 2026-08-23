@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 @testable import Checkout
+@testable import CheckoutAPI
 import CheckoutTesting
 
 @Suite("CheckoutModel — Payment Flow")

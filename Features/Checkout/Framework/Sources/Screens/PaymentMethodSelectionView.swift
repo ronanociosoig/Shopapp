@@ -1,4 +1,5 @@
 import SwiftUI
+import CheckoutAPI
 import DesignSystem
 
 struct PaymentMethodSelectionView: View {

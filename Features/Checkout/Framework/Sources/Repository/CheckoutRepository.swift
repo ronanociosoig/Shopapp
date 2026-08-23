@@ -1,15 +1,9 @@
 import Foundation
 import NetworkFoundation
 import Common
+import CheckoutAPI
 
-// MARK: - Selected Address Store
-
-/// Abstracts persistence of the user's last-chosen shipping address ID.
-/// Inject a custom implementation in tests to avoid touching real UserDefaults.
-public protocol SelectedAddressStore: Sendable {
-    func loadSelectedID() -> UUID?
-    func saveSelectedID(_ id: UUID?)
-}
+// MARK: - Live Selected Address Store
 
 /// Persists the selected shipping address UUID as a string in `UserDefaults`.
 // @unchecked Sendable here is about UserDefaults specifically — it's documented
@@ -38,18 +32,6 @@ public struct UserDefaultsSelectedAddressStore: SelectedAddressStore, @unchecked
             defaults.removeObject(forKey: key)
         }
     }
-}
-
-// MARK: - Protocol
-
-public protocol CheckoutRepository: Sendable {
-    func placeOrder(
-        items: [CartItem],
-        address: ShippingAddress,
-        cardToken: String,
-        deliveryOption: DeliveryOption,
-        guaranteeCost: Decimal
-    ) async throws -> PlacedOrder
 }
 
 // MARK: - Remote data source
@@ -104,4 +86,3 @@ public struct DefaultCheckoutRepository: CheckoutRepository {
         )
     }
 }
-

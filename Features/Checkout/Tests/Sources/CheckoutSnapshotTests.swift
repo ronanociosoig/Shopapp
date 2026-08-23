@@ -3,6 +3,7 @@ import Testing
 import SnapshotTesting
 import SwiftUI
 @testable import Checkout
+@testable import CheckoutAPI
 import CheckoutTesting
 
 // MARK: - CaseIterable: Destination (modal surfaces)

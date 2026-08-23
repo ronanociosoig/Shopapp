@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "Store",              targets: ["Store"]),
         .library(name: "Account",            targets: ["Account"]),
         .library(name: "Search",             targets: ["Search"]),
+        .library(name: "CheckoutAPI",        targets: ["CheckoutAPI"]),
         .library(name: "Checkout",           targets: ["Checkout"]),
         .library(name: "Support",            targets: ["Support"]),
         .library(name: "Suggestions",        targets: ["Suggestions"]),
@@ -93,8 +94,14 @@ let package = Package(
             path: "Features/Search/Framework/Sources"
         ),
         .target(
+            name: "CheckoutAPI",
+            dependencies: [],
+            path: "Features/Checkout/API/Sources"
+        ),
+        .target(
             name: "Checkout",
             dependencies: [
+                "CheckoutAPI",
                 "NetworkFoundation",
                 "Common",
                 "DesignSystem",

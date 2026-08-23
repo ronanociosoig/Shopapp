@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import SwiftUINavigation
+@_exported import CheckoutAPI
 
 // MARK: - Model
 
