@@ -1,13 +1,19 @@
 import Foundation
+import CheckoutTesting
 @_spi(Scenarios) import Checkout
 
 /// A catalog of named, realistic states the Checkout micro-app can launch into.
 /// Lives directly in the micro-app target, not a separate library — nothing
 /// outside `CheckoutApp` ever needs this, so a standalone SPM target would be
-/// ceremony with no consumer. Deliberately builds its own fake data rather
-/// than reusing `CheckoutTesting`'s `StubCheckoutRepository`: conflating "what a
-/// test needs" with "what a micro-app demo needs" is the problem this catalog
-/// exists to avoid, not repeat.
+/// ceremony with no consumer.
+///
+/// The scenario *states* below (the `path`/`destination` combinations) are
+/// unique to this catalog and stay here — nothing else needs them. But the
+/// fake behind them, `StubCheckoutRepository`, isn't scenario-specific: it's
+/// the same "successfully place a fake order" logic `CheckoutSnapshotTests`'s
+/// own happy-path test already depends on. Reusing it here instead of
+/// hand-rolling a second copy is the same rule the other direction — don't
+/// duplicate what's genuinely shared, don't share what's genuinely one-off.
 ///
 /// `CaseIterable` so the scenario list (and, later, a structural-coverage test
 /// mirroring Article 1's `Destination.allCases` pattern) can enumerate every
@@ -58,8 +64,8 @@ enum CheckoutScenario: String, CaseIterable, Identifiable {
 @MainActor
 struct CheckoutScenarioBuilder {
     func makeModel(for scenario: CheckoutScenario) -> CheckoutModel {
-        let repository = ScenarioCheckoutRepository()
-        let addressStore = ScenarioSelectedAddressStore()
+        let repository = StubCheckoutRepository(delay: .zero)
+        let addressStore = StubSelectedAddressStore()
         let address = ShippingAddress.stub
         let guaranteeEligibleItem = CartItem.stubs[0].product.id
 
@@ -141,38 +147,4 @@ struct CheckoutScenarioBuilder {
             )
         }
     }
-}
-
-/// A minimal fake conforming to `CheckoutRepository`. Unlike `Search`'s
-/// scenario repository, this one actually succeeds: every scenario here still
-/// lands on a real, live `CheckoutView` a person can keep interacting with —
-/// the `.cart` scenario in particular exists to be walked all the way through
-/// to a genuine confirmation (`CheckoutFunnelUITests` does exactly that),
-/// which a fake that only throws could never produce.
-private struct ScenarioCheckoutRepository: CheckoutRepository {
-    func placeOrder(
-        items: [CartItem],
-        address: ShippingAddress,
-        cardToken: String,
-        deliveryOption: DeliveryOption,
-        guaranteeCost: Decimal
-    ) async throws -> PlacedOrder {
-        let subtotal = items.reduce(Decimal(0)) { $0 + $1.subtotal }
-        return PlacedOrder(
-            items: items.map { OrderLineItem(product: $0.product, quantity: $0.quantity) },
-            shippingAddress: address,
-            deliveryOption: deliveryOption,
-            total: subtotal + deliveryOption.price + guaranteeCost,
-            estimatedDelivery: Date(timeIntervalSinceNow: 5 * 24 * 3600)
-        )
-    }
-}
-
-/// A minimal fake conforming to `SelectedAddressStore`, present so scenarios
-/// don't touch real `UserDefaults` (the designated init's default). Every
-/// scenario sets its selected address via `savedAddresses`/`path`, not via
-/// this store, so it never needs to persist anything.
-private final class ScenarioSelectedAddressStore: SelectedAddressStore, @unchecked Sendable {
-    func loadSelectedID() -> UUID? { nil }
-    func saveSelectedID(_ id: UUID?) {}
 }

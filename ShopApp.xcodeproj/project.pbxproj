@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06D1CB4128A7AE950FACA791 /* CheckoutTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 0B6D9B44DAFE324C5905A49A /* CheckoutTesting */; };
 		0DA8792556B632C6D04317A1 /* CheckoutFunnelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */; };
 		10139F729786995A9B197E35 /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 59D2E2D39840DB552E818AC0 /* Checkout */; };
 		194D2ED485E44321F8A11EFD /* Checkout in Frameworks */ = {isa = PBXBuildFile; productRef = 8B4EF89E6414765AF69FB40C /* Checkout */; };
@@ -202,6 +203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				194D2ED485E44321F8A11EFD /* Checkout in Frameworks */,
+				06D1CB4128A7AE950FACA791 /* CheckoutTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -813,6 +815,7 @@
 			name = CheckoutApp;
 			packageProductDependencies = (
 				8B4EF89E6414765AF69FB40C /* Checkout */,
+				0B6D9B44DAFE324C5905A49A /* CheckoutTesting */,
 			);
 			productName = CheckoutApp;
 			productReference = 29F2225CE4E42BDA26534616 /* CheckoutApp.app */;
@@ -1829,6 +1832,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0B6D9B44DAFE324C5905A49A /* CheckoutTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CheckoutTesting;
+		};
 		1B8E8165E29A4C82F44F955A /* ShopCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopCore;
