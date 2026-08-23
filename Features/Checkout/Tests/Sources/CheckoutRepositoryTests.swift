@@ -3,7 +3,7 @@ import Foundation
 import NetworkFoundation
 import Replay
 @testable import Checkout
-@testable import CheckoutAPI
+import CheckoutTesting
 
 // Replay's source-relative archive resolution assumes a `swift test` working
 // directory; under xcodebuild/simulator the test process cwd doesn't match the

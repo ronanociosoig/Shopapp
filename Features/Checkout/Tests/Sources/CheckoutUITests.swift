@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 @testable import Checkout
-@testable import CheckoutAPI
 import CheckoutTesting
 
 /// Tests that exercise complete user interaction flows through the Checkout module.
