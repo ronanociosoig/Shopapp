@@ -31,7 +31,7 @@ struct AccountSnapshotTests {
             of: AccountView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),
             named: "state_loading"
-        )
+        )#imageLiteral(resourceName: "loadingState.state_loading.png")
     }
 
     @Test("Account view renders correctly when signed out")

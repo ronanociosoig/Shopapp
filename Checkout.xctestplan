@@ -9,6 +9,15 @@
     }
   ],
   "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "Checkout",
+          "name" : "Checkout"
+        }
+      ]
+    },
     "performanceAntipatternCheckerEnabled" : true
   },
   "testTargets" : [
