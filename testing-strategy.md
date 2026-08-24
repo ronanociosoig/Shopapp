@@ -217,8 +217,11 @@ ADR-0010 already applies to `Destination`, one level up the stack. Verified by d
 breaking `.orderOptions`'s guarantee assignment and confirming the test catches it
 before restoring it — the test fails exactly where it should and nowhere else.
 
-Search's scenario catalog doesn't have this coverage yet — same incremental-pilot
-approach as everything else in this document.
+`SearchAppTests` gives `SearchScenario` the same coverage, following the identical
+shape — one test parametrized over `SearchScenario.allCases`, `@testable` reaching
+`SearchApp` (for the catalog/builder) and `Search` (for `searchState`/`query`, both
+internal). Verified the same way: deliberately broke `.searchFailed`'s message,
+confirmed the test caught it, restored it.
 
 ---
 

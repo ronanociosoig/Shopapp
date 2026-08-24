@@ -28,6 +28,7 @@ schemes:
     build:
       targets:
         SearchApp: all
+        SearchAppTests: [test]
         SearchAppUITests: [test]
     run:
       config: Debug
@@ -35,6 +36,7 @@ schemes:
     test:
       config: Debug
       targets:
+        - SearchAppTests
         - SearchAppUITests
     profile:
       config: Release
@@ -243,6 +245,22 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+
+  SearchAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Search/App/Tests
+    dependencies:
+      - target: SearchApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.search.tests
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Search.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Search
+        BUNDLE_LOADER: $(TEST_HOST)
+        GENERATE_INFOPLIST_FILE: YES
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
 
   SearchAppUITests:
     type: bundle.ui-testing
