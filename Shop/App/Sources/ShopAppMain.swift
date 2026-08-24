@@ -18,17 +18,23 @@ struct ShopAppMain: App {
     private let appModel: AppModel
 
     init() {
+        // Stub repositories below are not standing in for a missing backend — every
+        // module has a live Default*Repository against ShopAppServer. They exist solely
+        // so --ui-testing gets deterministic, network-free data (ADR-0009's philosophy,
+        // applied to XCUITest, not just snapshot tests): ShopAppUITests asserts on exact
+        // fixture content ("Alex Johnson", "MacBook Pro 16\"") and must not depend on
+        // whether a local server happens to be running.
         let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         appModel = AppModel(
             // destination: .support,
             // selectedTab: .orders,
-            storeRepository:         isUITesting ? StubStoreRepository()              : DefaultStoreRepository(),
+            storeRepository:         isUITesting ? StubStoreRepository()   : DefaultStoreRepository(),
             searchRepository:        DefaultSearchRepository(),
-            accountRepository:       StubAccountRepository(),
-            checkoutRepository:      isUITesting ? StubCheckoutRepository(delay: .zero) : StubCheckoutRepository(),
-            promotionsRepository:    StubPromotionsRepository(),
+            accountRepository:       isUITesting ? StubAccountRepository() : DefaultAccountRepository(),
+            checkoutRepository:      isUITesting ? StubCheckoutRepository(delay: .zero) : DefaultCheckoutRepository(),
+            promotionsRepository:    isUITesting ? StubPromotionsRepository() : DefaultPromotionsRepository(),
             pastPurchasesRepository: DefaultPastPurchasesRepository(),
-            suggestionsRepository:   StubSuggestionsRepository()
+            suggestionsRepository:   isUITesting ? StubSuggestionsRepository() : DefaultSuggestionsRepository()
         )
     }
 

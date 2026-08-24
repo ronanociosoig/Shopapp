@@ -152,8 +152,12 @@ targets:
         product: PastPurchases
       - package: ShopApp
         product: Suggestions
-      # Testing: modules without a production backend use stubs at runtime.
-      # These dependencies are explicit so the intent is visible at a glance.
+      # Testing: every module has a live Default*Repository against ShopAppServer now.
+      # These stay because --ui-testing needs deterministic, network-free data
+      # (see ShopAppMain.init) — not because any module lacks a backend. SearchTesting
+      # and PastPurchasesTesting specifically aren't used by ShopAppMain itself; they're
+      # here so ShopAppTests (which only depends on this target) can reach them
+      # transitively for RootSnapshotTests.swift.
       - package: ShopApp
         product: StoreTesting
       - package: ShopApp
