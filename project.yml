@@ -42,6 +42,7 @@ schemes:
     build:
       targets:
         CheckoutApp: all
+        CheckoutAppTests: [test]
         CheckoutAppUITests: [test]
     run:
       config: Debug
@@ -49,6 +50,7 @@ schemes:
     test:
       config: Debug
       targets:
+        - CheckoutAppTests
         - CheckoutAppUITests
     profile:
       config: Release
@@ -286,6 +288,22 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+
+  CheckoutAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Features/Checkout/App/Tests
+    dependencies:
+      - target: CheckoutApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shopapp.demo.checkout.tests
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Checkout.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Checkout
+        BUNDLE_LOADER: $(TEST_HOST)
+        GENERATE_INFOPLIST_FILE: YES
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "NO"
 
   CheckoutAppUITests:
     type: bundle.ui-testing

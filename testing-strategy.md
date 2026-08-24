@@ -178,6 +178,48 @@ blanket line, but "is this genuinely shared, or genuinely one-off":
   happy-path test — so it reuses `CheckoutTesting`'s `StubCheckoutRepository` rather
   than hand-rolling a second copy.
 
+Being manual/exploratory doesn't mean unprotected, though — see the next section.
+
+---
+
+## Scenarios Need Their Own Regression Coverage, Not a Snapshot Test
+
+A scenario catalog's cases are framed, in their own doc comments, as the states that
+matter — "the funnel's actual starting point", "one item opted in", "payment was
+declined". That framing is a claim about business-relevant state, and until
+`CheckoutAppTests` was added, nothing enforced it. `CheckoutScenarioBuilder.makeModel(for:)`
+always compiles — Swift's type system guarantees that much — but compiling is not the
+same as still producing the state a scenario's name promises. A refactor that changed
+how `extendedGuaranteeItems` gets populated could silently stop `.orderOptions` from
+demonstrating the guarantee toggle it exists to demonstrate, and nothing would fail; a
+person would have to happen to notice, next time they opened that scenario by hand. This
+is the same "premise silently breaks, nobody notices for a while" failure mode as
+ADR-0013's unguarded `.task` and the nested-`NavigationStack` bug above — a third
+instance, previously with zero protection at all.
+
+The fix is deliberately not a snapshot test. `CheckoutSnapshotTests` already asserts
+pixel-correctness for these same underlying model states — a second snapshot test
+driven through the scenario builder would duplicate coverage that already exists, the
+same mistake this document argues against everywhere else. What's actually missing is a
+state-correctness check: does the model each scenario builds actually hold the specific
+facts its name claims. That's a unit-test question, not a rendering one, and it now has
+a home: `CheckoutAppTests`, a unit-test bundle hosted inside `Checkout.app`
+(`TEST_HOST`, the same pattern `ShopAppTests` already uses for `ShopApp`) — no simulator
+interaction, `@testable import` reaching both `CheckoutApp` (for `CheckoutScenario`/
+`CheckoutScenarioBuilder`) and `Checkout` (for the model's internal `path`/`destination`).
+
+One test, parametrized over `CheckoutScenario.allCases`, with an exhaustive `switch`
+asserting the specific business fact each case claims — `.orderOptions`'s guarantee item
+is actually opted in, `.paymentFailed`'s funnel is still intact underneath the sheet,
+`.confirmation`'s order actually has line items. A new scenario case with no
+corresponding assertion is a compile error, the same structural-coverage discipline
+ADR-0010 already applies to `Destination`, one level up the stack. Verified by deliberately
+breaking `.orderOptions`'s guarantee assignment and confirming the test catches it
+before restoring it — the test fails exactly where it should and nowhere else.
+
+Search's scenario catalog doesn't have this coverage yet — same incremental-pilot
+approach as everything else in this document.
+
 ---
 
 ## Public API Shape, Restated

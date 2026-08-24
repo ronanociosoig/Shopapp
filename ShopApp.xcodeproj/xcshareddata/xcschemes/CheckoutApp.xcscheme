@@ -28,6 +28,20 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BA653A1D9195D10061BDBB85"
+               BuildableName = "CheckoutAppTests.xctest"
+               BlueprintName = "CheckoutAppTests"
+               ReferencedContainer = "container:ShopApp.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "92D31059F1D1D73C79B10A4A"
                BuildableName = "CheckoutAppUITests.xctest"
                BlueprintName = "CheckoutAppUITests"
@@ -51,6 +65,17 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BA653A1D9195D10061BDBB85"
+               BuildableName = "CheckoutAppTests.xctest"
+               BlueprintName = "CheckoutAppTests"
+               ReferencedContainer = "container:ShopApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
