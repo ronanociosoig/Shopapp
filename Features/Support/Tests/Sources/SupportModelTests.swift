@@ -3,6 +3,7 @@ import Foundation
 @testable import Support
 
 @Suite("SupportModel — Unit Tests")
+@MainActor
 struct SupportModelTests {
 
     @Test("Initial destination is nil")

@@ -14,6 +14,7 @@ private final class FailingSearchRepository: SearchRepository {
 // MARK: - Unit Tests
 
 @Suite("SearchModel — Unit Tests")
+@MainActor
 struct SearchModelTests {
 
     // MARK: - Initial state
@@ -31,7 +32,6 @@ struct SearchModelTests {
     // MARK: - search()
 
     @Test("search with blank query resets state to idle")
-    @MainActor
     func searchWithBlankQueryReturnsIdle() async {
         let model = SearchModel()
         model.query = "   "
@@ -40,7 +40,6 @@ struct SearchModelTests {
     }
 
     @Test("search with empty string resets state to idle")
-    @MainActor
     func searchWithEmptyStringReturnsIdle() async {
         let model = SearchModel()
         model.query = ""
@@ -49,7 +48,6 @@ struct SearchModelTests {
     }
 
     @Test("search produces results state on success")
-    @MainActor
     func searchProducesResults() async {
         let model = SearchModel()
         model.query = "macbook"
@@ -62,7 +60,6 @@ struct SearchModelTests {
     }
 
     @Test("search produces empty state when no products match")
-    @MainActor
     func searchProducesEmpty() async {
         let model = SearchModel(repository: StubSearchRepository(returning: []))
         model.query = "zzznomatch"
@@ -71,7 +68,6 @@ struct SearchModelTests {
     }
 
     @Test("search produces error state when repository throws")
-    @MainActor
     func searchProducesError() async {
         let model = SearchModel(repository: FailingSearchRepository())
         model.query = "macbook"

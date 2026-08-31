@@ -1,6 +1,7 @@
 import Observation
 import SwiftUINavigation
 
+@MainActor
 @Observable
 public final class PastPurchasesModel {
     var orders: [PastOrder]       = []
@@ -43,7 +44,6 @@ public final class PastPurchasesModel {
         destination = .orderDetail(order)
     }
 
-    @MainActor
     func load() async {
         isLoading = true
         defer { isLoading = false }
@@ -51,14 +51,12 @@ public final class PastPurchasesModel {
     }
 
     /// Persists a newly placed order and inserts it at the front of `orders`.
-    @MainActor
     public func saveOrder(_ order: PastOrder) async {
         try? await repository.saveOrder(order)
         orders.insert(order, at: 0)
     }
 
     /// Removes an order from the list and deletes it from the store.
-    @MainActor
     func deleteOrder(_ order: PastOrder) async {
         try? await repository.deleteOrder(id: order.id)
         orders.removeAll { $0.id == order.id }

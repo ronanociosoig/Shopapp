@@ -1,4 +1,4 @@
-import Search
+@_spi(Scenarios) import Search
 
 /// A catalog of named, realistic states the Search micro-app can launch into.
 /// Lives directly in the micro-app target, not a separate library — nothing
@@ -40,6 +40,7 @@ enum SearchScenario: String, CaseIterable, Identifiable {
 }
 
 /// Builds a `SearchModel` already configured for a given `SearchScenario`.
+@MainActor
 struct SearchScenarioFactory {
     func makeModel(for scenario: SearchScenario) -> SearchModel {
         let repository = ScenarioSearchRepository()

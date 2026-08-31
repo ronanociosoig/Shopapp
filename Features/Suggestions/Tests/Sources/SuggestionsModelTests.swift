@@ -14,6 +14,7 @@ private final class FailingSuggestionsRepository: SuggestionsRepository {
 // MARK: - Unit Tests
 
 @Suite("SuggestionsModel — Unit Tests")
+@MainActor
 struct SuggestionsModelTests {
 
     // MARK: - Initial state
@@ -36,7 +37,6 @@ struct SuggestionsModelTests {
     // MARK: - load()
 
     @Test("load populates products on success")
-    @MainActor
     func loadPopulatesProducts() async {
         let model = SuggestionsModel()
         await model.load()
@@ -45,7 +45,6 @@ struct SuggestionsModelTests {
     }
 
     @Test("load results in empty array on failure (silent fail)")
-    @MainActor
     func loadSilentlyFailsOnError() async {
         let model = SuggestionsModel(repository: FailingSuggestionsRepository())
         await model.load()
@@ -54,7 +53,6 @@ struct SuggestionsModelTests {
     }
 
     @Test("load accepts an optional userId")
-    @MainActor
     func loadAcceptsUserId() async {
         let model = SuggestionsModel()
         await model.load(for: "user-123")

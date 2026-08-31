@@ -14,6 +14,7 @@ enum SearchState: Equatable {
 
 // MARK: - Model
 
+@MainActor
 @Observable
 public final class SearchModel {
     var query: String = ""
@@ -33,10 +34,14 @@ public final class SearchModel {
     }
 
     /// Constructs a model already in a specific result state, without going through the
-    /// real `search()` flow — for scenario/dev-support callers (e.g. a micro-app's scenario
-    /// picker) that need a model showing "results loaded" or "search failed" on launch, and
-    /// can't reach `search()`/`SearchState` directly since both are internal to this module.
-    /// `SearchState` itself stays internal — this is the narrowest surface that closes the gap.
+    /// real `search()` flow — for the micro-app's scenario factory, which needs a model
+    /// showing "results loaded" or "search failed" on launch and can't reach `search()` or
+    /// `SearchState` directly (both internal to this module).
+    ///
+    /// `@_spi(Scenarios)` rather than a plain public init, matching `CheckoutModel`: this is
+    /// the one construction path reserved for scenario builders, kept off `Search`'s real
+    /// public surface and its API diff. `SearchState` itself stays internal.
+    @_spi(Scenarios)
     public convenience init(
         repository: SearchRepository,
         query: String = "",
@@ -60,7 +65,6 @@ public final class SearchModel {
         case categoryBrowse(String)
     }
 
-    @MainActor
     func search() async {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             searchState = .idle

@@ -59,8 +59,7 @@ enum CheckoutScenario: String, CaseIterable, Identifiable {
 /// via `CheckoutModel`'s `@_spi(Scenarios)` init — the only way to reach a
 /// mid-funnel `path` from outside the `Checkout` module.
 ///
-/// `@MainActor` because `CheckoutModel` itself is — unlike `SearchModel`, which
-/// only isolates its scenario-support init.
+/// `@MainActor` because every feature model is (`SearchScenarioFactory` matches).
 @MainActor
 struct CheckoutScenarioFactory {
     func makeModel(for scenario: CheckoutScenario) -> CheckoutModel {

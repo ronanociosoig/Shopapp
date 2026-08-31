@@ -15,6 +15,7 @@ import Foundation
 /// the same structural-coverage discipline ADR-0010 applies to Destination,
 /// one level up the stack.
 @Suite("Search Scenarios — business-state coverage")
+@MainActor
 struct SearchScenarioTests {
 
     @Test(

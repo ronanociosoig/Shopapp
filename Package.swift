@@ -34,7 +34,8 @@ let package = Package(
         .library(name: "PromotionsTesting",   targets: ["PromotionsTesting"]),
         .library(name: "SuggestionsTesting",  targets: ["SuggestionsTesting"]),
         .library(name: "PastPurchasesTesting",targets: ["PastPurchasesTesting"]),
-        .library(name: "SupportTesting",      targets: ["SupportTesting"]),
+        // Support has no data layer — its content is a static `SupportTopic`
+        // enum — so it has no repository protocol and no companion Testing target.
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.10.0", traits: ["CasePaths"]),
@@ -187,11 +188,6 @@ let package = Package(
             dependencies: ["PastPurchases"],
             path: "Features/PastPurchases/Testing/Sources"
         ),
-        .target(
-            name: "SupportTesting",
-            dependencies: ["Support"],
-            path: "Features/Support/Testing/Sources"
-        ),
 
         // MARK: - Composition root
 
@@ -297,8 +293,6 @@ let package = Package(
             name: "SupportTests",
             dependencies: [
                 "Support",
-                "SupportTesting",
-                "NetworkFoundation",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "Features/Support/Tests/Sources"

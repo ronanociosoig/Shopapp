@@ -30,17 +30,3 @@ public enum SupportTopic: String, Identifiable, CaseIterable, Sendable {
         }
     }
 }
-
-public struct SupportTicket: Identifiable, Sendable, Codable {
-    public let id: UUID
-    public let topic: String
-    public let message: String
-    public let submittedAt: Date
-
-    public init(id: UUID = UUID(), topic: String, message: String, submittedAt: Date = Date()) {
-        self.id          = id
-        self.topic       = topic
-        self.message     = message
-        self.submittedAt = submittedAt
-    }
-}

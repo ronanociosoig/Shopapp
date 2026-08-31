@@ -9,6 +9,7 @@ enum StoreLoadState: Equatable {
     case failed(String)
 }
 
+@MainActor
 @Observable
 public final class StoreModel {
     var loadState: StoreLoadState = .idle
@@ -44,7 +45,6 @@ public final class StoreModel {
         return products.filter { $0.category == category }
     }
 
-    @MainActor
     func load() async {
         loadState = .loading
         do {

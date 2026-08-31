@@ -4,6 +4,7 @@ import Foundation
 import StoreTesting
 
 @Suite("StoreModel — Unit Tests")
+@MainActor
 struct StoreModelTests {
 
     // MARK: - Initial state
@@ -134,7 +135,6 @@ struct StoreModelTests {
     // MARK: - load()
 
     @Test("load sets loadState to loaded on success")
-    @MainActor
     func loadSetsLoadedState() async {
         let model = StoreModel(repository: StubStoreRepository())
         await model.load()
@@ -146,7 +146,6 @@ struct StoreModelTests {
     }
 
     @Test("load sets loadState to failed when repository throws")
-    @MainActor
     func loadSetsFailedStateOnError() async {
         let model = StoreModel(repository: StubStoreRepository(throwing: URLError(.notConnectedToInternet)))
         await model.load()

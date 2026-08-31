@@ -10,16 +10,12 @@ public protocol SearchRepository: Sendable {
     func fetchByCategory(_ category: String) async throws -> [SearchProduct]
 }
 
-// MARK: - Remote data source protocol
-
-protocol RemoteSearchDataSource: Sendable {
-    func search(query: String) async throws -> [SearchProduct]
-    func fetchByCategory(_ category: String) async throws -> [SearchProduct]
-}
-
 // MARK: - Remote data source
 
-struct DefaultRemoteSearchDataSource: RemoteSearchDataSource, Sendable {
+// A concrete struct, not a protocol + impl — Store/Account/Checkout do the same.
+// Introduce a protocol here only if a second implementation appears (see
+// PastPurchases, whose MockRemotePastPurchasesDataSource earns one).
+struct RemoteSearchDataSource: Sendable {
     private let remote: RemoteDataSourceHelper
 
     init(
@@ -55,11 +51,11 @@ struct LocalSearchDataSource: Sendable {
 // MARK: - Live repository
 
 public struct DefaultSearchRepository: SearchRepository {
-    private let remote: any RemoteSearchDataSource
+    private let remote: RemoteSearchDataSource
     private let local  = LocalSearchDataSource()
 
     public init(client: NetworkClient = DefaultNetworkClient()) {
-        self.remote = DefaultRemoteSearchDataSource(client: client)
+        self.remote = RemoteSearchDataSource(client: client)
     }
 
     public func search(query: String) async throws -> [SearchProduct] {

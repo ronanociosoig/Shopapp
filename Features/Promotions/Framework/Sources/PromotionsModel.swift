@@ -1,6 +1,7 @@
 import Observation
 import SwiftUINavigation
 
+@MainActor
 @Observable
 public final class PromotionsModel {
     var promotions: [Promotion] = []
@@ -30,7 +31,6 @@ public final class PromotionsModel {
         destination = .promotionDetail(promotion)
     }
 
-    @MainActor
     func load() async {
         isLoading = true
         defer { isLoading = false }

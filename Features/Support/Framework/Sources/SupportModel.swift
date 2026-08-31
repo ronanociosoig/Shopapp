@@ -1,6 +1,7 @@
 import Observation
 import SwiftUINavigation
 
+@MainActor
 @Observable
 public final class SupportModel {
     public var destination: Destination?

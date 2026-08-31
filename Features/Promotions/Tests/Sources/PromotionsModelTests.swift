@@ -12,6 +12,7 @@ private final class FailingPromotionsRepository: PromotionsRepository {
 // MARK: - Unit Tests
 
 @Suite("PromotionsModel — Unit Tests")
+@MainActor
 struct PromotionsModelTests {
 
     // MARK: - Initial state
@@ -34,7 +35,6 @@ struct PromotionsModelTests {
     // MARK: - load()
 
     @Test("load populates promotions on success")
-    @MainActor
     func loadPopulatesPromotions() async {
         let model = PromotionsModel()
         await model.load()
@@ -43,7 +43,6 @@ struct PromotionsModelTests {
     }
 
     @Test("load results in empty array on failure (silent fail)")
-    @MainActor
     func loadSilentlyFailsOnError() async {
         let model = PromotionsModel(repository: FailingPromotionsRepository())
         await model.load()
@@ -52,7 +51,6 @@ struct PromotionsModelTests {
     }
 
     @Test("isLoading is false after load completes")
-    @MainActor
     func isLoadingFalseAfterLoad() async {
         let model = PromotionsModel()
         await model.load()

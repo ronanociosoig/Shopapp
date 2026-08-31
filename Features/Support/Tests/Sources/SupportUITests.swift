@@ -4,6 +4,7 @@ import Foundation
 
 /// Tests that exercise complete user interaction flows through the Support module.
 @Suite("Support — UI Interaction Tests")
+@MainActor
 struct SupportUITests {
 
     @Test("User selects each support topic", arguments: SupportTopic.allCases)

@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import SwiftUINavigation
 
+@MainActor
 @Observable
 public final class SuggestionsModel {
     var products: [SuggestedProduct] = []
@@ -39,7 +40,6 @@ public final class SuggestionsModel {
         onAddToCart?(product.id, product.name, product.price, wantsGuarantee)
     }
 
-    @MainActor
     func load(for userId: String? = nil) async {
         isLoading = true
         defer { isLoading = false }

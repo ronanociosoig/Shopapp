@@ -14,6 +14,7 @@ private final class FailingPastPurchasesRepository: PastPurchasesRepository {
 // MARK: - Unit Tests
 
 @Suite("PastPurchasesModel — Unit Tests")
+@MainActor
 struct PastPurchasesModelTests {
 
     // MARK: - Initial state
@@ -41,7 +42,6 @@ struct PastPurchasesModelTests {
     // MARK: - load()
 
     @Test("load populates orders on success")
-    @MainActor
     func loadPopulatesOrders() async {
         let model = PastPurchasesModel()
         await model.load()
@@ -50,7 +50,6 @@ struct PastPurchasesModelTests {
     }
 
     @Test("load results in empty array on failure (silent fail)")
-    @MainActor
     func loadSilentlyFailsOnError() async {
         let model = PastPurchasesModel(repository: FailingPastPurchasesRepository())
         await model.load()
@@ -70,7 +69,6 @@ struct PastPurchasesModelTests {
     // MARK: - saveOrder()
 
     @Test("saveOrder inserts the new order at the front of the list")
-    @MainActor
     func saveOrderInsertsAtFront() async {
         let model = PastPurchasesModel()
         await model.load()
@@ -110,7 +108,6 @@ struct PastPurchasesModelTests {
     // MARK: - deleteOrder()
 
     @Test("deleteOrder removes the order from the list")
-    @MainActor
     func deleteOrderRemovesFromList() async {
         let model = PastPurchasesModel()
         await model.load()
