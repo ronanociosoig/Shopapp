@@ -12,7 +12,7 @@ struct SearchApp: App {
 
 /// Micro-app entry point for the Search module. The root screen is a list of
 /// scenarios, not a single hardcoded screen — picking one opens the real
-/// `SearchView` already configured in that state, via `SearchScenarioBuilder`.
+/// `SearchView` already configured in that state, via `SearchScenarioFactory`.
 ///
 /// Navigation follows the same convention as every feature model in this
 /// project (see AGENTS.md): one optional selection driving
@@ -27,7 +27,7 @@ private struct ScenarioListView: View {
             }
             .navigationTitle("Search Scenarios")
             .navigationDestination(item: $selectedScenario) { scenario in
-                SearchView(model: SearchScenarioBuilder().makeModel(for: scenario))
+                SearchView(model: SearchScenarioFactory().makeModel(for: scenario))
             }
         }
     }

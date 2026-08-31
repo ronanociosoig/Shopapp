@@ -10,7 +10,7 @@ import CheckoutTesting
 ///
 /// CheckoutScenario's own doc comments frame each case as representing
 /// something specific — "one item opted in", "payment was declined" — and
-/// nothing enforced those claims before this file: CheckoutScenarioBuilder
+/// nothing enforced those claims before this file: CheckoutScenarioFactory
 /// always compiles, but nothing stopped it from silently drifting into
 /// producing a model that no longer matches what its scenario's name
 /// promises. A snapshot test would duplicate coverage CheckoutSnapshotTests
@@ -31,7 +31,7 @@ struct CheckoutScenarioTests {
         arguments: CheckoutScenario.allCases
     )
     func scenario(_ scenario: CheckoutScenario) {
-        let model = CheckoutScenarioBuilder().makeModel(for: scenario)
+        let model = CheckoutScenarioFactory().makeModel(for: scenario)
 
         switch scenario {
         case .cart:

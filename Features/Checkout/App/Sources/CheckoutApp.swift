@@ -12,7 +12,7 @@ struct CheckoutApp: App {
 
 /// Micro-app entry point for the Checkout module. The root screen is a list of
 /// scenarios, not a single hardcoded funnel state — picking one opens the real
-/// `CheckoutView` already configured in that state, via `CheckoutScenarioBuilder`.
+/// `CheckoutView` already configured in that state, via `CheckoutScenarioFactory`.
 ///
 /// Navigation follows the same convention as every feature model in this
 /// project (see AGENTS.md): one optional selection property drives the
@@ -36,7 +36,7 @@ private struct ScenarioListView: View {
             .navigationTitle("Checkout Scenarios")
         }
         .fullScreenCover(item: $selectedScenario) { scenario in
-            CheckoutView(model: CheckoutScenarioBuilder().makeModel(for: scenario))
+            CheckoutView(model: CheckoutScenarioFactory().makeModel(for: scenario))
         }
     }
 }

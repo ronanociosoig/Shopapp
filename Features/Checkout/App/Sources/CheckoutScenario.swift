@@ -62,7 +62,7 @@ enum CheckoutScenario: String, CaseIterable, Identifiable {
 /// `@MainActor` because `CheckoutModel` itself is — unlike `SearchModel`, which
 /// only isolates its scenario-support init.
 @MainActor
-struct CheckoutScenarioBuilder {
+struct CheckoutScenarioFactory {
     func makeModel(for scenario: CheckoutScenario) -> CheckoutModel {
         let repository = StubCheckoutRepository(delay: .zero)
         let addressStore = StubSelectedAddressStore()

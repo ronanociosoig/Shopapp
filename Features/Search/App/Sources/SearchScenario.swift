@@ -40,7 +40,7 @@ enum SearchScenario: String, CaseIterable, Identifiable {
 }
 
 /// Builds a `SearchModel` already configured for a given `SearchScenario`.
-struct SearchScenarioBuilder {
+struct SearchScenarioFactory {
     func makeModel(for scenario: SearchScenario) -> SearchModel {
         let repository = ScenarioSearchRepository()
         switch scenario {

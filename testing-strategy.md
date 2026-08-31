@@ -159,7 +159,7 @@ rows structurally cannot see.
 ## The Scenario Tier (Article 3)
 
 A newer, sixth kind of coverage sits alongside these, and it's worth being precise about
-what it is and isn't: each micro-app's `XxxScenario`/`XxxScenarioBuilder`
+what it is and isn't: each micro-app's `XxxScenario`/`XxxScenarioFactory`
 (`CheckoutScenario.swift`, `SearchScenario.swift`) is not an automated test. Nothing
 asserts pass/fail. It's a `CaseIterable` catalog of named, realistic states a person can
 launch into and look at, or interact with — the manual/exploratory counterpart to
@@ -187,7 +187,7 @@ Being manual/exploratory doesn't mean unprotected, though — see the next secti
 A scenario catalog's cases are framed, in their own doc comments, as the states that
 matter — "the funnel's actual starting point", "one item opted in", "payment was
 declined". That framing is a claim about business-relevant state, and until
-`CheckoutAppTests` was added, nothing enforced it. `CheckoutScenarioBuilder.makeModel(for:)`
+`CheckoutAppTests` was added, nothing enforced it. `CheckoutScenarioFactory.makeModel(for:)`
 always compiles — Swift's type system guarantees that much — but compiling is not the
 same as still producing the state a scenario's name promises. A refactor that changed
 how `extendedGuaranteeItems` gets populated could silently stop `.orderOptions` from
@@ -206,7 +206,7 @@ facts its name claims. That's a unit-test question, not a rendering one, and it 
 a home: `CheckoutAppTests`, a unit-test bundle hosted inside `Checkout.app`
 (`TEST_HOST`, the same pattern `ShopAppTests` already uses for `ShopApp`) — no simulator
 interaction, `@testable import` reaching both `CheckoutApp` (for `CheckoutScenario`/
-`CheckoutScenarioBuilder`) and `Checkout` (for the model's internal `path`/`destination`).
+`CheckoutScenarioFactory`) and `Checkout` (for the model's internal `path`/`destination`).
 
 One test, parametrized over `CheckoutScenario.allCases`, with an exhaustive `switch`
 asserting the specific business fact each case claims — `.orderOptions`'s guarantee item

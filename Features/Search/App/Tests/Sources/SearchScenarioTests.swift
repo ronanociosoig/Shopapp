@@ -22,7 +22,7 @@ struct SearchScenarioTests {
         arguments: SearchScenario.allCases
     )
     func scenario(_ scenario: SearchScenario) {
-        let model = SearchScenarioBuilder().makeModel(for: scenario)
+        let model = SearchScenarioFactory().makeModel(for: scenario)
 
         switch scenario {
         case .launch:
