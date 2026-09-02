@@ -1,7 +1,7 @@
 # ADR-0012: Feature models use @Observable, not ObservableObject
 
 **Date:** 2026-07-18  
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31
 
 ## Context
 
@@ -14,9 +14,10 @@ iOS 17 introduced the `Observation` framework with the `@Observable` macro, whic
 
 ## Decision
 
-All feature models are marked `@Observable`:
+All feature models are marked `@Observable` **and `@MainActor`**:
 
 ```swift
+@MainActor
 @Observable
 public final class StoreModel {
     var loadState: StoreLoadState = .idle
@@ -25,6 +26,8 @@ public final class StoreModel {
     // ...
 }
 ```
+
+Models exist to be read and mutated from SwiftUI views, which are already main-actor-isolated, so whole-class `@MainActor` is the honest default: `load()` and every state transition are safe by construction, with no per-method `@MainActor` annotations to keep in sync. `AppModel` and all eight feature models follow this uniformly. Async work *inside* a model (`Task { await repository.… }`) still runs off the main actor — only the model's own state access is serialised. A `@MainActor` model means a test that touches it runs in a `@MainActor` suite (`@Suite … @MainActor struct XxxModelTests`).
 
 Views access the model directly, without a property wrapper:
 
@@ -47,6 +50,7 @@ The project targets iOS 17 as its minimum deployment target, which makes `@Obser
 - No `@Published` annotations — any stored property is tracked automatically. Adding a property to the model does not require remembering an annotation.
 - `@Observable` models are plain classes, straightforward to construct and inject in tests without SwiftUI infrastructure.
 - `@Bindable` is explicit: a view signals at its declaration site that it needs write access to the model, as opposed to `@ObservedObject` which always provides it.
+- Whole-class `@MainActor` serialises every state transition without per-method annotation, and makes the model's concurrency contract identical across all eight features.
 
 **Negative**
 

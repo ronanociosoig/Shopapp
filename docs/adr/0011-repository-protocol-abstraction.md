@@ -1,7 +1,7 @@
 # ADR-0011: Each feature module's data layer is abstracted behind a repository protocol
 
 **Date:** 2026-07-18  
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31
 
 ## Context
 
@@ -26,6 +26,21 @@ repository protocol was renamed to drop the `Protocol` suffix, following the Swi
 Guidelines' standard advice against restating a type's kind in its own name — a naming convention, not
 an architectural decision, so it isn't recorded as its own ADR.
 
+Three refinements this rule has grown:
+
+- **A module with no data layer has no repository.** `Support`'s content is a static `SupportTopic`
+  enum; it has no `SupportRepository`, no stub, no `SupportTesting` target, and `SupportModel.init()`
+  takes no arguments. The rule is "abstract the data layer behind a protocol," not "every module
+  gets a protocol."
+- **A second, narrower protocol for a distinct persistence seam.** Where a module talks to the
+  network *and* persists something locally, the local half is its own small protocol —
+  `AddressStore` (Account), `OrderStore` (PastPurchases), `SelectedAddressStore` (Checkout) — each
+  with a `UserDefaults`-backed conformer and an in-memory test conformer. This keeps `UserDefaults`
+  out of the network repository and lets a test swap just the persistence.
+- **`Checkout` keeps its protocol in a dependency-free `CheckoutAPI` target**, not the framework, so
+  `CheckoutTesting` and the micro-app can import the contract without the implementation (ADR-0001,
+  ADR-0016).
+
 The framework target provides one concrete implementation — the live repository — which is the only type the production app uses. It may compose multiple internal data sources (remote and local cache) but those are implementation details, not part of the protocol:
 
 ```swift
@@ -38,6 +53,12 @@ public struct DefaultStoreRepository: StoreRepository {
 
 The live implementation carries the `Default` prefix precisely because the protocol claimed the plain
 name — this is the same pattern `NetworkFoundation` uses for `NetworkClient`/`DefaultNetworkClient`.
+
+The internal `RemoteXDataSource` is a plain `struct`, not a protocol with an implementation —
+`Store`, `Account`, `Search`, and `Checkout` all do this. A protocol for the remote source is
+introduced *only* when a genuine second implementation exists: `PastPurchases` has one
+(`MockRemotePastPurchasesDataSource`, which derives order status deterministically from the order
+date), so it — and only it — defines a `RemotePastPurchasesDataSource` protocol.
 
 Note the second thing about this type: it's a `struct`, not a class. Every `DefaultXRepository` and its
 internal `RemoteXDataSource` helper holds only `let` properties and delegates all mutation to whatever
@@ -79,5 +100,5 @@ The composition root (ADR-0002) constructs the live repository and injects it. T
 
 **Negative**
 
-- Every feature requires a protocol, a live implementation, and a stub. For simple modules, this is overhead relative to the complexity being abstracted.
+- Every feature *with a data layer* requires a protocol, a live implementation, and a stub — three types per module. For simple modules this is overhead relative to the complexity being abstracted; `Support`, with no data layer, has none of them.
 - The protocol is owned by the feature module, not a shared layer. If two modules need structurally identical operations (e.g. both fetch a paginated list), there is no reuse mechanism short of extracting a shared protocol to `Common`.

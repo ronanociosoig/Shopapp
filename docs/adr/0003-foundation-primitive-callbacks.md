@@ -1,7 +1,14 @@
-# ADR-0003: Cross-module callbacks use Foundation primitives, not domain types
+# ADR-0003: Cross-module callbacks never name another feature's types
 
 **Date:** 2026-07-18  
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31
+
+> **2026-08-31 amendment.** The original rule was stated as "callbacks use *only*
+> Foundation primitives." That is true for peer-to-peer callbacks but too strong
+> in general: `checkoutModel.onOrderPlaced` and `pastPurchasesModel.onRepeatOrder`
+> pass a value type the *emitting* module owns. The Decision below is restated to
+> cover both shapes; the underlying constraint — never name **another** feature's
+> type — is unchanged.
 
 ## Context
 
@@ -13,10 +20,14 @@ Feature modules are isolated (ADR-0001): Store cannot import Checkout, and Check
 
 ## Decision
 
-All cross-module callbacks use only Foundation primitive types in their signatures. The pattern in use:
+A cross-module callback's signature **must never name a type owned by another feature module.** Two shapes satisfy this, and which one applies depends on who is on the other end of the callback.
+
+### Foundation primitives — when both endpoints are peer features
+
+A `StoreProduct` has to become a `CheckoutProduct`, but neither module may see the other's type. The callback is typed only on Foundation types (`UUID`, `String`, `Decimal`, `Bool`, `Date`), and the composition root rebuilds the domain type at the boundary:
 
 ```swift
-// In StoreModel (Store module — no knowledge of Checkout)
+// StoreModel (Store — no knowledge of Checkout)
 public var onAddToCart: ((UUID, String, Decimal, Bool) -> Void)?
 
 public func addToCart(_ product: StoreProduct, wantsGuarantee: Bool = false) {
@@ -25,17 +36,30 @@ public func addToCart(_ product: StoreProduct, wantsGuarantee: Bool = false) {
 ```
 
 ```swift
-// In AppModel (composition root — knows both Store and Checkout)
+// AppModel (composition root — sees both Store and Checkout)
 storeModel.onAddToCart = { id, name, price, wantsGuarantee in
-    let product = CheckoutProduct(id: id, name: name, price: price,
-                                  supportsExtendedGuarantee: wantsGuarantee)
-    checkoutModel.addToCart(product)
+    checkoutModel.addToCart(CheckoutProduct(id: id, name: name, price: price,
+                                            supportsExtendedGuarantee: wantsGuarantee))
 }
 ```
 
-The same pattern applies to `checkoutModel.onOrderPlaced`, `pastPurchasesModel.onRepeatOrder`, and `AppModel.syncAddresses()`.
+### The emitting module's own type — when only the composition root is on the other end
 
-The composition root is the only place that knows both the source type (`StoreProduct`) and the destination type (`CheckoutProduct`). It performs the translation.
+A callback may pass a value type the emitting module itself defines, because its only consumer is `AppModel`, never a peer feature. `CheckoutModel.onOrderPlaced` passes its own `PlacedOrder`; `PastPurchasesModel.onRepeatOrder` passes its own `PastOrder`. `AppModel` receives the concrete type and adapts it:
+
+```swift
+// CheckoutModel (Checkout — passes a type it owns, from CheckoutAPI)
+public var onOrderPlaced: ((PlacedOrder, Set<UUID>) -> Void)?
+
+// AppModel — maps PlacedOrder into PastPurchases' PastOrder
+checkoutModel.onOrderPlaced = { placedOrder, guaranteeItems in
+    Task { await pastPurchasesModel.saveOrder(PastOrder(/* field-by-field from placedOrder */)) }
+}
+```
+
+### Rule of thumb
+
+**Primitives when the two endpoints are peer features; the owned type when only the composition root is on the other end.** `AppModel.syncAddresses()` is the same idea in method form — it reads `accountModel.addresses` (`[SavedAddress]`, Account's type) and writes `checkoutModel.savedAddresses` (`[ShippingAddress]`, Checkout's type), doing the field mapping itself. In every case the composition root is the only place that names both concrete types.
 
 ## Consequences
 

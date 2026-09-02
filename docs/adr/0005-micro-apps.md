@@ -1,7 +1,7 @@
 # ADR-0005: Each feature module has a standalone micro-app
 
 **Date:** 2026-07-18  
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31
 
 ## Context
 
@@ -11,7 +11,7 @@ Unit tests address logic in isolation, but they do not exercise the UI. A develo
 
 ## Decision
 
-Each feature module provides a standalone executable target in `Features/Xxx/App/`. This is an `@main` SwiftUI `App` struct that imports only the feature's own production target and its companion testing target:
+Each feature module provides a standalone executable target in `Features/Xxx/App/`. This is an `@main` SwiftUI `App` struct that imports only the feature's own production target and, where one exists, its companion `XxxTesting` target (`Support` has none — it has no repository, see ADR-0011):
 
 ```swift
 // Features/Checkout/App/Sources/CheckoutApp.swift
@@ -39,6 +39,17 @@ struct CheckoutApp: App {
 Micro-apps use stub repositories from `XxxTesting` (ADR-0006) to run without a live backend. State can be pre-populated to make any screen of the flow immediately reachable — the Checkout micro-app starts with a cart and a saved address so every step of the funnel is accessible with one tap.
 
 Each micro-app maps to a separate Xcode scheme in `project.yml`, making it runnable directly from the scheme switcher.
+
+### Single screen vs. scenario catalog
+
+The example above launches straight into one screen. For a feature with several
+distinct meaningful states — a funnel, a search that can be empty / loaded / failed —
+the micro-app's root is instead a **scenario catalog**: a `CaseIterable` `XxxScenario`
+enum and an `XxxScenarioFactory` that maps each case to a fully-configured model,
+presented as a pickable list so a developer (or an agent) can jump to any state in one
+tap. `SearchApp` and `CheckoutApp` work this way today; the remaining micro-apps are
+still single-screen. The catalog, and the `XxxAppTests` that assert each scenario still
+produces the business state it claims, are covered in ADR-0014.
 
 ## Consequences
 

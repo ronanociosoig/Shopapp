@@ -1,7 +1,7 @@
 # ADR-0006: Stub repositories live in XxxTesting library products, not production targets
 
 **Date:** 2026-07-18  
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31
 
 ## Context
 
@@ -23,7 +23,7 @@ Xxx         → (nothing in Testing)   (no cycle)
 Stub classes live in `Features/Xxx/Testing/Sources/`. Each testing target also contains a convenience `init()` extension on the feature's model that injects the stub, allowing test code to write `StoreModel()` after `import StoreTesting` without constructing a stub explicitly:
 
 ```swift
-// Features/Store/Testing/Sources/StoreModelTesting.swift
+// Features/Store/Testing/Sources/StoreModelTestSupport.swift
 import Store
 
 public extension StoreModel {
@@ -35,7 +35,9 @@ public extension StoreModel {
 
 Production model initialisers require an explicit `repository:` argument — no stub is reachable from production code.
 
-Test targets and micro-app targets declare `XxxTesting` as a dependency. The main `ShopApp` target depends on `XxxTesting` for modules that do not yet have a live backend (Account, Checkout, Promotions, Suggestions).
+Test targets and micro-app targets declare `XxxTesting` as a dependency. `ShopApp` itself links five of them — `StoreTesting`, `AccountTesting`, `CheckoutTesting`, `PromotionsTesting`, `SuggestionsTesting` — **not** because those modules lack a backend (every module has a live `Default*Repository` against `ShopAppServer`) but so a `--ui-testing` launch gets deterministic, network-free fixture data: `ShopAppUITests` asserts on exact fixture content ("Alex Johnson", `MacBook Pro 16"`) and must not depend on whether a local server is running. `Search` and `PastPurchases` stay live even under `--ui-testing`.
+
+Not every module has a `XxxTesting` target. `Support` has no repository at all — its content is a static `SupportTopic` enum — so it has neither a repository protocol (ADR-0011) nor a companion Testing target.
 
 The naming convention `XxxTesting` follows the Tuist modular architecture documentation, making the pattern directly applicable in a future Tuist migration (Article 5 of the series).
 
@@ -51,5 +53,5 @@ The naming convention `XxxTesting` follows the Tuist modular architecture docume
 
 **Negative**
 
-- An additional library product and target must be maintained per feature module (eight in total at present).
-- The main `ShopApp` target links `XxxTesting` for stub-only modules, so those stubs remain in the shipped binary until live backends are added. This is a temporary and explicit trade-off, documented in `project.yml`.
+- An additional library product and target must be maintained per feature module with a data layer (seven at present — every feature except `Support`).
+- `ShopApp` links five `XxxTesting` products, so their stubs are in the shipped binary. This is a deliberate, ongoing trade-off for the `--ui-testing` fixture path — not a temporary state pending backends — and is documented in `project.yml`.

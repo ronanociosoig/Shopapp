@@ -1,7 +1,7 @@
 # ADR-0013: A model's auto-load guards itself against overwriting state a caller already set
 
 **Date:** 2026-08-22
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31 (the `suppressAutoLoad` half is to be superseded by ADR-0017)
 
 ## Context
 
@@ -60,12 +60,13 @@ not `public`) to build its own guard even if it wanted to. Duplicating an equiva
 call site would also mean six places to keep in sync instead of one — exactly the kind of repetition
 that let this bug recur five times in the first place.
 
-Models with an explicit `LoadState` enum (`StoreModel`) guard on `loadState == .idle` — the enum
-already distinguishes "never loaded" from every other state, including a loaded-but-empty one.
-Models without that enum (`AccountModel`, `PastPurchasesModel`, `PromotionsModel`,
-`SuggestionsModel` — all a plain `isLoading: Bool` plus one or more data properties) can't make that
-distinction from data alone: "not loaded yet" and "loaded, genuinely empty" both look like
-`nil`/`isEmpty` from the outside. For those, an explicit `suppressAutoLoad` flag is the escape hatch
+Models with an explicit load-state enum (`StoreModel`'s `StoreLoadState`, `SearchModel`'s
+`SearchState`) guard on the `.idle` case — the enum already distinguishes "never loaded" from every
+other state, including a loaded-but-empty one. Models without that enum (`AccountModel`,
+`PastPurchasesModel`, `PromotionsModel`, `SuggestionsModel` — all a plain `isLoading: Bool` plus one
+or more data properties) can't make that distinction from data alone: "not loaded yet" and "loaded,
+genuinely empty" both look like `nil`/`isEmpty` from the outside. For those, an explicit
+`suppressAutoLoad` flag is the escape hatch
 — set only by callers (in practice, snapshot tests exercising a genuinely-empty state) that need to
 assert the empty case without an auto-load racing to fill it in:
 
@@ -92,9 +93,10 @@ model.suppressAutoLoad = true
   unfamiliar with this ADR could reasonably expect `await model.load()` to always actually load, and
   be confused when it doesn't. Every `load()` implementing this guard carries a comment explaining
   why; that comment is load-bearing documentation, not decoration.
-- Models without an explicit `LoadState` enum need the extra `suppressAutoLoad` boolean as a second
-  thing a test has to remember to set, on top of whatever data it configures. `StoreModel`'s
-  `LoadState.idle` case doesn't need this at all. An explicit load-state enum on every model (rather
-  than `isLoading: Bool` plus implicit "empty means unloaded") would remove the ambiguity at its
-  source instead of working around it — worth considering as a follow-up refactor rather than adding
-  `suppressAutoLoad` to every future model by default.
+- Models without an explicit load-state enum need the extra `suppressAutoLoad` boolean as a second
+  thing a test has to remember to set, on top of whatever data it configures. `StoreModel`'s and
+  `SearchModel`'s `.idle` case doesn't need this at all. An explicit load-state enum on every model
+  (rather than `isLoading: Bool` plus implicit "empty means unloaded") would remove the ambiguity at
+  its source instead of working around it. **This is now the plan: ADR-0017 unifies every model on a
+  single `LoadState<Value>` and removes `suppressAutoLoad` entirely.** Until that lands, the flag
+  stays on the four `isLoading: Bool` models.

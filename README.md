@@ -166,18 +166,17 @@ Associated values compound the advantage. `confirmation` carries the `PlacedOrde
 
 Because feature modules cannot import each other, the composition root (`AppModel`) is the only place that knows about all features simultaneously. Two patterns handle the boundaries.
 
-### Foundation-primitive callbacks
+### Boundary callbacks
 
-Modules expose typed callbacks using only Foundation primitives:
+A callback's signature never names *another* feature's type. Where two peer features exchange a value — a `StoreProduct` becoming a `CheckoutProduct` — the callback is typed on Foundation primitives and `AppModel` rebuilds the domain type:
 
 ```swift
 // In StoreModel — no import of Checkout
 public var onAddToCart: ((UUID, String, Decimal, Bool) -> Void)?
 ```
 
-`AppModel.init` connects the dots:
-
 ```swift
+// AppModel.init connects the dots
 storeModel.onAddToCart = { id, name, price, wantsGuarantee in
     let product = CheckoutProduct(id: id, name: name, price: price,
                                   supportsExtendedGuarantee: wantsGuarantee)
@@ -185,7 +184,7 @@ storeModel.onAddToCart = { id, name, price, wantsGuarantee in
 }
 ```
 
-`StoreModel` knows nothing about `CheckoutProduct`. The conversion happens at the boundary, inside the module that has access to both types. The same pattern connects `CheckoutModel.onOrderPlaced` to `PastPurchasesModel`, and `PastPurchasesModel.onRepeatOrder` back to `CheckoutModel`.
+Where the *only* consumer is the composition root, a callback may pass a type the emitting module owns: `CheckoutModel.onOrderPlaced` hands `AppModel` its own `PlacedOrder`, and `PastPurchasesModel.onRepeatOrder` hands back its own `PastOrder`. `AppModel` maps between them. Either way, no feature imports another to satisfy the signature (ADR-0003).
 
 ### Generic `@ViewBuilder` injection
 

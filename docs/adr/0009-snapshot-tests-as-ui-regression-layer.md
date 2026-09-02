@@ -1,7 +1,13 @@
-# ADR-0009: Snapshot tests are the UI regression layer; no XCUITest
+# ADR-0009: Snapshot tests are the primary UI regression layer; XCUITest is a narrow exception
 
 **Date:** 2026-07-18  
-**Status:** Accepted
+**Status:** Accepted · amended 2026-08-31
+
+> **2026-08-31 amendment.** The original title said "no XCUITest." Three XCUITest
+> targets have since been added for things a snapshot test structurally cannot
+> reach — see the new *Where XCUITest is still used* section. The rule is
+> unchanged: if a screen's state can be set by mutating a model property, it gets
+> a snapshot test.
 
 ## Context
 
@@ -11,7 +17,7 @@ The alternative is to test the rendered output of a SwiftUI view directly, in-pr
 
 ## Decision
 
-`swift-snapshot-testing` is the UI regression layer. Every feature module has a `XxxSnapshotTests.swift` file that:
+`swift-snapshot-testing` is the primary UI regression layer. Every feature module has a `XxxSnapshotTests.swift` file that:
 
 1. Creates a model with the desired state set directly on its properties.
 2. Calls `assertSnapshot(of: SomeView(model: model), as: .image(layout: .device(config: .iPhone13Pro)))`.
@@ -30,6 +36,16 @@ assertSnapshot(of: CheckoutView(model: model), as: .image(layout: .device(config
 Integration-level snapshot tests exist in `RootSnapshotTests.swift`, which constructs a full `AppModel` with all stub repositories and asserts on `RootView` — covering the composition root and tab-level navigation without launching the app.
 
 Funnel flow tests use the model's action methods directly (`model.proceedToAddress()`, `model.submitAddress(.stub)`) to walk through state transitions and snapshot each step, verifying that the sequence of screens is correct.
+
+## Where XCUITest is still used
+
+Three XCUITest targets exist, each exercising a real app process for something snapshot tests structurally cannot cover:
+
+- **`ShopAppUITests`** (`Shop/App/UITests`) — one end-to-end walk of the full purchase funnel through the real `ShopApp`, launched with `--ui-testing` for deterministic fixtures. Covers cross-tab navigation and fixture-content assertions against the assembled app.
+- **`CheckoutFunnelUITests`** (`Features/Checkout/App/UITests`) — the XCUITest counterpart to the snapshot funnel-flow test: the same six screens, but driven through a real `NavigationStack` with real animations. It exists partly as a deliberate teaching contrast (speed vs. fragility vs. what each layer actually exercises) and partly to catch push regressions that only reproduce with live UIKit navigation.
+- **`SearchScenarioUITests`** (`Features/Search/App/UITests`) — verifies that tapping a row in the scenario catalog actually pushes the real `SearchView`. A programmatic test cannot confirm a UIKit navigation push happened.
+
+The rule stands: a screen whose state can be set by mutating a model property gets a snapshot test, not an XCUITest. XCUITest is reserved for deep links, push notifications, system dialogs, and genuine UIKit-integration behaviour.
 
 ## Consequences
 
