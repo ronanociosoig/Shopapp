@@ -5,7 +5,7 @@ import SwiftUI
 @testable import ShopCore
 @testable import Store
 @testable import Search
-@testable import Checkout
+@_spi(Internals) @testable import Checkout
 @testable import Account
 @testable import PastPurchases
 import Suggestions
@@ -52,8 +52,8 @@ struct RootSnapshotTests {
     @Test("Cart tab renders correctly with items")
     func cartTab() {
         let model = makeModel()
-        model.checkoutModel.cart = CartItem.stubs
-        model.checkoutModel.savedAddresses = ShippingAddress.stubs
+        model.checkoutFactory.model.cart = CartItem.stubs
+        model.checkoutFactory.model.savedAddresses = ShippingAddress.stubs
         model.selectedTab = .cart
         assertSnapshot(
             of: RootView(model: model),

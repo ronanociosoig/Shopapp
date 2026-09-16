@@ -1,5 +1,5 @@
 import Foundation
-import Checkout
+@_spi(Internals) import Checkout
 
 public extension CheckoutModel {
     convenience init(
@@ -10,8 +10,10 @@ public extension CheckoutModel {
         self.init(
             cart: cart,
             destination: destination,
-            repository: StubCheckoutRepository(),
-            selectedAddressStore: selectedAddressStore
+            dependencies: CheckoutDependencies(
+                repository: StubCheckoutRepository(),
+                selectedAddressStore: selectedAddressStore
+            )
         )
     }
 }

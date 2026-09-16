@@ -2,7 +2,7 @@
 import Testing
 import SnapshotTesting
 import SwiftUI
-@testable import Checkout
+@_spi(Internals) @testable import Checkout
 import CheckoutTesting
 
 // MARK: - CaseIterable: Destination (modal surfaces)
@@ -114,7 +114,7 @@ struct CheckoutFunnelFlowTests {
     func happyPathFunnel() async throws {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(delay: .zero)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(delay: .zero))
         )
         model.savedAddresses = [.stub]
 
@@ -158,7 +158,7 @@ struct CheckoutFunnelFlowTests {
     func cardDeclinedFunnel() async throws {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined))
         )
         model.savedAddresses = [.stub]
 

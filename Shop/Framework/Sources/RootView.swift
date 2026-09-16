@@ -30,11 +30,11 @@ public struct RootView: View {
                 .tabItem { Label(Strings.searchTab, systemImage: "magnifyingglass") }
                 .tag(AppModel.Tab.search)
 
-            CheckoutView(model: model.checkoutModel) {
+            model.checkoutFactory.makeCheckout {
                 PromotionBannerView(model: model.promotionsModel, sectionTitle: "You may also like")
             }
             .tabItem { Label(Strings.cartTab, systemImage: "cart") }
-                .badge(model.checkoutModel.itemCount)
+                .badge(model.checkoutFactory.itemCount)
                 .tag(AppModel.Tab.cart)
 
             AccountView(model: model.accountModel)

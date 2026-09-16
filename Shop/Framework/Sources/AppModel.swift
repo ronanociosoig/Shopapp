@@ -42,7 +42,7 @@ public final class AppModel {
     let storeModel:         StoreModel
     let searchModel:        SearchModel
     let accountModel:       AccountModel
-    let checkoutModel:      CheckoutModel
+    let checkoutFactory:    DefaultCheckoutFactory
     let promotionsModel:    PromotionsModel
     let pastPurchasesModel: PastPurchasesModel
     let supportModel:       SupportModel
@@ -76,35 +76,27 @@ public final class AppModel {
         self.destination = destination
         self.selectedTab = selectedTab
         
-        let checkoutModel      = CheckoutModel(repository: checkoutRepository)
+        let checkoutFactory    = DefaultCheckoutFactory(dependencies: CheckoutDependencies(repository: checkoutRepository))
         let pastPurchasesModel = PastPurchasesModel(repository: pastPurchasesRepository)
         let storeModel         = StoreModel(repository: storeRepository)
         let searchModel        = SearchModel(repository: searchRepository)
         let suggestionsModel   = SuggestionsModel(repository: suggestionsRepository)
 
-        // Wire add-to-cart: each source module passes Foundation primitives;
-        // the composition root converts them into CheckoutProduct.
+        // Wire add-to-cart: each source module passes Foundation primitives
+        // straight through to the factory's port — the composition root
+        // never needs to see a CheckoutProduct or a CheckoutModel to do this.
         storeModel.onAddToCart = { id, name, price, wantsGuarantee in
-            let product = CheckoutProduct(id: id, name: name, price: price,
-                                          supportsExtendedGuarantee: wantsGuarantee)
-            checkoutModel.addToCart(product)
-            if wantsGuarantee { checkoutModel.extendedGuaranteeItems.insert(id) }
+            checkoutFactory.addToCart(id: id, name: name, price: price, wantsGuarantee: wantsGuarantee)
         }
         searchModel.onAddToCart = { id, name, price, wantsGuarantee in
-            let product = CheckoutProduct(id: id, name: name, price: price,
-                                          supportsExtendedGuarantee: wantsGuarantee)
-            checkoutModel.addToCart(product)
-            if wantsGuarantee { checkoutModel.extendedGuaranteeItems.insert(id) }
+            checkoutFactory.addToCart(id: id, name: name, price: price, wantsGuarantee: wantsGuarantee)
         }
         suggestionsModel.onAddToCart = { id, name, price, wantsGuarantee in
-            let product = CheckoutProduct(id: id, name: name, price: price,
-                                          supportsExtendedGuarantee: wantsGuarantee)
-            checkoutModel.addToCart(product)
-            if wantsGuarantee { checkoutModel.extendedGuaranteeItems.insert(id) }
+            checkoutFactory.addToCart(id: id, name: name, price: price, wantsGuarantee: wantsGuarantee)
         }
 
         // Wire order persistence: PlacedOrder + guarantee set → PastOrder.
-        checkoutModel.onOrderPlaced = { placedOrder, guaranteeItems in
+        checkoutFactory.onOrderPlaced = { placedOrder, guaranteeItems in
             let lines: [PastOrderLine] = placedOrder.items.map { item in
                 PastOrderLine(
                     productID:            item.product.id,
@@ -139,23 +131,21 @@ public final class AppModel {
             Task { await pastPurchasesModel.saveOrder(pastOrder) }
         }
 
-        // Wire repeat-order: PastOrderLines → CheckoutProducts.
+        // Wire repeat-order: PastOrderLines → the factory's add-to-cart port.
         pastPurchasesModel.onRepeatOrder = { pastOrder in
             for line in pastOrder.lines {
-                let product = CheckoutProduct(
-                    id:                        line.productID,
-                    name:                      line.name,
-                    price:                     line.unitPrice,
-                    supportsExtendedGuarantee: line.hasExtendedGuarantee
-                )
-                for _ in 0 ..< line.quantity { checkoutModel.addToCart(product) }
-                if line.hasExtendedGuarantee {
-                    checkoutModel.extendedGuaranteeItems.insert(line.productID)
+                for _ in 0 ..< line.quantity {
+                    checkoutFactory.addToCart(
+                        id: line.productID,
+                        name: line.name,
+                        price: line.unitPrice,
+                        wantsGuarantee: line.hasExtendedGuarantee
+                    )
                 }
             }
         }
 
-        self.checkoutModel      = checkoutModel
+        self.checkoutFactory    = checkoutFactory
         self.pastPurchasesModel = pastPurchasesModel
         self.storeModel         = storeModel
         self.searchModel        = searchModel
@@ -170,7 +160,7 @@ public final class AppModel {
     /// Converts Account's `SavedAddress` list into Checkout's `ShippingAddress` list.
     /// Typed on Foundation primitives at the boundary so neither module imports the other.
     public func syncAddresses() {
-        checkoutModel.savedAddresses = accountModel.addresses.map { a in
+        checkoutFactory.setSavedAddresses(accountModel.addresses.map { a in
             ShippingAddress(
                 id:         a.id,
                 fullName:   a.fullName,
@@ -182,6 +172,6 @@ public final class AppModel {
                 country:    a.country,
                 isDefault:  a.isDefault
             )
-        }
+        })
     }
 }

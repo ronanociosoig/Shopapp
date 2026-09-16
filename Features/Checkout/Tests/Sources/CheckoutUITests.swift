@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import Checkout
+@_spi(Internals) @testable import Checkout
 import CheckoutTesting
 
 /// Tests that exercise complete user interaction flows through the Checkout module.
@@ -70,7 +70,7 @@ struct CheckoutUITests {
     func userSelectsApplePay() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(delay: .zero)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(delay: .zero))
         )
         model.selectPaymentMethod(.applePay, address: .stub)
         try? await Task.sleep(for: .milliseconds(100))
@@ -86,7 +86,7 @@ struct CheckoutUITests {
     func successfulPaymentClearsCart() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(delay: .zero)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(delay: .zero))
         )
         await model.submitPayment(address: .stub, cardToken: "tok_test")
         #expect(model.cart.isEmpty)
@@ -100,7 +100,7 @@ struct CheckoutUITests {
     func successfulPaymentFiresCallback() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(delay: .zero)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(delay: .zero))
         )
         var callbackFired = false
         model.onOrderPlaced = { _, _ in callbackFired = true }
@@ -112,7 +112,7 @@ struct CheckoutUITests {
     func failedPaymentShowsError() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined))
         )
         await model.submitPayment(address: .stub, cardToken: "tok_bad")
         guard case .paymentFailed(let error) = model.destination else {
@@ -126,7 +126,7 @@ struct CheckoutUITests {
     func userRetriesAfterFailure() async {
         let model = CheckoutModel(
             cart: CartItem.stubs,
-            repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined)
+            dependencies: CheckoutDependencies(repository: StubCheckoutRepository(throwing: PaymentError.cardDeclined))
         )
         await model.submitPayment(address: .stub, cardToken: "tok_bad")
         model.retryPayment()

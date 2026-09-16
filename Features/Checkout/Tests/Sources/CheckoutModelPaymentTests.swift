@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import Checkout
+@_spi(Internals) @testable import Checkout
 import CheckoutTesting
 
 @Suite("CheckoutModel — Payment Flow")
@@ -14,7 +14,7 @@ struct CheckoutModelPaymentTests {
     ) -> CheckoutModel {
         let repo: CheckoutRepository = error.map { StubCheckoutRepository(throwing: $0) }
             ?? StubCheckoutRepository(delay: .zero)
-        return CheckoutModel(repository: repo)
+        return CheckoutModel(dependencies: CheckoutDependencies(repository: repo))
     }
 
     private func makeModelWithItem(error: Error? = nil) -> CheckoutModel {

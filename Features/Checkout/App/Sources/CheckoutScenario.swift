@@ -63,8 +63,10 @@ enum CheckoutScenario: String, CaseIterable, Identifiable {
 @MainActor
 struct CheckoutScenarioFactory {
     func makeModel(for scenario: CheckoutScenario) -> CheckoutModel {
-        let repository = StubCheckoutRepository(delay: .zero)
-        let addressStore = StubSelectedAddressStore()
+        let dependencies = CheckoutDependencies(
+            repository: StubCheckoutRepository(delay: .zero),
+            selectedAddressStore: StubSelectedAddressStore()
+        )
         let address = ShippingAddress.stub
         let guaranteeEligibleItem = CartItem.stubs[0].product.id
 
@@ -73,21 +75,18 @@ struct CheckoutScenarioFactory {
             return CheckoutModel(
                 cart: CartItem.stubs,
                 savedAddresses: [address],
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .emptyCart:
             return CheckoutModel(
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .addressSelection:
             return CheckoutModel(
                 cart: CartItem.stubs,
                 path: [.address],
                 savedAddresses: ShippingAddress.stubs,
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .orderOptions:
             return CheckoutModel(
@@ -95,33 +94,39 @@ struct CheckoutScenarioFactory {
                 path: [.address, .orderOptions(address)],
                 savedAddresses: [address],
                 extendedGuaranteeItems: [guaranteeEligibleItem],
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .paymentMethod:
             return CheckoutModel(
                 cart: CartItem.stubs,
                 path: [.address, .orderOptions(address), .paymentMethod(address)],
                 savedAddresses: [address],
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .cardEntry:
             return CheckoutModel(
                 cart: CartItem.stubs,
                 path: [.address, .orderOptions(address), .paymentMethod(address), .paymentEntry(address)],
                 savedAddresses: [address],
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .processing:
-            return CheckoutModel(
+            let model = CheckoutModel(
                 cart: CartItem.stubs,
                 destination: .processing,
                 savedAddresses: [address],
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
+            // Production's processing sheet is deliberately non-dismissable
+            // because it always resolves itself once the real network call
+            // returns — there's no such call here to resolve it. Clearing it
+            // after enough time to actually see the screen is this scenario's
+            // stand-in for that resolution, not a new kind of state.
+            Task {
+                try? await Task.sleep(for: .seconds(2.5))
+                model.clearDestination()
+            }
+            return model
         case .confirmation:
             let order = PlacedOrder(
                 items: CartItem.stubs.map { OrderLineItem(product: $0.product, quantity: $0.quantity) },
@@ -132,8 +137,7 @@ struct CheckoutScenarioFactory {
             )
             return CheckoutModel(
                 destination: .confirmation(order),
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         case .paymentFailed:
             return CheckoutModel(
@@ -141,8 +145,7 @@ struct CheckoutScenarioFactory {
                 path: [.address, .orderOptions(address), .paymentMethod(address), .paymentEntry(address)],
                 destination: .paymentFailed(.cardDeclined),
                 savedAddresses: [address],
-                repository: repository,
-                selectedAddressStore: addressStore
+                dependencies: dependencies
             )
         }
     }

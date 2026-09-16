@@ -7,6 +7,12 @@ import SwiftUINavigation
 
 /// CheckoutModel drives the full purchase funnel.
 ///
+/// Not the feature's public entry point — that's `DefaultCheckoutFactory`,
+/// `Checkout`'s conformance to the `CheckoutFactory` protocol. This type's
+/// designated initializer is `@_spi(Internals)`: reachable directly only by
+/// `CheckoutTesting` and this module's own tests, both of which have a
+/// standing reason to bypass the factory. See ADR-0016.
+///
 /// Navigation is split across two properties, each modelling a distinct concern:
 ///
 /// - `path` — the `NavigationStack` path for the sequential funnel screens.
@@ -42,37 +48,42 @@ public final class CheckoutModel {
     /// The UUID of the shipping address the user last selected, persisted across launches.
     var selectedAddressID: UUID?
 
-    private let repository: CheckoutRepository
-    private let selectedAddressStore: SelectedAddressStore
+    private let environment: CheckoutEnvironment
 
     /// Called after a successful order placement with the confirmed order and
     /// the set of product IDs for which the user opted into the extended guarantee.
     /// Wire at the composition root to persist the order in PastPurchases.
     public var onOrderPlaced: ((PlacedOrder, Set<UUID>) -> Void)?
 
+    /// The real construction path. Not plain `public`: a consumer outside the
+    /// module should go through `CheckoutFeatureFactory`, which is the only
+    /// thing that can turn a `CheckoutDependencies` into a rendered screen.
+    /// This stays reachable directly — gated, not deleted — for two trusted
+    /// callers with a legitimate reason to bypass the factory: `CheckoutTesting`
+    /// (needs a stub convenience init with no view attached) and this module's
+    /// own composition-root snapshot tests (need to seed `cart`/`path` state a
+    /// production consumer never should).
+    @_spi(Internals)
     public init(
         cart: [CartItem] = [],
         destination: Destination? = nil,
-        repository: CheckoutRepository,
-        selectedAddressStore: SelectedAddressStore = UserDefaultsSelectedAddressStore()
+        dependencies: CheckoutDependencies
     ) {
-        self.cart                 = cart
-        self.destination          = destination
-        self.repository           = repository
-        self.selectedAddressStore = selectedAddressStore
-        self.selectedAddressID    = selectedAddressStore.loadSelectedID()
+        self.cart        = cart
+        self.destination = destination
+        self.environment = CheckoutEnvironment(dependencies: dependencies)
+        self.selectedAddressID = environment.selectedAddressStore.loadSelectedID()
     }
 
     /// Reaches any funnel state directly — including mid-`path` screens the
     /// designated init above has no parameter for — without exposing `path`,
     /// `deliveryOption`, or the funnel's step-advancing methods as ordinary
-    /// public API. `@_spi` rather than a second plain-public init because,
-    /// unlike `destination` (inert data), `path` carries sequencing invariants
-    /// a caller could otherwise violate (e.g. `.paymentEntry` for an address
-    /// absent from `savedAddresses`); gating it keeps that hole out of
-    /// `Checkout`'s real public surface and off its API diff, and reserves it
-    /// for the one caller — the micro-app's scenario builder — that has a
-    /// legitimate reason to teleport into the middle of the funnel.
+    /// public API. Gated separately from `@_spi(Internals)` above because it's
+    /// a different reason to reach in: unlike `destination` (inert data),
+    /// `path` carries sequencing invariants a caller could otherwise violate
+    /// (e.g. `.paymentEntry` for an address absent from `savedAddresses`).
+    /// Reserved for the one caller — the micro-app's scenario builder — that
+    /// has a legitimate reason to teleport into the middle of the funnel.
     @_spi(Scenarios)
     public convenience init(
         cart: [CartItem] = [],
@@ -81,14 +92,12 @@ public final class CheckoutModel {
         savedAddresses: [ShippingAddress] = [],
         deliveryOption: DeliveryOption = .standard,
         extendedGuaranteeItems: Set<UUID> = [],
-        repository: CheckoutRepository,
-        selectedAddressStore: SelectedAddressStore = UserDefaultsSelectedAddressStore()
+        dependencies: CheckoutDependencies
     ) {
         self.init(
             cart: cart,
             destination: destination,
-            repository: repository,
-            selectedAddressStore: selectedAddressStore
+            dependencies: dependencies
         )
         self.path = path
         self.savedAddresses = savedAddresses
@@ -155,7 +164,7 @@ public final class CheckoutModel {
             if !isValid {
                 let autoSelected = savedAddresses.first(where: { $0.isDefault }) ?? savedAddresses.first
                 selectedAddressID = autoSelected?.id
-                selectedAddressStore.saveSelectedID(selectedAddressID)
+                environment.selectedAddressStore.saveSelectedID(selectedAddressID)
             }
         }
         path.append(.address)
@@ -164,7 +173,7 @@ public final class CheckoutModel {
     /// Persists the user's address choice and updates `selectedAddressID`.
     func selectAddress(_ address: ShippingAddress) {
         selectedAddressID = address.id
-        selectedAddressStore.saveSelectedID(address.id)
+        environment.selectedAddressStore.saveSelectedID(address.id)
     }
 
     func submitAddress(_ address: ShippingAddress) {
@@ -194,7 +203,7 @@ public final class CheckoutModel {
     func submitPayment(address: ShippingAddress, cardToken: String) async {
         destination = .processing
         do {
-            let order = try await repository.placeOrder(
+            let order = try await environment.repository.placeOrder(
                 items: cart,
                 address: address,
                 cardToken: cardToken,
@@ -219,6 +228,22 @@ public final class CheckoutModel {
     func retryPayment() {
         destination = nil
         path = [.address]
+    }
+
+    /// Clears any modal `destination`, revealing whatever screen sits
+    /// underneath. Scenario-only: a real user reaches a dismissable state
+    /// through the funnel's own actions (`retryPayment()`, a confirmation's
+    /// "Continue Shopping") — never by having a destination cleared out from
+    /// under them. Exists for one case: the micro-app's `.processing`
+    /// scenario. In production, `.processing`'s sheet is deliberately
+    /// non-dismissable (`interactiveDismissDisabled()`) because it always
+    /// resolves on its own once `submitPayment`'s network call returns; the
+    /// scenario sets `destination = .processing` directly, with no request
+    /// in flight to ever resolve it, so nothing would otherwise get it out
+    /// of that state short of restarting the micro-app.
+    @_spi(Scenarios)
+    public func clearDestination() {
+        destination = nil
     }
 
     func updateQuantity(for item: CartItem, quantity: Int) {

@@ -89,4 +89,68 @@ final class CheckoutFunnelUITests: XCTestCase {
             "Order confirmation should appear after successful payment"
         )
     }
+
+    // MARK: - Scenario picker dismissal
+
+    /// `fullScreenCover` has no built-in swipe-to-dismiss on iOS, and
+    /// `CheckoutView` has no dismiss affordance of its own — without the
+    /// "Scenarios" strip, restarting the micro-app was the only way back to
+    /// the list. Regression coverage for that specific fix, not just the
+    /// happy-path funnel above.
+    func test_scenarioPreview_returnsToScenarioList() throws {
+        XCTAssertTrue(
+            app.navigationBars["Checkout Scenarios"].waitForExistence(timeout: 5)
+        )
+        app.buttons["Cart"].tap()
+
+        XCTAssertTrue(
+            app.navigationBars["Your Cart"].waitForExistence(timeout: 5),
+            "Cart screen should be the initial screen"
+        )
+
+        app.buttons["Scenarios"].tap()
+
+        XCTAssertTrue(
+            app.navigationBars["Checkout Scenarios"].waitForExistence(timeout: 5),
+            "Tapping the scenario strip's back button should return to the scenario list"
+        )
+    }
+
+    /// `.processing`'s sheet is `interactiveDismissDisabled()` on purpose —
+    /// production never needs it dismissed any other way, since it always
+    /// resolves once the real network call returns. The scenario has no such
+    /// call in flight, so without `CheckoutModel.clearDestination()` firing
+    /// on a delay, this scenario would be a genuine dead end: the sheet
+    /// covers the whole screen, including the "Scenarios" strip above
+    /// `CheckoutView`, so restarting the micro-app would be the only way out.
+    func test_processingScenario_resolvesOnItsOwn() throws {
+        XCTAssertTrue(
+            app.navigationBars["Checkout Scenarios"].waitForExistence(timeout: 5)
+        )
+        app.buttons["Processing"].tap()
+
+        XCTAssertTrue(
+            app.staticTexts["Processing your order…"].waitForExistence(timeout: 5),
+            "Processing scenario should show the non-dismissable processing sheet"
+        )
+
+        // Covered by the sheet, not just visually behind other content —
+        // asserting this now (rather than assuming) is the point: a hit-test
+        // failure here is exactly the dead end this scenario used to be.
+        XCTAssertFalse(
+            app.buttons["Scenarios"].isHittable,
+            "The scenario strip should be covered while the processing sheet is up"
+        )
+
+        let processingGone = expectation(
+            for: NSPredicate(format: "exists == false"),
+            evaluatedWith: app.staticTexts["Processing your order…"]
+        )
+        wait(for: [processingGone], timeout: 5)
+
+        XCTAssertTrue(
+            app.buttons["Scenarios"].isHittable,
+            "The scenario strip should be reachable again once processing clears itself"
+        )
+    }
 }

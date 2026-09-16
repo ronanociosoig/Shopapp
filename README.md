@@ -2,7 +2,7 @@
 
 ShopApp is a companion project to the article series [*AI Writes Fast. Your Safety Net Needs to Be Faster.*](https://ronanociosoig.medium.com) It is a reference implementation for programmatic navigation in SwiftUI — demonstrating how to make illegal navigation states unrepresentable at the type level, how to test every screen state with snapshot tests, and how to encode architectural rules in agent instructions so AI-generated code follows the same constraints as handwritten code.
 
-The app is a multi-module e-commerce shell: 27 screens across 8 feature modules, built with Swift 6, `@Observable`, and iOS 17 as the minimum deployment target. It is not a production app. Every repository is stubbed. The purpose is to show the pattern at realistic scale, not to ship to the App Store.
+The app is a multi-module e-commerce shell: 27 screens across 8 feature modules, built with Swift 6, `@Observable`, and iOS 17 as the minimum deployment target. It is not a production app, but every module has a live repository backed by a companion Vapor server (`ShopAppServer`), alongside a stub repository used by tests and micro-apps. The purpose is to show the pattern at realistic scale, not to ship to the App Store.
 
 ---
 
@@ -77,6 +77,23 @@ flowchart TD
 The rule is strict: feature modules may only depend on the foundation layer (`NetworkFoundation`, `DesignSystem`, `Common`). No feature module imports another feature module. All cross-feature wiring is expressed in `ShopCore`, which owns `AppModel`, `RootView`, and `RateOrderView`.
 
 Each feature module ships a standalone micro-app target (`SearchApp`, `CheckoutApp`, etc.) that wires the module's view to a stub repository. This keeps feature development self-contained — a developer working on Checkout never needs to launch the full application.
+
+### Checking the boundary: `graph-tool check`
+
+The import rule above is enforced by the compiler — a forbidden `import` between feature modules is a build failure before anything else runs. `tools/GraphTool` makes the same rule independently checkable, without a full build: `graph-tool check` reads `Package.swift`'s declared dependencies, compares them against `allowed-dependencies.json`'s three-layer model (`App` → `Feature`, `Foundation`; `Feature` → `Foundation`; `Foundation` → nothing), and exits non-zero on the first violation it finds.
+
+```bash
+cd tools/GraphTool
+swift run graph-tool check --package-path "$(cd ../.. && pwd)"
+```
+
+```
+✓ No dependency violations found.
+```
+
+Pass a relative `--package-path` and the config lookup silently resolves against the wrong directory instead of erroring — use an absolute path, as above.
+
+It is not currently wired into CI — running it today is a manual step, not a gate on every PR.
 
 ---
 
