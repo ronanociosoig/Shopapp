@@ -91,9 +91,26 @@ jobs:
               -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
               -resultBundlePath build-results/test.xcresult
 
+      # Runs even when the test step above failed — that's the whole point:
+      # a failing snapshot test attaches reference/failure/difference PNGs to
+      # the xcresult, and those are exactly what's needed to tell "wrong
+      # render" from "environment drift" without re-running anything.
+      # --only-failures skips passing tests, which have nothing attached.
+      - run:
+          name: Export snapshot diff images from the test result bundle
+          when: always
+          command: |
+            xcrun xcresulttool export attachments \
+              --path build-results/test.xcresult \
+              --output-path build-results/snapshot-diffs \
+              --only-failures
+
       - store_artifacts:
           path: build-results
           destination: xcresults
+      - store-artifacts:
+          path: build-results/snapshot-diffs
+          destination: snapshot-diffs
 
 workflows:
   build-test:
