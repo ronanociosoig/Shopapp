@@ -15,7 +15,7 @@ parameters:
     default: "27.0.0"
     type: string
   iphone_device:
-    default: "iPhone 15"
+    default: "iPhone 17"
     type: string
   iphone_os:
     default: "27.0"
