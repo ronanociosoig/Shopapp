@@ -108,7 +108,8 @@ jobs:
       - store_artifacts:
           path: build-results
           destination: xcresults
-      - store-artifacts:
+
+      - store_artifacts:
           path: build-results/snapshot-diffs
           destination: snapshot-diffs
 
