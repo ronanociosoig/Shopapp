@@ -39,7 +39,7 @@ Three refinements this rule has grown:
   out of the network repository and lets a test swap just the persistence.
 - **`Checkout` keeps its protocol in a dependency-free `CheckoutAPI` target**, not the framework, so
   `CheckoutTesting` and the micro-app can import the contract without the implementation (ADR-0001,
-  ADR-0016).
+  ADR-0014).
 
 The framework target provides one concrete implementation — the live repository — which is the only type the production app uses. It may compose multiple internal data sources (remote and local cache) but those are implementation details, not part of the protocol:
 

@@ -147,7 +147,7 @@ quietly ignored everywhere, including where it does.
 - `Common` / `NetworkFoundation` primitives — domain-agnostic utilities with no meaningful "which
   caller" question; the whole point is that any module can reach for them.
 - A deliberately versioned, dependency-free contract target — `CheckoutAPI` (ADR-0001; see
-  ADR-0016 once written) is the model: value types and a repository protocol, public, meant to be
+  ADR-0014) is the model: value types and a repository protocol, public, meant to be
   imported by the feature itself, its `Testing` target, and its micro-app, with the implementation
   kept separate specifically so the contract can be stable while the implementation isn't.
 

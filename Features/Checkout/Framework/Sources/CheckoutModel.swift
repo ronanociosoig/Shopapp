@@ -11,7 +11,7 @@ import SwiftUINavigation
 /// `Checkout`'s conformance to the `CheckoutFactory` protocol. This type's
 /// designated initializer is `@_spi(Internals)`: reachable directly only by
 /// `CheckoutTesting` and this module's own tests, both of which have a
-/// standing reason to bypass the factory. See ADR-0016.
+/// standing reason to bypass the factory. See ADR-0014.
 ///
 /// Navigation is split across two properties, each modelling a distinct concern:
 ///

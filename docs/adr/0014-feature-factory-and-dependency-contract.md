@@ -1,4 +1,4 @@
-# ADR-0016: A feature's public API is a CheckoutFactory contract, not its model or view
+# ADR-0014: A feature's public API is a CheckoutFactory contract, not its model or view
 
 **Date:** 2026-09-13 · amended 2026-09-15
 **Status:** Accepted

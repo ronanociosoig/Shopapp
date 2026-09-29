@@ -17,7 +17,7 @@ Each feature is a separate `.library` product in `Package.swift`. Feature module
 - `DesignSystem` — shared visual components and tokens
 - `Common` — domain-agnostic utilities (currency formatting, date helpers, etc.)
 
-A feature may additionally depend on its **own** dependency-free contract target — an `XxxAPI` library holding value types plus the repository protocol, which the feature, its `XxxTesting` target, and its micro-app can all import without pulling in the implementation. `Checkout` is the first to split one (`CheckoutAPI`); see ADR-0016.
+A feature may additionally depend on its **own** dependency-free contract target — an `XxxAPI` library holding value types plus the repository protocol, which the feature, its `XxxTesting` target, and its micro-app can all import without pulling in the implementation. `Checkout` is the first to split one (`CheckoutAPI`); see ADR-0014.
 
 No feature module may import **another** feature module. Enforcement is layered:
 
