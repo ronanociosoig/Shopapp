@@ -125,6 +125,74 @@ not an XCUITest.
 
 ---
 
+## Module Public API
+
+### Rule: a feature's public API is its repository protocol, its factory, and the data types those require — never the View
+
+`some View` cannot be a protocol requirement's return type — only `associatedtype Body: View`
+can, which is `View`'s own definition restated. A hand-written protocol for a SwiftUI view
+inherits that same associated-type problem and cannot unify two concrete conforming types the
+way a plain service protocol can. The seam belongs at the repository and the factory's
+dependencies, never at the View.
+
+```swift
+// ✅ Correct — the View is a leaf, hidden behind the factory
+public protocol CheckoutFactory {
+    associatedtype CheckoutContent: View
+    func makeCheckout() -> CheckoutContent
+}
+
+// ❌ Never — View can't be the seam
+protocol CheckoutViewProtocol: View { }
+```
+
+### Rule: never use AnyView to make a view swappable for a test
+
+```swift
+// ✅ Correct
+public func makeCheckout() -> some View { CheckoutView(model: checkoutModel) }
+
+// ❌ Never
+public func makeCheckout() -> AnyView { AnyView(CheckoutView(model: checkoutModel)) }
+```
+
+**Why:** `AnyView` erases exactly the static type information SwiftUI's diffing engine needs
+to tell an update from a replacement — a real cost paid at every boundary, for a problem
+`some View` on a concrete factory method already solves for free.
+
+---
+
+## @_spi Boundaries
+
+### Rule: gate a model's designated initializer behind @_spi(Internals) once a factory exists
+
+```swift
+@_spi(Internals)
+public init(dependencies: CheckoutDependencies) { /* ... */ }
+```
+
+Nothing outside the module should construct the model directly once its factory is the
+intended entry point. Deleting the initializer would break the companion `XxxTesting` target
+and composition-root snapshot tests, which have a legitimate reason to reach past the factory;
+`@_spi` keeps it reachable for them specifically, without advertising it to everyone else.
+
+### Rule: the composition root must never import a feature module via @_spi
+
+```swift
+// ✅ Correct — AppModel and RootView only ever see the factory
+import Checkout
+
+// ❌ Never — reaching past the factory from the one place that should never need to
+@_spi(Internals) import Checkout
+```
+
+**Why:** `@_spi(Internals)`/`@_spi(Scenarios)` exist for the companion `XxxTesting` target and
+a micro-app's scenario builder specifically — the factory's ordinary public API already
+covers what the composition root needs. An `@_spi` import from `AppModel` or `RootView` means
+something reached past the front door instead of through the factory.
+
+---
+
 ## Dependency Injection
 
 ### Rule: models accept dependencies via protocol, never concrete types
@@ -148,6 +216,48 @@ init(repository: FeatureRepositoryProtocol = StubFeatureRepository()) { ... }
 Production implementations are injected at the composition root (`Shop/App/Sources`).
 The stub default lives in the companion `XxxTesting` target (ADR-0006).
 Feature modules must not reference live implementations.
+
+### Rule: package a module's dependencies as one explicit struct, not a shared god object
+
+```swift
+// ✅ Correct
+public struct CheckoutDependencies {
+    public let repository: CheckoutRepository
+    public let selectedAddressStore: SelectedAddressStore?
+}
+
+// ❌ Never — one field per module, hiding which module actually needs what
+public struct AppDependencies {
+    public let checkoutRepository: CheckoutRepository
+    public let accountRepository: AccountRepository
+    // ...
+}
+```
+
+**Why:** a shared dependencies object makes every module's test satisfy the whole shape to
+exercise the one field it actually needs, and lets any module reach a dependency that was
+never meant for it.
+
+### Rule: a SwiftUI Environment value defined for one module's internal use stays internal, never promoted to a shared key
+
+```swift
+// ✅ Correct
+private struct CheckoutCurrencyFormatterKey: EnvironmentKey { /* ... */ }
+extension EnvironmentValues {
+    var checkoutCurrencyFormatter: NumberFormatter { /* ... */ }   // not public
+}
+
+// ❌ Never — a global key any module can read or set
+extension EnvironmentValues {
+    public var appDependencies: AppDependencies { /* ... */ }
+}
+```
+
+**Why:** an `EnvironmentKey` fails silently to its `defaultValue` when nobody sets it — there
+is no compile error the way there is for a forgotten constructor argument. That is fine for a
+formatter; it is the wrong place for anything a module actually depends on to behave
+correctly. A global key also makes it reachable, and silently defaultable, from every module
+rather than just the one that owns it.
 
 ---
 
