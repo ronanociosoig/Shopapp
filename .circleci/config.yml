@@ -109,10 +109,6 @@ jobs:
           path: build-results
           destination: xcresults
 
-      - store_artifacts:
-          path: build-results/snapshot-diffs
-          destination: snapshot-diffs
-
 workflows:
   build-test:
     jobs:

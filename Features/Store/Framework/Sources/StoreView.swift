@@ -96,7 +96,13 @@ public struct StoreView<SuggestionRow: View, PromotionBanner: View>: View {
                 .padding(.horizontal)
             }
 
-            LazyVStack(spacing: 16) {
+            // Plain VStack, not LazyVStack: the suggestions row embeds SuggestionsView,
+            // which attaches its own navigationDestination — a modifier SwiftUI can only
+            // register reliably outside a lazy container (LazyVStack/LazyHStack/List
+            // create child views on demand, so the modifier may not exist yet when the
+            // stack resolves navigation). The catalog here is bounded (a stubbed product
+            // set), so eagerly building every row costs nothing worth trading reliability for.
+            VStack(spacing: 16) {
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                     switch row {
                     case .products(let pair):

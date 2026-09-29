@@ -156,10 +156,13 @@ public struct PromotionBannerView: View {
                         .padding(.horizontal)
                     }
                 }
-                .navigationDestination(item: $model.destination.promotionDetail) { promotion in
-                    PromotionDetailView(promotion: promotion)
-                }
             }
+        }
+        // Attached to the always-present Group, not the conditional VStack above —
+        // a navigationDestination that appears/disappears with the data it's
+        // guarding is not reliably registered by the enclosing NavigationStack.
+        .navigationDestination(item: $model.destination.promotionDetail) { promotion in
+            PromotionDetailView(promotion: promotion)
         }
         .task {
             // Only auto-load from a fresh model — see AccountView/StoreView
