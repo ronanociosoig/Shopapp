@@ -1,0 +1,84 @@
+version: 2.1
+
+# ShopApp CI — builds and tests the whole app on every push.
+#
+# This is the baseline the "CI Needs API Discipline" section of the article
+# series argues about: right now every job below runs against the *whole*
+# app, because nothing yet computes which modules a given change actually
+# touches. `graph-tool check` (tools/GraphTool) is wired in here for the
+# first time — ADR-0001 named it as written but "not yet wired into CI".
+# Diff-based selective testing (only run the modules a change could affect)
+# is a deliberate next step, not part of this baseline.
+
+jobs:
+  check-dependency-graph:
+    macos:
+      xcode: "27.0.0"
+    resource_class: m4pro.medium
+    steps:
+      - checkout
+      - run:
+          name: graph-tool check (ADR-0001's allowed-dependencies.json)
+          command: |
+            swift run --package-path tools/GraphTool graph-tool check --package-path .
+
+  build-and-test:
+    macos:
+      xcode: "27.0.0"
+    resource_class: m4pro.medium
+    steps:
+      - checkout
+
+      - run:
+          name: Install XcodeGen
+          command: brew install xcodegen
+
+      - run:
+          name: Generate ShopApp.xcodeproj from project.yml
+          command: xcodegen generate
+
+      - restore_cache:
+          keys:
+            - spm-deps-v1-{{ checksum "Package.resolved" }}
+
+      - run:
+          name: Resolve Swift Package dependencies
+          command: |
+            xcodebuild -resolvePackageDependencies \
+              -project ShopApp.xcodeproj \
+              -scheme ShopApp
+
+      - save_cache:
+          key: spm-deps-v1-{{ checksum "Package.resolved" }}
+          paths:
+            - ~/Library/Developer/Xcode/DerivedData
+
+      - run:
+          name: List available simulators (diagnostic — adjust the destination below if this image's default device differs)
+          command: xcrun simctl list devices available
+
+      - run:
+          name: Build ShopApp
+          command: |
+            xcodebuild build \
+              -scheme ShopApp \
+              -destination 'platform=iOS Simulator,name=iPhone 17' \
+              -resultBundlePath build-results/build.xcresult
+
+      - run:
+          name: Run ShopAppTests + ShopAppUITests
+          command: |
+            xcodebuild test \
+              -scheme ShopApp \
+              -destination 'platform=iOS Simulator,name=iPhone 17' \
+              -resultBundlePath build-results/test.xcresult
+
+      - store_artifacts:
+          path: build-results
+          destination: xcresults
+
+workflows:
+  build-test:
+    jobs:
+      - check-dependency-graph
+      - build-and-test
