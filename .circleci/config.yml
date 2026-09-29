@@ -18,7 +18,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: graph-tool check (ADR-0001's allowed-dependencies.json)
+          name: run graph-tool dependencies check 
           command: |
             swift run --package-path tools/GraphTool graph-tool check --package-path .
 
