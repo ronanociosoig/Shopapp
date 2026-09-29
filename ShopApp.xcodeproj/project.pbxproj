@@ -105,27 +105,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PastPurchasesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		038727FB7ACD0610E7D08EEF /* PastPurchasesApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = PastPurchasesApp.app; path = "Past Purchases.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0580246527A91B4F270829A2 /* RootSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSnapshotTests.swift; sourceTree = "<group>"; };
 		0BA8ECC3BB767A48B320473A /* CheckoutScenarioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutScenarioTests.swift; sourceTree = "<group>"; };
 		0C36D272A4B2A18394A6857C /* ShopAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DD4711B4DF11A1176E4908B /* ShopAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppUITests.swift; sourceTree = "<group>"; };
-		14A2510C199FE28143DA4954 /* SuggestionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SuggestionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E36F9E90AC91DB876855A21 /* SearchApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		14A2510C199FE28143DA4954 /* SuggestionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = SuggestionsApp.app; path = Suggestions.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E36F9E90AC91DB876855A21 /* SearchApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = SearchApp.app; path = Search.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		245A358B476A4BE5CEB6DD1C /* SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportApp.swift; sourceTree = "<group>"; };
 		25036C54ADA54ACF364E9120 /* ShopAppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopAppMain.swift; sourceTree = "<group>"; };
 		28C79158E4384EE98FA80C2A /* CheckoutFunnelUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutFunnelUITests.swift; sourceTree = "<group>"; };
-		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CheckoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29F2225CE4E42BDA26534616 /* CheckoutApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = CheckoutApp.app; path = Checkout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EA81447207387812C53C745 /* CheckoutAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CheckoutAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F56B0FB2C6726540DE8D45 /* CheckoutAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CheckoutAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3752626176AA8E3AB2C31C32 /* ShopAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ShopAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		40490B6C30A53B94A2F1F77D /* CheckoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutScenario.swift; sourceTree = "<group>"; };
-		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PromotionsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DesignSystemApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		410B2D35D147A3BBCD70727C /* PromotionsApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = PromotionsApp.app; path = Promotions.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4535CC9AEDF879451ED5DB8A /* DesignSystemApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = DesignSystemApp.app; path = "Design System.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		510466A867228A7F746D02EF /* ShopApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ShopApp; path = .; sourceTree = SOURCE_ROOT; };
 		614A542CBFDDF6204FE71598 /* SuggestionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsApp.swift; sourceTree = "<group>"; };
-		874943F7E67E6C5ACB08F55D /* ShopApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		9385120A0CFB0198D2A458C9 /* SupportApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SupportApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		874943F7E67E6C5ACB08F55D /* ShopApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9385120A0CFB0198D2A458C9 /* SupportApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = SupportApp.app; path = Support.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94C7D11E45BC05B99E556308 /* SearchAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SearchAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DAAE2C9217523C1066D1E27 /* AccountApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountApp.swift; sourceTree = "<group>"; };
 		9EAFB1F87AD9E11E206B75F5 /* PastPurchasesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastPurchasesApp.swift; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 		D11046F7EA1AAA004621A801 /* PromotionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionsApp.swift; sourceTree = "<group>"; };
 		D54D3FC7372FAAA32083ED74 /* CheckoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutApp.swift; sourceTree = "<group>"; };
 		DDE96CC7EDA7EF1DDCF51AE9 /* SearchScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchScenario.swift; sourceTree = "<group>"; };
-		DF9BEF72580C26D74ED78999 /* AccountApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AccountApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF9BEF72580C26D74ED78999 /* AccountApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; name = AccountApp.app; path = Account.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1DA51EE048AE9DF3B871C3E /* DesignSystemApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1221,7 +1221,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = Shop/App/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1230,7 +1230,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.app;
 				PRODUCT_NAME = ShopApp;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1507,7 +1510,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = Shop/App/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1516,7 +1519,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shopapp.demo.app;
 				PRODUCT_NAME = ShopApp;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

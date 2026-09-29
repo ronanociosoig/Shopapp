@@ -10,11 +10,25 @@ version: 2.1
 # Diff-based selective testing (only run the modules a change could affect)
 # is a deliberate next step, not part of this baseline.
 
+parameters:
+  xcode_version:
+    default: "27.0.0"
+    type: string
+  iphone_device:
+    default: "iPhone 15"
+    type: string
+  iphone_os:
+    default: "27.0"
+    type: string
+  global_resource_class:
+    default: "m4pro.medium"
+    type: string
+
 jobs:
   check-dependency-graph:
     macos:
-      xcode: "27.0.0"
-    resource_class: m4pro.medium
+      xcode: <<pipeline.parameters.xcode_version>>
+    resource_class: <<pipeline.parameters.global_resource_class>>
     steps:
       - checkout
       - run:
@@ -24,10 +38,14 @@ jobs:
 
   build-and-test:
     macos:
-      xcode: "27.0.0"
-    resource_class: m4pro.medium
+      xcode: <<pipeline.parameters.xcode_version>>
+    resource_class: <<pipeline.parameters.global_resource_class>>
     steps:
       - checkout
+
+      - run:
+          name: Trust macro plugins (no interactive prompt on a fresh CI image)
+          command: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 
       - run:
           name: Install XcodeGen
@@ -62,7 +80,7 @@ jobs:
           command: |
             xcodebuild build \
               -scheme ShopApp \
-              -destination 'platform=iOS Simulator,name=iPhone 17' \
+              -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
               -resultBundlePath build-results/build.xcresult
 
       - run:
@@ -70,7 +88,7 @@ jobs:
           command: |
             xcodebuild test \
               -scheme ShopApp \
-              -destination 'platform=iOS Simulator,name=iPhone 17' \
+              -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
               -resultBundlePath build-results/test.xcresult
 
       - store_artifacts:
