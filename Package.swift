@@ -39,7 +39,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.10.0", traits: ["CasePaths"]),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.19.6"),
         .package(url: "https://github.com/mattt/Replay", from: "0.4.0"),
     ],
     targets: [

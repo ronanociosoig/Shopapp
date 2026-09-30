@@ -11,6 +11,14 @@
 # a flag. This script makes that edit (and, just as importantly, reverts it)
 # instead of hand-editing XML each time.
 #
+# Every XxxTests.xcscheme now also carries a permanent TZ=UTC entry in that
+# same EnvironmentVariables block (see the snapshot date-rendering bug this
+# fixed — a fixed instant near midnight UTC rendered as a different calendar
+# date depending on the host's timezone). This script only ever adds or
+# removes its own REPLAY_RECORD_MODE entry inside that block; it never
+# touches TZ's, and never flips shouldUseLaunchSchemeArgsEnv, which must
+# stay "NO" permanently now for TZ to take effect at all.
+#
 # A scheme left in recording mode silently re-records on every future test
 # run instead of replaying a committed fixture — always run `off` again
 # after recording. `on` and `off` are idempotent; running either twice, or
@@ -81,6 +89,8 @@ with open(path) as f:
 # so the same literal blocks work for any XxxTests.xcscheme following the
 # same shape.
 
+# Legacy shape, kept only as a fallback for a scheme that has never had TZ
+# (or anything else) added to its EnvironmentVariables block yet.
 off_test_action_open = (
     '   <TestAction\n'
     '      buildConfiguration = "Debug"\n'
@@ -89,7 +99,6 @@ off_test_action_open = (
     '      shouldUseLaunchSchemeArgsEnv = "YES"\n'
     '      shouldAutocreateTestPlan = "YES">\n'
 )
-
 on_test_action_open = (
     '   <TestAction\n'
     '      buildConfiguration = "Debug"\n'
@@ -98,8 +107,7 @@ on_test_action_open = (
     '      shouldUseLaunchSchemeArgsEnv = "NO"\n'
     '      shouldAutocreateTestPlan = "YES">\n'
 )
-
-env_block_template = (
+legacy_env_block_template = (
     '      <EnvironmentVariables>\n'
     '         <EnvironmentVariable\n'
     '            key = "REPLAY_RECORD_MODE"\n'
@@ -108,15 +116,35 @@ env_block_template = (
     '         </EnvironmentVariable>\n'
     '      </EnvironmentVariables>\n'
 )
-
 testables_close = '      </Testables>\n'
 test_action_close = '   </TestAction>'
 
+# Current shape: TestAction already carries an EnvironmentVariables block
+# (at minimum, TZ=UTC). This script only ever adds/removes its own
+# REPLAY_RECORD_MODE entry inside that existing block.
+entry_re = re.compile(
+    r'         <EnvironmentVariable\n'
+    r'            key = "REPLAY_RECORD_MODE"\n'
+    r'            value = "(once|rewrite)"\n'
+    r'            isEnabled = "YES">\n'
+    r'         </EnvironmentVariable>\n'
+)
+
+def make_entry(mode: str) -> str:
+    return (
+        '         <EnvironmentVariable\n'
+        '            key = "REPLAY_RECORD_MODE"\n'
+        f'            value = "{mode}"\n'
+        '            isEnabled = "YES">\n'
+        '         </EnvironmentVariable>\n'
+    )
+
+has_env_block = '<EnvironmentVariables>' in content
 is_on = 'REPLAY_RECORD_MODE' in content
 
 if action == 'status':
     if is_on:
-        match = re.search(r'value = "(once|rewrite)"', content)
+        match = entry_re.search(content)
         current_mode = match.group(1) if match else 'unknown'
         print(f'{scheme}: recording ON (REPLAY_RECORD_MODE={current_mode})')
     else:
@@ -125,7 +153,7 @@ if action == 'status':
 
 if action == 'on':
     if is_on:
-        new_content = re.sub(r'value = "(once|rewrite)"', f'value = "{mode}"', content)
+        new_content = entry_re.sub(make_entry(mode), content, count=1)
         if new_content == content:
             print(f'{scheme}: already on with mode={mode}, nothing to change')
             sys.exit(0)
@@ -134,6 +162,20 @@ if action == 'on':
         print(f'{scheme}: mode updated to REPLAY_RECORD_MODE={mode}')
         sys.exit(0)
 
+    if has_env_block:
+        # Insert alongside whatever's already declared (e.g. TZ) — the
+        # opening tag is unique per file (one TestAction, one such block).
+        new_content = content.replace(
+            '<EnvironmentVariables>\n',
+            '<EnvironmentVariables>\n' + make_entry(mode),
+            1,
+        )
+        with open(path, 'w') as f:
+            f.write(new_content)
+        print(f'{scheme}: enabled REPLAY_RECORD_MODE={mode} — remember to run "off" after recording')
+        sys.exit(0)
+
+    # Legacy fallback: no EnvironmentVariables block exists at all yet.
     if off_test_action_open not in content:
         print(
             f'error: {path} does not match the expected off-state TestAction block. '
@@ -145,7 +187,7 @@ if action == 'on':
     content = content.replace(off_test_action_open, on_test_action_open, 1)
     content = content.replace(
         testables_close + test_action_close,
-        testables_close + env_block_template.format(mode=mode) + test_action_close,
+        testables_close + legacy_env_block_template.format(mode=mode) + test_action_close,
         1,
     )
     with open(path, 'w') as f:
@@ -158,26 +200,27 @@ if action == 'off':
         print(f'{scheme}: already off, nothing to change')
         sys.exit(0)
 
-    if on_test_action_open not in content:
-        print(
-            f'error: {path} has REPLAY_RECORD_MODE set but does not match the expected '
-            'on-state TestAction block. Edit it by hand.',
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    content = content.replace(on_test_action_open, off_test_action_open, 1)
-    new_content = re.sub(
-        r'\n      <EnvironmentVariables>\n.*?\n      </EnvironmentVariables>\n',
-        '\n',
-        content,
-        count=1,
-        flags=re.DOTALL,
-    )
+    # Always remove just this script's own entry first, regardless of shape
+    # — leaves any other declared variable (TZ included) untouched.
+    new_content = entry_re.sub('', content, count=1)
     if new_content == content:
-        print(f'error: found REPLAY_RECORD_MODE but could not locate the EnvironmentVariables block to remove', file=sys.stderr)
+        print(f'error: found REPLAY_RECORD_MODE but could not locate its EnvironmentVariable entry to remove', file=sys.stderr)
         sys.exit(1)
 
+    empty_block = '      <EnvironmentVariables>\n      </EnvironmentVariables>\n'
+    if empty_block not in new_content:
+        # Something else (e.g. TZ) still lives in the block — done, and
+        # shouldUseLaunchSchemeArgsEnv stays "NO" since that other
+        # variable still needs it.
+        with open(path, 'w') as f:
+            f.write(new_content)
+        print(f'{scheme}: disabled, back to normal playback')
+        sys.exit(0)
+
+    # REPLAY_RECORD_MODE was the only variable declared — legacy full
+    # revert: drop the now-empty block and flip the flag back to "YES".
+    new_content = new_content.replace(empty_block, '', 1)
+    new_content = new_content.replace(on_test_action_open, off_test_action_open, 1)
     with open(path, 'w') as f:
         f.write(new_content)
     print(f'{scheme}: disabled, back to normal playback')

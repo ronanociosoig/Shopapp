@@ -22,6 +22,8 @@ schemes:
       targets:
         - ShopAppTests
         - ShopAppUITests
+      environmentVariables:
+        TZ: UTC
     profile:
       config: Release
   SearchApp:

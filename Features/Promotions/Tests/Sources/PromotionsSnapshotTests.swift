@@ -33,7 +33,7 @@ struct PromotionsSnapshotTests {
     @Test("Promotions view renders correctly with content")
     func loadedState() async throws {
         let model = PromotionsModel()
-        model.promotions = Promotion.stubs
+        model.promotions = Promotion.stubs#imageLiteral(resourceName: "loadedState.state_loaded.png")
         assertSnapshot(
             of: PromotionsView(model: model),
             as: .image(layout: .device(config: .iPhone13Pro)),
