@@ -86,12 +86,22 @@ jobs:
               -resultBundlePath build-results/build.xcresult | xcbeautify
 
       - run:
+          # PriceLabel renders via `.currency(code: "EUR")`, which pins the
+          # currency but not the locale — symbol position and separators
+          # still follow whatever region the simulator happens to be set
+          # to. A simulator's region has no CI-visible default, so leaving
+          # it unpinned makes every currency-rendering snapshot depend on
+          # an environment detail nothing here records (this is what broke
+          # storeTab/cartTab/supportDestination: identical UI, formatted as
+          # `2.499,99 €` locally vs `€2,499.99` on CI). -testLanguage/
+          # -testRegion pin it the same way -destination pins device/OS.
           name: Run ShopAppTests + ShopAppUITests
           command: |
             set -o pipefail
             xcodebuild test \
               -scheme ShopApp \
               -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
+              -testLanguage en -testRegion US \
               -resultBundlePath build-results/test.xcresult | xcbeautify
 
       # Runs even when the test step above failed — that's the whole point:

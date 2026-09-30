@@ -14,6 +14,16 @@
 # reference against CI's exact destination, so "passes in CI" and "passes
 # with this script" mean the same thing.
 #
+# The same drift applies to language/region, not just device/OS: PriceLabel
+# renders via `.currency(code: "EUR")`, which pins the currency but not the
+# locale — symbol position and separators still follow whatever region the
+# simulator happens to be set to (`2.499,99 €` under es_ES vs. `€2,499.99`
+# under en_US, pixel-identical otherwise). A simulator's region is a
+# persistent Settings.app value with no CI-visible default, so leaving it
+# unpinned makes every currency-rendering snapshot depend on an environment
+# detail nothing in this repo records. `-testLanguage`/`-testRegion` pin it
+# the same way `-destination` pins device/OS.
+#
 # Mechanism, same one run-tests.sh's reset-snapshots uses and for the same
 # reason: xcodebuild-launched tests don't reliably forward the invoking
 # shell's environment to the test process (see replay-record.sh's header on
@@ -25,13 +35,13 @@
 # The second run confirms they now pass.
 #
 # Usage:
-#   scripts/regenerate-snapshots.sh [target|all] [device] [os]
-#   (defaults: all, iPhone 17, 27.0 — CI's current combination)
+#   scripts/regenerate-snapshots.sh [target|all] [device] [os] [language] [region]
+#   (defaults: all, iPhone 17, 27.0, en, US — CI's current combination)
 #
 # Examples:
-#   scripts/regenerate-snapshots.sh                  # everything, CI's destination
+#   scripts/regenerate-snapshots.sh                  # everything, CI's destination + locale
 #   scripts/regenerate-snapshots.sh Checkout
-#   scripts/regenerate-snapshots.sh all "iPhone 17" 27.0
+#   scripts/regenerate-snapshots.sh all "iPhone 17" 27.0 en US
 #
 # ALWAYS inspect the newly-recorded PNGs under __Snapshots__ before
 # committing — a snapshot silently rendering wrong still "passes" against
@@ -95,7 +105,7 @@ usage() {
 }
 
 run_target_tests() {
-    local target="$1" destination="$2"
+    local target="$1" destination="$2" language="$3" region="$4"
     local scheme extra
     scheme="$(scheme_for "$target")"
     extra="$(extra_args_for "$target")"
@@ -104,13 +114,14 @@ run_target_tests() {
     xcodebuild test \
         -scheme "$scheme" \
         -destination "$destination" \
+        -testLanguage "$language" -testRegion "$region" \
         $extra 2>&1 | tee /tmp/regenerate-snapshots-last.log \
         | grep -E "Test run with|\*\* TEST (SUCCEEDED|FAILED)|error:" || true
     grep -q "TEST SUCCEEDED" /tmp/regenerate-snapshots-last.log
 }
 
 regenerate_one() {
-    local target="$1" destination="$2"
+    local target="$1" destination="$2" language="$3" region="$4"
     local dir
     dir="$(snapshot_dir_for "$target")"
 
@@ -130,11 +141,11 @@ regenerate_one() {
     fi
 
     echo "  recording pass (expected to report failures — that's it writing fresh references)"
-    run_target_tests "$target" "$destination" || true
+    run_target_tests "$target" "$destination" "$language" "$region" || true
 
     echo "  confirmation pass (should pass now)"
-    if run_target_tests "$target" "$destination"; then
-        echo "  $target: PASSED — references now match \"$destination\""
+    if run_target_tests "$target" "$destination" "$language" "$region"; then
+        echo "  $target: PASSED — references now match \"$destination\" [$language-$region]"
         return 0
     else
         echo "  $target: FAILED on the confirmation pass — see /tmp/regenerate-snapshots-last.log"
@@ -147,14 +158,16 @@ ARG="${1:-all}"
 
 DEVICE="${2:-iPhone 17}"
 OS_VERSION="${3:-27.0}"
+LANGUAGE="${4:-en}"
+REGION="${5:-US}"
 DESTINATION="platform=iOS Simulator,name=$DEVICE,OS=$OS_VERSION"
 
-echo "Regenerating snapshots against: $DESTINATION"
+echo "Regenerating snapshots against: $DESTINATION [$LANGUAGE-$REGION]"
 echo
 
 failures=()
 while IFS= read -r target; do
-    regenerate_one "$target" "$DESTINATION" || failures+=("$target")
+    regenerate_one "$target" "$DESTINATION" "$LANGUAGE" "$REGION" || failures+=("$target")
     echo
 done < <(targets_for_arg "$ARG")
 
@@ -164,6 +177,6 @@ if [[ ${#failures[@]} -gt 0 ]]; then
     exit 1
 fi
 
-echo "All snapshot references regenerated against \"$DESTINATION\"."
+echo "All snapshot references regenerated against \"$DESTINATION\" [$LANGUAGE-$REGION]."
 echo "Inspect the new PNGs under __Snapshots__ before committing — a snapshot"
 echo "that silently renders wrong will still \"pass\" against itself."
