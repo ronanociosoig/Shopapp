@@ -104,6 +104,36 @@ jobs:
               -testLanguage en -testRegion US \
               -resultBundlePath build-results/test.xcresult | xcbeautify
 
+      # Temporary, for measurement only: this repo's per-module test schemes
+      # (StoreTests, CheckoutTests, etc.) aren't part of the ShopApp scheme's
+      # TestAction, so the step above has never actually run them — the "3
+      # minutes" this job has been taking is the composition-root suite
+      # only. Before deciding whether selective testing (only run the
+      # modules a change could affect) is worth building here, we need a
+      # real number for what running everything actually costs — see the
+      # "CI Needs API Discipline" section of the article series. Continues
+      # past a single module's failure so one flaky/unrelated failure
+      # doesn't hide the total-time number this step exists to produce.
+      - run:
+          name: Run every feature module's own test suite (temporary — measuring full-suite CI time)
+          command: |
+            set -o pipefail
+            MODULES=(Store Account Search Checkout Support Suggestions Promotions PastPurchases)
+            failures=()
+            for module in "${MODULES[@]}"; do
+              echo "=== ${module}Tests ==="
+              xcodebuild test \
+                -scheme "${module}Tests" \
+                -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
+                -testLanguage en -testRegion US \
+                -resultBundlePath "build-results/test-${module}.xcresult" \
+                | xcbeautify || failures+=("$module")
+            done
+            if [ ${#failures[@]} -gt 0 ]; then
+              echo "Failed modules: ${failures[*]}"
+              exit 1
+            fi
+
       # Runs even when the test step above failed — that's the whole point:
       # a failing snapshot test attaches reference/failure/difference PNGs to
       # the xcresult, and those are exactly what's needed to tell "wrong
