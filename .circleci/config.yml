@@ -48,8 +48,8 @@ jobs:
           command: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 
       - run:
-          name: Install XcodeGen
-          command: brew install xcodegen
+          name: Install XcodeGen and xcbeautify
+          command: brew install xcodegen xcbeautify
 
       - run:
           name: Generate ShopApp.xcodeproj from project.yml
@@ -62,9 +62,10 @@ jobs:
       - run:
           name: Resolve Swift Package dependencies
           command: |
+            set -o pipefail
             xcodebuild -resolvePackageDependencies \
               -project ShopApp.xcodeproj \
-              -scheme ShopApp
+              -scheme ShopApp | xcbeautify
 
       - save_cache:
           key: spm-deps-v1-{{ checksum "Package.resolved" }}
@@ -78,36 +79,68 @@ jobs:
       - run:
           name: Build ShopApp
           command: |
+            set -o pipefail
             xcodebuild build \
               -scheme ShopApp \
               -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
-              -resultBundlePath build-results/build.xcresult
+              -resultBundlePath build-results/build.xcresult | xcbeautify
 
       - run:
           name: Run ShopAppTests + ShopAppUITests
           command: |
+            set -o pipefail
             xcodebuild test \
               -scheme ShopApp \
               -destination 'platform=iOS Simulator,name=<<pipeline.parameters.iphone_device>>,OS=<<pipeline.parameters.iphone_os>>' \
-              -resultBundlePath build-results/test.xcresult
+              -resultBundlePath build-results/test.xcresult | xcbeautify
 
       # Runs even when the test step above failed — that's the whole point:
       # a failing snapshot test attaches reference/failure/difference PNGs to
       # the xcresult, and those are exactly what's needed to tell "wrong
       # render" from "environment drift" without re-running anything.
-      # --only-failures skips passing tests, which have nothing attached.
+      #
+      # No --only-failures here: xcresulttool's own manifest shows
+      # swift-snapshot-testing's reference/failure/difference PNGs are all
+      # flagged isAssociatedWithFailure=false (only the plain-text issue
+      # description is true), so that flag silently drops every image and
+      # keeps only the text. Passing tests attach nothing, so exporting
+      # without the filter still only ever produces files for tests that
+      # actually failed.
       - run:
           name: Export snapshot diff images from the test result bundle
           when: always
           command: |
             xcrun xcresulttool export attachments \
               --path build-results/test.xcresult \
-              --output-path build-results/snapshot-diffs \
-              --only-failures
+              --output-path build-results/snapshot-diffs
+
+            # Exported files land with opaque UUID names; manifest.json maps
+            # each one back to a suggested human-readable name and the test
+            # it belongs to. Restore that so the artifact is browsable.
+            python3 scripts/organize-snapshot-diffs.py build-results/snapshot-diffs
+
+      # .xcresult bundles are directories (often 1000+ internal files) —
+      # CircleCI's artifact browser lists every one individually rather than
+      # offering a single download. Zip each bundle so it's one file that
+      # unzips back into something Xcode's Report Navigator can open.
+      - run:
+          name: Archive xcresult bundles for download
+          when: always
+          command: |
+            mkdir -p build-results/archive
+            cd build-results
+            for bundle in *.xcresult; do
+              [ -e "$bundle" ] || continue
+              zip -rq "archive/${bundle}.zip" "$bundle"
+            done
 
       - store_artifacts:
-          path: build-results
+          path: build-results/archive
           destination: xcresults
+
+      - store_artifacts:
+          path: build-results/snapshot-diffs
+          destination: snapshot-diffs
 
 workflows:
   build-test:
