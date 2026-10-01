@@ -39,8 +39,17 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-navigation",       from: "2.10.0", traits: ["CasePaths"]),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.19.6"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0"),
         .package(url: "https://github.com/mattt/Replay", from: "0.4.0"),
+        // Not used directly — pinned only to force the graph to converge on
+        // swift-issue-reporting. swift-navigation only requires >= 1.3.2,
+        // which resolves to 1.5.0 (still depends on the older, separate
+        // xctest-dynamic-overlay package); 1.7.0 is the first release that
+        // migrated to swift-issue-reporting too, same as swift-navigation
+        // and swift-case-paths already do. Without this, SPM sees two
+        // different packages each declaring a target named "IssueReporting"
+        // and refuses to resolve at all.
+        .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "1.7.0"),
     ],
     targets: [
 
