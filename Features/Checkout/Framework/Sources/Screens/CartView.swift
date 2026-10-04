@@ -5,6 +5,7 @@ import DesignSystem
 struct CartView<PromotionBanner: View>: View {
     let model: CheckoutModel
     private let promotionBanner: () -> PromotionBanner
+    @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
     init(model: CheckoutModel, @ViewBuilder promotionBanner: @escaping () -> PromotionBanner) {
         self.model = model
@@ -49,7 +50,7 @@ struct CartView<PromotionBanner: View>: View {
                 Text(Strings.subtotal(count: model.itemCount))
                     .foregroundStyle(.secondary)
                 Spacer()
-                PriceLabel(model.subtotal)
+                CheckoutPriceText(model.subtotal, formatter: currencyFormatter)
             }
             .padding(.horizontal)
             PrimaryButton(Strings.proceedToCheckout) {
@@ -73,6 +74,7 @@ struct CartView<PromotionBanner: View>: View {
 struct CartItemRow: View {
     let item: CartItem
     let model: CheckoutModel
+    @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
     var body: some View {
         HStack(spacing: 12) {
@@ -85,7 +87,7 @@ struct CartItemRow: View {
                 Text(item.product.name)
                     .font(.subheadline.weight(.medium))
                     .lineLimit(2)
-                PriceLabel(item.subtotal)
+                CheckoutPriceText(item.subtotal, formatter: currencyFormatter)
             }
 
             Spacer()
@@ -102,6 +104,26 @@ struct CartItemRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+/// Renders via the module-scoped `checkoutCurrencyFormatter` Environment value
+/// instead of `PriceLabel`'s hardcoded `.currency(code: "EUR")` — kept local to
+/// `Checkout` rather than added to `PriceLabel` itself, which is shared by
+/// every feature module and has no reason to know this key exists.
+struct CheckoutPriceText: View {
+    let amount: Decimal
+    let formatter: NumberFormatter
+
+    init(_ amount: Decimal, formatter: NumberFormatter) {
+        self.amount = amount
+        self.formatter = formatter
+    }
+
+    var body: some View {
+        Text(formatter.string(from: amount as NSDecimalNumber) ?? "")
+            .font(.headline)
+            .foregroundStyle(.primary)
     }
 }
 

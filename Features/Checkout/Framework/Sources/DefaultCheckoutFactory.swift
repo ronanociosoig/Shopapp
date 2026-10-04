@@ -18,9 +18,11 @@ import CheckoutAPI
 @MainActor
 public final class DefaultCheckoutFactory: CheckoutFactory {
     private let checkoutModel: CheckoutModel
+    private let currencyFormatter: NumberFormatter
 
     public init(dependencies: CheckoutDependencies) {
         self.checkoutModel = CheckoutModel(dependencies: dependencies)
+        self.currencyFormatter = dependencies.currencyFormatter
     }
 
     // MARK: - Building the screen
@@ -38,6 +40,7 @@ public final class DefaultCheckoutFactory: CheckoutFactory {
         @ViewBuilder promotionBanner: @escaping () -> PromotionBanner
     ) -> some View {
         CheckoutView(model: checkoutModel, promotionBanner: promotionBanner)
+            .environment(\.checkoutCurrencyFormatter, currencyFormatter)
     }
 
     // MARK: - Cross-feature port
