@@ -5,6 +5,7 @@ import DesignSystem
 struct OrderOptionsView: View {
     @Bindable var model: CheckoutModel
     let address: ShippingAddress
+    @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
     var body: some View {
         Form {
@@ -120,7 +121,7 @@ struct OrderOptionsView: View {
             HStack {
                 Text(Strings.Summary.total).font(.headline)
                 Spacer()
-                PriceLabel(model.checkoutTotal)
+                CheckoutPriceText(model.checkoutTotal, formatter: currencyFormatter)
             }
         }
     }

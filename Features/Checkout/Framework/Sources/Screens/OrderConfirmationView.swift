@@ -5,6 +5,7 @@ import DesignSystem
 struct OrderConfirmationView: View {
     let order: PlacedOrder
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
     var body: some View {
         VStack(spacing: 24) {
@@ -43,7 +44,7 @@ struct OrderConfirmationView: View {
                     Text(Strings.totalCharged)
                         .font(.headline)
                     Spacer()
-                    PriceLabel(order.total)
+                    CheckoutPriceText(order.total, formatter: currencyFormatter)
                 }
             }
             .padding()

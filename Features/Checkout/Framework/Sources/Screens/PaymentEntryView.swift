@@ -1,10 +1,10 @@
 import SwiftUI
 import CheckoutAPI
-import DesignSystem
 
 struct PaymentEntryView: View {
     let model: CheckoutModel
     let address: ShippingAddress
+    @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
     @State private var cardNumber   = ""
     @State private var expiry       = ""
@@ -35,7 +35,7 @@ struct PaymentEntryView: View {
                 HStack {
                     Text(Strings.orderTotal)
                     Spacer()
-                    PriceLabel(model.subtotal)
+                    CheckoutPriceText(model.subtotal, formatter: currencyFormatter)
                 }
             }
         }
