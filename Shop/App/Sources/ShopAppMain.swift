@@ -58,6 +58,9 @@ struct ShopAppMain: App {
     var body: some Scene {
         WindowGroup {
             RootView(model: appModel)
+                .onOpenURL { url in
+                    Task { await appModel.handle(url: url) }
+                }
         }
     }
 }

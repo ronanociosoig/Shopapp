@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 import SwiftUINavigation
 
@@ -35,5 +36,18 @@ public final class PromotionsModel {
         isLoading = true
         defer { isLoading = false }
         promotions = (try? await repository.fetchPromotions()) ?? []
+    }
+
+    /// The module's one public entry point for a deep link. Nobody outside
+    /// `Promotions` ever constructs a `Destination` directly — a caller
+    /// supplies the raw id from a URL, and this is where that id either
+    /// resolves to a real `Promotion` or doesn't.
+    ///
+    /// Loads first if nothing's loaded yet: a deep link can arrive at cold
+    /// launch, before anything has populated `promotions` the ordinary way.
+    public func handleDeepLink(promotionID: UUID) async {
+        if promotions.isEmpty { await load() }
+        guard let promotion = promotions.first(where: { $0.id == promotionID }) else { return }
+        destination = .promotionDetail(promotion)
     }
 }

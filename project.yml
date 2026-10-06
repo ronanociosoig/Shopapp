@@ -188,6 +188,10 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        CFBundleURLTypes:
+          - CFBundleURLName: com.shopapp.demo
+            CFBundleURLSchemes:
+              - shopapp
 
   ShopAppTests:
     type: bundle.unit-test

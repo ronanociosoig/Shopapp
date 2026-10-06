@@ -119,7 +119,7 @@ struct RootSnapshotTests {
 
 /// Creates an `AppModel` wired entirely with synchronous stubs.
 @MainActor
-private func makeModel() -> AppModel {
+func makeModel() -> AppModel {
     AppModel(
         storeRepository:         StubStoreRepository(),
         searchRepository:        StubSearchRepository(),

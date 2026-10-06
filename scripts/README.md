@@ -48,6 +48,29 @@ scripts/replay-record.sh status [scheme]              (default: StoreTests)
 A scheme left in recording mode silently re-records on every future run —
 always run `off` again after recording.
 
+## deep-link-promotion.sh
+
+Dispatches a real `shopapp://promotions/<id>` deep link to a running
+simulator via `simctl openurl` — the manual check used to confirm the
+Promotions deep link end-to-end (real OS URL-scheme registration, real
+dispatch, real navigation), distinct from what `DeepLinkTests.swift` already
+proves at the unit level.
+
+```
+scripts/deep-link-promotion.sh [promotion-id] [udid-or-booted]
+```
+
+Requires ShopApp to already be installed and running on the target
+simulator — this only dispatches the URL, it doesn't build, install, or
+launch. Launch with `--ui-testing` (`xcrun simctl launch booted
+com.shopapp.demo.app --ui-testing`) so the app uses `StubPromotionsRepository`
+— without it, promotions come from `ShopAppServer`'s own seed data, which
+uses different ids for the same titles than `Promotion.stubs`, and this
+script's default id will dispatch but silently fail to match anything. Expect
+a system "Open in \"ShopApp\"?" confirmation sheet the first time in a
+simulator session — `simctl openurl` looks like an external caller (Safari,
+Messages, another app) to iOS, not the app opening itself.
+
 ## merge-coverage.sh
 
 Computes true, de-duplicated code coverage across *every* package test
