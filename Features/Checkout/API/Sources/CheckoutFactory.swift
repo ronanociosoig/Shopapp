@@ -45,5 +45,23 @@ public protocol CheckoutFactory {
 
     func setSavedAddresses(_ addresses: [ShippingAddress])
 
+    /// Deep-link entry point for "Delivery & Extras". Resolves a shipping
+    /// address from whatever Checkout already has (cart + saved addresses)
+    /// rather than taking one as a parameter — there's no id to decode, only
+    /// a request to reach that step if the current state allows it. Returns
+    /// `false`, having changed nothing, when it can't: an empty cart or no
+    /// saved address.
+    @discardableResult
+    func handleDeepLinkToDeliveryOptions() -> Bool
+
+    /// Deep-link entry point for "select a new payment method", triggered
+    /// by a payment problem detected after the customer has already left
+    /// the payment step (a delayed decline, a fraud review) rather than
+    /// during `submitPayment` itself. Lands directly on Payment Method,
+    /// skipping Address and Delivery & Extras. Returns `false`, having
+    /// changed nothing, when it can't: an empty cart or no saved address.
+    @discardableResult
+    func handleDeepLinkToPaymentRetry() -> Bool
+
     var onOrderPlaced: ((PlacedOrder, Set<UUID>) -> Void)? { get set }
 }

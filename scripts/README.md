@@ -71,6 +71,82 @@ a system "Open in \"ShopApp\"?" confirmation sheet the first time in a
 simulator session — `simctl openurl` looks like an external caller (Safari,
 Messages, another app) to iOS, not the app opening itself.
 
+## deep-link-checkout-delivery.sh
+
+Dispatches a real `shopapp://checkout/delivery` deep link to a running
+simulator via `simctl openurl` — the manual check used to confirm the
+Checkout "Delivery & Extras" deep link end-to-end, distinct from what
+`DeepLinkTests.swift` already proves at the unit level.
+
+```
+scripts/deep-link-checkout-delivery.sh [udid-or-booted]
+```
+
+Unlike the Promotions deep link, this one carries no id — Checkout resolves
+"Delivery & Extras" from its own state (the cart, and a saved shipping
+address), the same way a real user reaching that step through the funnel
+would, and legitimately refuses (switches to the Cart tab but goes no
+further) when the cart is empty or there's no saved address. Launch with
+`--ui-testing` (`xcrun simctl launch booted com.shopapp.demo.app
+--ui-testing`) for deterministic stub data — `StubAccountRepository` ships a
+default saved address — and add an item to the cart to see the success path.
+
+## deep-link-checkout-payment-retry.sh
+
+Dispatches a real `shopapp://checkout/payment-retry` deep link to a running simulator via `simctl
+openurl` — the manual check used to confirm the "select a new payment method" deep link
+end-to-end, distinct from what `DeepLinkTests.swift` already proves at the unit level.
+
+```
+scripts/deep-link-checkout-payment-retry.sh [udid-or-booted]
+```
+
+For a payment problem detected after the customer has already left the payment step (a delayed
+authorization check, a fraud review) rather than the synchronous decline `submitPayment` already
+surfaces via the `paymentFailed` sheet. Lands directly on Payment Method, skipping Address and
+Delivery & Extras. Carries no id — like `checkout/delivery`, it resolves the shipping address from
+Checkout's own state and legitimately refuses (switches to the Cart tab but goes no further) when
+the cart is empty or there's no saved address. Launch with `--ui-testing`
+(`xcrun simctl launch booted com.shopapp.demo.app --ui-testing`) for deterministic stub data, and
+add an item to the cart to see the success path.
+
+## deep-link-checkout-add.sh
+
+Dispatches a real `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` deep link to a
+running simulator via `simctl openurl` — the manual check used to confirm the "add to cart" deep
+link end-to-end, distinct from what `DeepLinkTests.swift` already proves at the unit level.
+
+```
+scripts/deep-link-checkout-add.sh [product-id] [name] [price] [guarantee] [udid-or-booted]
+```
+
+Unlike the other three deep links, this one carries the full product record in the URL instead of
+a bare id — Checkout has no product catalog of its own to resolve an id against, so the record has
+to travel with the link, the same way it already arrives from Store/Search/Suggestions tapping
+"Add to Cart" in-app. It lands on `CheckoutFactory.addToCart(id:name:price:wantsGuarantee:)`, the
+same cross-feature port those three already call through — not a new deep-link-specific method.
+Requires ShopApp to already be installed and running on the target simulator.
+
+## deep-link-order.sh
+
+Dispatches a real `shopapp://orders/<id>` deep link to a running simulator
+via `simctl openurl` — the manual check used to confirm the PastPurchases
+"Order Detail" deep link end-to-end, distinct from what `DeepLinkTests.swift`
+already proves at the unit level.
+
+```
+scripts/deep-link-order.sh [order-id] [udid-or-booted]
+```
+
+`PastPurchasesRepository` has no `--ui-testing` stub path — it always loads
+from this simulator's local `UserDefaults` order history first, falling back
+to the real local `ShopAppServer` only when that's empty. A device with any
+order history already saved locally will never see this script's default
+id, because local storage wins and the remote seed never gets fetched; the
+deep link then silently lands on the order list instead of a detail screen.
+Uninstall the app first (`xcrun simctl uninstall booted com.shopapp.demo.app`)
+to clear local state and force a fresh remote fetch.
+
 ## merge-coverage.sh
 
 Computes true, de-duplicated code coverage across *every* package test

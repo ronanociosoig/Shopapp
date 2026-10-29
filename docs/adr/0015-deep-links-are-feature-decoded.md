@@ -1,0 +1,240 @@
+# ADR-0015: Deep links are decoded by the feature they point to, not by the composition root
+
+**Date:** 2026-10-18
+**Status:** Accepted
+
+## Context
+
+A deep link (`shopapp://promotions/<id>`, `shopapp://checkout/delivery`, `shopapp://orders/<id>`)
+arrives at exactly one place: `ShopAppMain.swift`'s `.onOpenURL`, attached to the content view inside
+`WindowGroup` (not to `WindowGroup` itself — it has no such member — and not chained onto `RootView`'s
+own modifier list, which never fires). From there, something has to turn a `URL` into a concrete
+screen.
+
+The naive version of that something is `AppModel` doing the whole job: parse the full path, decide
+which `Destination` case it names, construct that case, assign it to the owning feature's
+`destination` property. ADR-0007 already settled that every feature owns one `Destination` enum;
+ADR-0001 already settled that feature modules never import each other and `ShopCore` is the one
+place allowed to see all of them. Taken together, `AppModel` constructing `PromotionsModel.Destination`
+or `PastPurchasesModel.Destination` directly is legal Swift — `ShopCore` already depends on every
+feature — but it means the composition root has to know each feature's internal data shape (a
+`Promotion`, a `PastOrder`) well enough to build one from a bare `UUID`, and that knowledge has nowhere
+to live except `AppModel` itself. Every new deep-linkable screen would grow `AppModel`'s understanding
+of that feature's domain, the opposite of what ADR-0001's module boundary is for.
+
+Five deep links exist now, each discovered through actually building and dispatching one, not
+through designing the mechanism up front:
+
+- `shopapp://promotions/<id>` — `PromotionsModel.handleDeepLink(promotionID:)`
+- `shopapp://checkout/delivery` — `CheckoutModel.handleDeepLinkToDeliveryOptions()` /
+  `DefaultCheckoutFactory.handleDeepLinkToDeliveryOptions()`
+- `shopapp://checkout/payment-retry` — `CheckoutModel.handleDeepLinkToPaymentRetry()` /
+  `DefaultCheckoutFactory.handleDeepLinkToPaymentRetry()`
+- `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` —
+  `CheckoutFactory.addToCart(id:name:price:wantsGuarantee:)`
+- `shopapp://orders/<id>` — `PastPurchasesModel.handleDeepLink(orderID:)`
+
+## Decision
+
+`AppModel.handle(url:)` (`Shop/Framework/Sources/AppModel+DeepLinks.swift`) reads exactly one thing
+off the URL to route: `url.host`, used only to pick which feature gets the rest of it. Everything
+past that — whether a path component parses as a UUID, whether that id resolves to a real object,
+whether the current app state can even satisfy the request — is the feature's own problem, decided
+behind one public method per feature that is the *only* place outside the feature allowed to produce
+that feature's `Destination`:
+
+```swift
+extension AppModel {
+    public func handle(url: URL) async {
+        guard let host = url.host else { return }
+        let pathComponents = url.pathComponents.filter { $0 != "/" }
+
+        switch host {
+        case "promotions":
+            guard let idString = pathComponents.first, let id = UUID(uuidString: idString) else { return }
+            selectedTab = .store
+            await promotionsModel.handleDeepLink(promotionID: id)
+
+        case "checkout":
+            guard pathComponents.first == "delivery" else { return }
+            selectedTab = .cart
+            checkoutFactory.handleDeepLinkToDeliveryOptions()
+
+        case "orders":
+            guard let idString = pathComponents.first, let id = UUID(uuidString: idString) else { return }
+            selectedTab = .orders
+            await pastPurchasesModel.handleDeepLink(orderID: id)
+
+        default:
+            break
+        }
+    }
+}
+```
+
+`AppModel` still parses the id string into a `UUID` before calling in — that much is unavoidable,
+since `AppModel` is the one holding the raw `URL` — but it never looks inside `Promotion` or
+`PastOrder` to do it, and it switches tabs itself because tab selection is `AppModel`'s own state,
+not any feature's. Everything that requires knowing what a `Promotion` or a `PastOrder` *is* happens
+on the other side of the call.
+
+Each feature exposes its decoding entry point the way its existing public API already shapes that
+feature, rather than all three being forced into one new uniform mechanism:
+
+- **Promotions and PastPurchases** have no factory type (ADR-0014 only applies to Checkout so far) —
+  their model class *is* their public surface, so the entry point is simply a new `public func` on
+  `PromotionsModel` / `PastPurchasesModel`:
+
+  ```swift
+  // PromotionsModel
+  public func handleDeepLink(promotionID: UUID) async {
+      if promotions.isEmpty { await load() }
+      guard let promotion = promotions.first(where: { $0.id == promotionID }) else { return }
+      destination = .promotionDetail(promotion)
+  }
+
+  // PastPurchasesModel — same shape
+  public func handleDeepLink(orderID: UUID) async {
+      if orders.isEmpty { await load() }
+      guard let order = orders.first(where: { $0.id == orderID }) else { return }
+      destination = .orderDetail(order)
+  }
+  ```
+
+  Both load first if nothing's loaded yet, because a deep link can arrive at cold launch, before
+  anything has populated the list the ordinary way — an ordering concern that only exists for a deep
+  link, never for a normal in-app selection.
+
+- **Checkout** already has a complete public contract, `CheckoutFactory` (ADR-0014) — `AppModel`
+  holds a `DefaultCheckoutFactory`, never a bare `CheckoutModel`. Since that protocol claims to be the
+  feature's *complete* contract, a deep-link entry point that only existed on the concrete type would
+  make the claim false the moment a second conformance ever showed up. So the method is declared on
+  `CheckoutFactory` itself, not bolted onto `DefaultCheckoutFactory` as an extra:
+
+  ```swift
+  // CheckoutAPI
+  @discardableResult
+  func handleDeepLinkToDeliveryOptions() -> Bool
+  ```
+
+  ```swift
+  // CheckoutModel
+  private func resolveAddressForFunnelDeepLink() -> ShippingAddress? {
+      proceedToAddress()
+      guard let address = selectedAddress else {
+          path = []
+          return nil
+      }
+      path.append(.orderOptions(address))
+      return address
+  }
+
+  @discardableResult
+  func handleDeepLinkToDeliveryOptions() -> Bool {
+      guard !isEmpty else { return false }
+      return resolveAddressForFunnelDeepLink() != nil
+  }
+  ```
+
+  Checkout's case also differs in kind, not just mechanism: `/promotions/<id>` and `/orders/<id>`
+  carry an id to look up, but "Delivery & Extras" needs a `ShippingAddress`, which no URL can carry —
+  it resolves one the same way `proceedToAddress()` already does for an ordinary user reaching that
+  step through the funnel (the saved default, or the first saved address), then pushes exactly the
+  path a real user submitting that address would have produced. `Bool` is the return type precisely
+  because this is the one candidate where "found nothing to show" and "nothing went wrong, the
+  request just can't be satisfied right now" are different outcomes worth telling the caller apart —
+  an id lookup only ever has the latter.
+
+  `shopapp://checkout/payment-retry` resolves an address the same way, through the same private
+  helper, then goes one step further — pushing `.paymentMethod(address)` on top, landing the
+  customer directly on "select a new payment method":
+
+  ```swift
+  // CheckoutModel
+  @discardableResult
+  func handleDeepLinkToPaymentRetry() -> Bool {
+      guard !isEmpty else { return false }
+      guard let address = resolveAddressForFunnelDeepLink() else { return false }
+      path.append(.paymentMethod(address))
+      return true
+  }
+  ```
+
+  This exists for a case the already-wired `paymentFailed` sheet doesn't cover: a decline
+  discovered synchronously, inside `submitPayment` itself, is what `retryPayment()` already
+  handles, by design resetting to Address — right there, since a card declined mid-submission is
+  reason enough to let the customer re-check everything. But a problem discovered *later* — a
+  delayed authorization check, a fraud review — finds the customer long gone from checkout
+  entirely, cart and address already fine; forcing them back through Address and Delivery & Extras
+  just to pick a different card would be re-litigating decisions the failure had nothing to do
+  with. Same precondition as "Delivery & Extras" for the same reason: nothing to retry without a
+  cart and a resolvable address.
+
+  `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` is a different kind of deep link
+  again: it doesn't navigate to a screen at all, it performs an action (add this product to the
+  cart) — the use case is a marketing email's "Add" button, which wants the item waiting in the
+  cart when the customer opens the app, not a detail screen to tap through first. It also needs no
+  new entry point: `CheckoutFactory.addToCart(id:name:price:wantsGuarantee:)` already exists as the
+  Foundation-primitive-typed cross-feature port ADR-0003 established for Store/Search/Suggestions to
+  add items without importing Checkout. The deep link is simply a new *caller* of that same port —
+  `AppModel` parses the URL's query items into the identical four primitives a tap on a product
+  screen would have produced, then calls straight in. This is also why the URL carries the full
+  product record instead of a bare id: Checkout has no product catalog of its own to resolve an id
+  against (Store does, and feature modules never import each other), so the record has to arrive
+  with the link, the same way it already arrives from a real in-app add-to-cart tap.
+
+## Consequences
+
+**Positive**
+
+- `AppModel+DeepLinks.swift` is small on purpose and stays small as more deep links are added — it
+  grows one `case` per feature, never a case per *screen*. A feature adding another deep-linkable
+  destination touches only that feature's own module — unless, like `checkout/add`, it can reuse a
+  cross-feature port the feature already exposed for an unrelated reason, in which case it touches
+  no module at all beyond the `switch` itself.
+- The module-isolation boundary ADR-0001 established for ordinary navigation holds for deep links
+  too: `AppModel` never sees inside a `Promotion`, a `PastOrder`, or a `ShippingAddress` to route to
+  one. Nothing about this feature's design required *weakening* that boundary to make deep links work.
+- Each feature's entry point reuses that feature's own existing machinery for reaching a screen
+  rather than a parallel path built just for URLs — `handleDeepLink(promotionID:)` calls the same
+  `load()` an ordinary screen view would trigger; `handleDeepLinkToDeliveryOptions()` calls the same
+  `proceedToAddress()` a real funnel step would. A deep link is a different *caller* of the feature's
+  logic, not different logic.
+- Building all three real, before writing anything about the pattern, surfaced three genuinely
+  different reasons a deep link can fail to reach its destination — not three variations on one
+  cause:
+  - **Id mismatch** (Promotions) — the real, non-stub repository hits a local server whose seed data
+    assigns different ids to the same titles than the client's own `Promotion.stubs`; a URL built
+    from one source of ids silently fails to match against the other.
+  - **Conditional, state-dependent refusal** (Checkout) — `handleDeepLinkToDeliveryOptions()` and
+    `handleDeepLinkToPaymentRetry()` can both correctly return `false`: an empty cart or no saved
+    address means the screen the link names isn't reachable *right now*, through no fault of the
+    link itself.
+  - **Local state shadows remote state** (PastPurchases) — `DefaultPastPurchasesRepository` prefers a
+    per-device, already-populated local order history over the remote/seed data; a device with any
+    real prior order history will never see a seeded id, because the local store wins before the
+    remote one is even asked.
+
+  None of these are bugs in the deep-link code — each is `#expect`-tested as the *correct* outcome
+  (`checkoutDeliveryDeepLinkEmptyCart`, `checkoutDeliveryDeepLinkNoSavedAddress`, `unknownOrderID`,
+  `unknownPromotionID` in `DeepLinkTests.swift`). They're three different shapes a feature's existing
+  state and data can take that a cold URL, arriving with none of a normal navigation's context, runs
+  into.
+
+**Negative**
+
+- No single file states "here is every deep link this app supports" — that list only exists as the
+  union of `AppModel.handle(url:)`'s `switch` and whatever each feature's own entry point accepts.
+  Acceptable here because the `switch` is still the one required stop for every URL; a feature can't
+  add a deep link `AppModel` never routes to.
+- The entry points are not uniform in shape — two are `async` functions returning `Void` on a bare
+  model class, one is a synchronous `Bool`-returning protocol requirement, and `checkout/add` is not
+  a dedicated deep-link entry point at all but a reused ordinary one. That's a direct
+  consequence of respecting each feature's existing public-API shape (ADR-0014 for Checkout, nothing
+  equivalent yet for the other two) rather than inventing one `DeepLinkHandling` protocol all features
+  conform to — rejected because Promotions and PastPurchases have no factory type to hang it on today,
+  and retrofitting one only for this would be exactly the kind of design-ahead-of-use ADR-0014 itself
+  argues against (see its Negative: "not proposed for every feature module on day one").
+- `AppModel` still has to parse the URL's path components into a feature-appropriate shape (a UUID
+  string, a literal `"delivery"`) before calling in — a minimal decoding duty that couldn't be pushed
+  any further out, since `AppModel` is the only place holding the raw `URL`.

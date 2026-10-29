@@ -8,10 +8,10 @@ ShopApp is a reference implementation for programmatic navigation in SwiftUI, bu
 project to an article series. It's a multi-module e-commerce shell (27 screens, 8 feature modules,
 Swift 6, `@Observable`, iOS 17 minimum). Every repository is stubbed — this is not a production app,
 it demonstrates architectural patterns at realistic scale. Full narrative detail lives in `README.md`;
-each pattern also has a rationale doc in `docs/adr/0001` through `0012` (why-not-alternatives for
-module isolation, the composition root, callback contracts, ViewBuilder injection, micro-apps, testing
-targets, enum-based navigation, one-destination-type-per-concern, snapshot-tests-not-XCUITest,
-CaseIterable structural coverage, repository abstraction, `@Observable`).
+each pattern also has a rationale doc (why-not-alternatives) under `docs/adr/` — check there before
+assuming a given shape (module isolation, the composition root, callback contracts, navigation,
+testing, DI, deep links, ...) is undocumented; the directory listing is the source of truth, not any
+fixed count or range.
 
 **`AGENTS.md` is the canonical rules file** — read it before making any change. Its content must stay
 identical across `AGENTS.md` (Codex), `CLAUDE.md` (this file), `.cursor/rules/conventions.mdc`

@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 import SwiftUINavigation
 
@@ -41,6 +42,19 @@ public final class PastPurchasesModel {
     }
 
     func select(_ order: PastOrder) {
+        destination = .orderDetail(order)
+    }
+
+    /// The module's one public entry point for a deep link. Nobody outside
+    /// `PastPurchases` ever constructs a `Destination` directly — a caller
+    /// supplies the raw id from a URL, and this is where that id either
+    /// resolves to a real `PastOrder` or doesn't.
+    ///
+    /// Loads first if nothing's loaded yet: a deep link can arrive at cold
+    /// launch, before anything has populated `orders` the ordinary way.
+    public func handleDeepLink(orderID: UUID) async {
+        if orders.isEmpty { await load() }
+        guard let order = orders.first(where: { $0.id == orderID }) else { return }
         destination = .orderDetail(order)
     }
 

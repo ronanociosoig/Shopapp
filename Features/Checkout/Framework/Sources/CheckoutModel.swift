@@ -180,6 +180,58 @@ public final class CheckoutModel {
         path.append(.orderOptions(address))
     }
 
+    /// Shared first step for every deep link that lands past Address: pushes
+    /// `.address` then `.orderOptions`, the same way an ordinary user
+    /// reaching that step through the funnel would, and returns the
+    /// resolved `ShippingAddress`. Returns `nil`, with `path` reset to
+    /// empty, when there's nothing to resolve — an empty cart (checked by
+    /// each caller first) or no saved address at all.
+    private func resolveAddressForFunnelDeepLink() -> ShippingAddress? {
+        proceedToAddress()
+        guard let address = selectedAddress else {
+            path = []
+            return nil
+        }
+        path.append(.orderOptions(address))
+        return address
+    }
+
+    /// Deep-link entry point for "Delivery & Extras" — the one funnel step
+    /// that needs more than an id from a URL: a real `ShippingAddress`.
+    /// Resolves one the same way `proceedToAddress()` already does for an
+    /// ordinary user (the saved default, falling back to the first saved
+    /// address, or whatever's already selected), then pushes exactly the
+    /// path a real user submitting that address would have produced — Back
+    /// still lands on Address. Refuses, leaving `path` untouched, when
+    /// there's nothing to resolve: an empty cart, or no saved address at
+    /// all. The caller decides what refusal means for navigation; this only
+    /// reports whether it could be satisfied.
+    @discardableResult
+    func handleDeepLinkToDeliveryOptions() -> Bool {
+        guard !isEmpty else { return false }
+        return resolveAddressForFunnelDeepLink() != nil
+    }
+
+    /// Deep-link entry point for "select a new payment method" — the case
+    /// where a payment problem is detected later than the ordinary
+    /// synchronous decline `submitPayment` already handles (a delayed
+    /// authorization check, a bank's own fraud review), after the customer
+    /// has left the payment step entirely. Rather than surface the
+    /// `paymentFailed` sheet over whatever screen they're on now — which
+    /// would reset them to Address on retry, right for a decline discovered
+    /// *during* submission, wrong for one discovered well after it — this
+    /// takes them straight back to Payment Method, skipping Address and
+    /// Delivery & Extras since neither needs re-confirming just to pick a
+    /// different card. Refuses, leaving `path` untouched, when there's
+    /// nothing to retry: an empty cart, or no saved address.
+    @discardableResult
+    func handleDeepLinkToPaymentRetry() -> Bool {
+        guard !isEmpty else { return false }
+        guard let address = resolveAddressForFunnelDeepLink() else { return false }
+        path.append(.paymentMethod(address))
+        return true
+    }
+
     func proceedToPaymentMethod(address: ShippingAddress) {
         path.append(.paymentMethod(address))
     }
