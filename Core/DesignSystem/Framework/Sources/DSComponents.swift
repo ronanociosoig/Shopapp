@@ -55,6 +55,7 @@ public struct ErrorView: View {
 public struct PrimaryButton: View {
     public let title: String
     public let action: () -> Void
+    @Environment(\.isEnabled) private var isEnabled
 
     public init(_ title: String, action: @escaping () -> Void) {
         self.title  = title
@@ -67,7 +68,7 @@ public struct PrimaryButton: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.dsPrimary)
+                .background(isEnabled ? Color.dsPrimary : Color.dsPrimary.opacity(0.4))
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
         }

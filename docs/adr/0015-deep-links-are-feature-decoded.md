@@ -26,12 +26,9 @@ Five deep links exist now, each discovered through actually building and dispatc
 through designing the mechanism up front:
 
 - `shopapp://promotions/<id>` — `PromotionsModel.handleDeepLink(promotionID:)`
-- `shopapp://checkout/delivery` — `CheckoutModel.handleDeepLinkToDeliveryOptions()` /
-  `DefaultCheckoutFactory.handleDeepLinkToDeliveryOptions()`
-- `shopapp://checkout/payment-retry` — `CheckoutModel.handleDeepLinkToPaymentRetry()` /
-  `DefaultCheckoutFactory.handleDeepLinkToPaymentRetry()`
-- `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` —
-  `CheckoutFactory.addToCart(id:name:price:wantsGuarantee:)`
+- `shopapp://checkout/delivery`, `shopapp://checkout/payment-retry`, and
+  `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` — all three decoded by one entry
+  point, `CheckoutModel.handleDeepLink(url:)` / `DefaultCheckoutFactory.handleDeepLink(url:)`
 - `shopapp://orders/<id>` — `PastPurchasesModel.handleDeepLink(orderID:)`
 
 ## Decision
@@ -56,9 +53,9 @@ extension AppModel {
             await promotionsModel.handleDeepLink(promotionID: id)
 
         case "checkout":
-            guard pathComponents.first == "delivery" else { return }
-            selectedTab = .cart
-            checkoutFactory.handleDeepLinkToDeliveryOptions()
+            if checkoutFactory.handleDeepLink(url: url) {
+                selectedTab = .cart
+            }
 
         case "orders":
             guard let idString = pathComponents.first, let id = UUID(uuidString: idString) else { return }
@@ -108,80 +105,25 @@ feature, rather than all three being forced into one new uniform mechanism:
 - **Checkout** already has a complete public contract, `CheckoutFactory` (ADR-0014) — `AppModel`
   holds a `DefaultCheckoutFactory`, never a bare `CheckoutModel`. Since that protocol claims to be the
   feature's *complete* contract, a deep-link entry point that only existed on the concrete type would
-  make the claim false the moment a second conformance ever showed up. So the method is declared on
-  `CheckoutFactory` itself, not bolted onto `DefaultCheckoutFactory` as an extra:
+  make the claim false the moment a second conformance ever showed up, and a separate public method
+  per deep-linkable screen would make the same claim false a different way — the contract grows one
+  requirement per screen forever. So Checkout gets exactly one, regardless of how many screens or
+  actions it covers:
 
   ```swift
   // CheckoutAPI
   @discardableResult
-  func handleDeepLinkToDeliveryOptions() -> Bool
+  func handleDeepLink(url: URL) -> Bool
   ```
 
-  ```swift
-  // CheckoutModel
-  private func resolveAddressForFunnelDeepLink() -> ShippingAddress? {
-      proceedToAddress()
-      guard let address = selectedAddress else {
-          path = []
-          return nil
-      }
-      path.append(.orderOptions(address))
-      return address
-  }
-
-  @discardableResult
-  func handleDeepLinkToDeliveryOptions() -> Bool {
-      guard !isEmpty else { return false }
-      return resolveAddressForFunnelDeepLink() != nil
-  }
-  ```
-
-  Checkout's case also differs in kind, not just mechanism: `/promotions/<id>` and `/orders/<id>`
-  carry an id to look up, but "Delivery & Extras" needs a `ShippingAddress`, which no URL can carry —
-  it resolves one the same way `proceedToAddress()` already does for an ordinary user reaching that
-  step through the funnel (the saved default, or the first saved address), then pushes exactly the
-  path a real user submitting that address would have produced. `Bool` is the return type precisely
-  because this is the one candidate where "found nothing to show" and "nothing went wrong, the
-  request just can't be satisfied right now" are different outcomes worth telling the caller apart —
-  an id lookup only ever has the latter.
-
-  `shopapp://checkout/payment-retry` resolves an address the same way, through the same private
-  helper, then goes one step further — pushing `.paymentMethod(address)` on top, landing the
-  customer directly on "select a new payment method":
-
-  ```swift
-  // CheckoutModel
-  @discardableResult
-  func handleDeepLinkToPaymentRetry() -> Bool {
-      guard !isEmpty else { return false }
-      guard let address = resolveAddressForFunnelDeepLink() else { return false }
-      path.append(.paymentMethod(address))
-      return true
-  }
-  ```
-
-  This exists for a case the already-wired `paymentFailed` sheet doesn't cover: a decline
-  discovered synchronously, inside `submitPayment` itself, is what `retryPayment()` already
-  handles, by design resetting to Address — right there, since a card declined mid-submission is
-  reason enough to let the customer re-check everything. But a problem discovered *later* — a
-  delayed authorization check, a fraud review — finds the customer long gone from checkout
-  entirely, cart and address already fine; forcing them back through Address and Delivery & Extras
-  just to pick a different card would be re-litigating decisions the failure had nothing to do
-  with. Same precondition as "Delivery & Extras" for the same reason: nothing to retry without a
-  cart and a resolvable address.
-
-  `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` is a different kind of deep link
-  again: it doesn't navigate to a screen at all, it performs an action (add this product to the
-  cart) — the use case is a marketing email's "Add" button, which wants the item waiting in the
-  cart when the customer opens the app, not a detail screen to tap through first. It also needs no
-  new entry point: `CheckoutFactory.addToCart(id:name:price:wantsGuarantee:)` already exists as the
-  Foundation-primitive-typed cross-feature port ADR-0003 established for Store/Search/Suggestions to
-  add items without importing Checkout. The deep link is simply a new *caller* of that same port —
-  `AppModel` parses the URL's query items into the identical four primitives a tap on a product
-  screen would have produced, then calls straight in. This is also why the URL carries the full
-  product record instead of a bare id: Checkout has no product catalog of its own to resolve an id
-  against (Store does, and feature modules never import each other), so the record has to arrive
-  with the link, the same way it already arrives from a real in-app add-to-cart tap.
+  `AppModel` hands the whole `URL` across, unexamined past `host` — which path segment it names
+  (`"delivery"`, `"payment-retry"`, `"add"`) and which query items it needs are entirely Checkout's to
+  decide, inside the module, the same way `Promotion`/`PastOrder` lookups are entirely Promotions'/
+  PastPurchases' to decide. The `Bool` returned answers one question only — was this URL shaped like
+  something Checkout recognizes — deliberately not the same question as "did the request succeed."
+  An empty cart can make a recognized `/checkout/delivery` link unable to reach its screen while
+  `handleDeepLink(url:)` still returns `true`, because the URL itself was valid; `AppModel` only needs
+  that outer answer, to decide whether to switch to the Cart tab.
 
 ## Consequences
 
@@ -189,9 +131,8 @@ feature, rather than all three being forced into one new uniform mechanism:
 
 - `AppModel+DeepLinks.swift` is small on purpose and stays small as more deep links are added — it
   grows one `case` per feature, never a case per *screen*. A feature adding another deep-linkable
-  destination touches only that feature's own module — unless, like `checkout/add`, it can reuse a
-  cross-feature port the feature already exposed for an unrelated reason, in which case it touches
-  no module at all beyond the `switch` itself.
+  destination touches only that feature's own module: a fourth Checkout deep link costs zero lines in
+  `AppModel+DeepLinks.swift`.
 - The module-isolation boundary ADR-0001 established for ordinary navigation holds for deep links
   too: `AppModel` never sees inside a `Promotion`, a `PastOrder`, or a `ShippingAddress` to route to
   one. Nothing about this feature's design required *weakening* that boundary to make deep links work.
@@ -227,14 +168,15 @@ feature, rather than all three being forced into one new uniform mechanism:
   union of `AppModel.handle(url:)`'s `switch` and whatever each feature's own entry point accepts.
   Acceptable here because the `switch` is still the one required stop for every URL; a feature can't
   add a deep link `AppModel` never routes to.
-- The entry points are not uniform in shape — two are `async` functions returning `Void` on a bare
-  model class, one is a synchronous `Bool`-returning protocol requirement, and `checkout/add` is not
-  a dedicated deep-link entry point at all but a reused ordinary one. That's a direct
-  consequence of respecting each feature's existing public-API shape (ADR-0014 for Checkout, nothing
-  equivalent yet for the other two) rather than inventing one `DeepLinkHandling` protocol all features
-  conform to — rejected because Promotions and PastPurchases have no factory type to hang it on today,
-  and retrofitting one only for this would be exactly the kind of design-ahead-of-use ADR-0014 itself
-  argues against (see its Negative: "not proposed for every feature module on day one").
-- `AppModel` still has to parse the URL's path components into a feature-appropriate shape (a UUID
-  string, a literal `"delivery"`) before calling in — a minimal decoding duty that couldn't be pushed
-  any further out, since `AppModel` is the only place holding the raw `URL`.
+- The entry points are not uniform in shape across features — two are `async` functions returning
+  `Void` on a bare model class, one is a synchronous `Bool`-returning protocol requirement taking the
+  raw `URL`. That's a direct consequence of respecting each feature's existing public-API shape
+  (ADR-0014 for Checkout, nothing equivalent yet for the other two) rather than inventing one
+  `DeepLinkHandling` protocol all features conform to — rejected because Promotions and PastPurchases
+  have no factory type to hang it on today, and retrofitting one only for this would be exactly the
+  kind of design-ahead-of-use ADR-0014 itself argues against (see its Negative: "not proposed for
+  every feature module on day one").
+- `AppModel` still has to parse a path component into a `UUID` for Promotions and PastPurchases —
+  a minimal decoding duty that can't be pushed any further out for an id-lookup deep link, since
+  `AppModel` is the only place holding the raw `URL`. Checkout needs none of that: `AppModel` hands
+  the whole `URL` across without looking at anything past `host`.

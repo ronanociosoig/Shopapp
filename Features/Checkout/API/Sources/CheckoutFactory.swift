@@ -45,23 +45,17 @@ public protocol CheckoutFactory {
 
     func setSavedAddresses(_ addresses: [ShippingAddress])
 
-    /// Deep-link entry point for "Delivery & Extras". Resolves a shipping
-    /// address from whatever Checkout already has (cart + saved addresses)
-    /// rather than taking one as a parameter — there's no id to decode, only
-    /// a request to reach that step if the current state allows it. Returns
-    /// `false`, having changed nothing, when it can't: an empty cart or no
-    /// saved address.
+    /// Decodes and acts on everything past `shopapp://checkout/` — which
+    /// path segment names a screen or action, and whatever query items it
+    /// needs. The composition root has matched the host; it has no idea
+    /// which path segments Checkout's deep links use, and adding, renaming,
+    /// or removing one never touches anything outside this module. Returns
+    /// `false` for a path segment this module doesn't recognize, or a
+    /// recognized one with a malformed/missing argument — those are the
+    /// only two outcomes the composition root needs to tell apart, since
+    /// both mean "don't switch to the Cart tab, nothing happened."
     @discardableResult
-    func handleDeepLinkToDeliveryOptions() -> Bool
-
-    /// Deep-link entry point for "select a new payment method", triggered
-    /// by a payment problem detected after the customer has already left
-    /// the payment step (a delayed decline, a fraud review) rather than
-    /// during `submitPayment` itself. Lands directly on Payment Method,
-    /// skipping Address and Delivery & Extras. Returns `false`, having
-    /// changed nothing, when it can't: an empty cart or no saved address.
-    @discardableResult
-    func handleDeepLinkToPaymentRetry() -> Bool
+    func handleDeepLink(url: URL) -> Bool
 
     var onOrderPlaced: ((PlacedOrder, Set<UUID>) -> Void)? { get set }
 }

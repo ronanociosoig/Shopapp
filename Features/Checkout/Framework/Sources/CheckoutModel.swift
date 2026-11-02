@@ -232,6 +232,56 @@ public final class CheckoutModel {
         return true
     }
 
+    /// Decodes and acts on everything past `shopapp://checkout/` —
+    /// `AppModel` has already matched the host and hands the whole `URL`
+    /// across unexamined. This is the one place that knows "delivery",
+    /// "payment-retry", and "add" are the path segments Checkout's deep
+    /// links use; adding, renaming, or removing one touches only this
+    /// method. Returns `false` for a path segment this module doesn't
+    /// recognize, or a recognized one with a malformed/missing argument —
+    /// the composition root only needs to tell "don't switch to the Cart
+    /// tab" apart from everything else, not *why*. A recognized funnel step
+    /// that then refuses for its own reasons (empty cart, no saved address)
+    /// still returns `true` here — `handleDeepLinkToDeliveryOptions()` and
+    /// `handleDeepLinkToPaymentRetry()` already decide what refusal means
+    /// for `path`; this only reports whether the URL was ours to handle.
+    @discardableResult
+    func handleDeepLink(url: URL) -> Bool {
+        let pathComponents = url.pathComponents.filter { $0 != "/" }
+
+        switch pathComponents.first {
+        case "delivery":
+            handleDeepLinkToDeliveryOptions()
+            return true
+
+        case "payment-retry":
+            handleDeepLinkToPaymentRetry()
+            return true
+
+        // "add" has no id to look up against a catalog Checkout doesn't
+        // own — the URL carries the full product record, the same
+        // (id, name, price, wantsGuarantee) shape every other add-to-cart
+        // caller (Store, Search, Suggestions) already passes through
+        // `addToCart(id:name:price:wantsGuarantee:)` below. A marketing
+        // email's "Add" button is just a new caller of that existing port.
+        case "add":
+            guard
+                let idString = pathComponents.dropFirst().first,
+                let id = UUID(uuidString: idString),
+                let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
+                let name = queryItems.first(where: { $0.name == "name" })?.value,
+                let priceString = queryItems.first(where: { $0.name == "price" })?.value,
+                let price = Decimal(string: priceString)
+            else { return false }
+            let wantsGuarantee = queryItems.first(where: { $0.name == "guarantee" })?.value == "true"
+            addToCart(id: id, name: name, price: price, wantsGuarantee: wantsGuarantee)
+            return true
+
+        default:
+            return false
+        }
+    }
+
     func proceedToPaymentMethod(address: ShippingAddress) {
         path.append(.paymentMethod(address))
     }
@@ -318,5 +368,14 @@ public final class CheckoutModel {
         } else {
             cart.append(CartItem(product: product))
         }
+    }
+
+    /// Foundation-primitive-typed overload for ADR-0003's cross-feature
+    /// callback convention and the `checkout/add/<id>` deep link — both
+    /// build a `CheckoutProduct` from the same four primitives rather than
+    /// requiring a caller outside this module to construct one directly.
+    func addToCart(id: UUID, name: String, price: Decimal, wantsGuarantee: Bool) {
+        addToCart(CheckoutProduct(id: id, name: name, price: price, supportsExtendedGuarantee: wantsGuarantee))
+        if wantsGuarantee { extendedGuaranteeItems.insert(id) }
     }
 }

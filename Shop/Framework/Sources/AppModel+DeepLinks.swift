@@ -20,38 +20,15 @@ extension AppModel {
             selectedTab = .store
             await promotionsModel.handleDeepLink(promotionID: id)
 
+        // Checkout gets the whole URL, unexamined past the host. It alone
+        // knows which path segments ("delivery", "payment-retry", "add")
+        // its deep links use — see `CheckoutModel.handleDeepLink(url:)`.
+        // `handleDeepLink` returns `false` for anything it doesn't
+        // recognize, so an unmatched checkout URL leaves the tab untouched,
+        // same as the two id-lookup cases above and below.
         case "checkout":
-            switch pathComponents.first {
-            case "delivery":
+            if checkoutFactory.handleDeepLink(url: url) {
                 selectedTab = .cart
-                checkoutFactory.handleDeepLinkToDeliveryOptions()
-
-            case "payment-retry":
-                selectedTab = .cart
-                checkoutFactory.handleDeepLinkToPaymentRetry()
-
-            // "add" has no id to look up against a catalog Checkout doesn't
-            // own — the URL carries the full product record, the same
-            // (id, name, price, wantsGuarantee) shape every other
-            // add-to-cart caller (Store, Search, Suggestions) already
-            // passes through `checkoutFactory.addToCart`. A marketing
-            // email's "Add" button is just a new caller of that existing
-            // port, not a new one.
-            case "add":
-                guard
-                    let idString = pathComponents.dropFirst().first,
-                    let id = UUID(uuidString: idString),
-                    let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
-                    let name = queryItems.first(where: { $0.name == "name" })?.value,
-                    let priceString = queryItems.first(where: { $0.name == "price" })?.value,
-                    let price = Decimal(string: priceString)
-                else { return }
-                let wantsGuarantee = queryItems.first(where: { $0.name == "guarantee" })?.value == "true"
-                selectedTab = .cart
-                checkoutFactory.addToCart(id: id, name: name, price: price, wantsGuarantee: wantsGuarantee)
-
-            default:
-                break
             }
 
         case "orders":

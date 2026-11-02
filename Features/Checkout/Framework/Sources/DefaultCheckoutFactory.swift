@@ -48,35 +48,21 @@ public final class DefaultCheckoutFactory: CheckoutFactory {
     public var itemCount: Int { checkoutModel.itemCount }
 
     public func addToCart(id: UUID, name: String, price: Decimal, wantsGuarantee: Bool) {
-        let product = CheckoutProduct(
-            id: id, name: name, price: price, supportsExtendedGuarantee: wantsGuarantee
-        )
-        checkoutModel.addToCart(product)
-        if wantsGuarantee { checkoutModel.extendedGuaranteeItems.insert(id) }
+        checkoutModel.addToCart(id: id, name: name, price: price, wantsGuarantee: wantsGuarantee)
     }
 
     public func setSavedAddresses(_ addresses: [ShippingAddress]) {
         checkoutModel.savedAddresses = addresses
     }
 
-    /// Deep-link entry point for "Delivery & Extras" — see
-    /// `CheckoutModel.handleDeepLinkToDeliveryOptions()`. Returns `false`
-    /// when Checkout can't satisfy the request (empty cart, no saved
-    /// address); the composition root still switches to the Cart tab either
-    /// way, so the caller lands on the cart itself rather than nothing
-    /// happening at all.
+    /// Decodes and acts on everything past `shopapp://checkout/` — see
+    /// `CheckoutModel.handleDeepLink(url:)`, which does the actual parsing.
+    /// Returns `false` for a path segment Checkout doesn't recognize, or a
+    /// recognized one with a malformed argument; the composition root
+    /// switches to the Cart tab only when this returns `true`.
     @discardableResult
-    public func handleDeepLinkToDeliveryOptions() -> Bool {
-        checkoutModel.handleDeepLinkToDeliveryOptions()
-    }
-
-    /// Deep-link entry point for "select a new payment method" — see
-    /// `CheckoutModel.handleDeepLinkToPaymentRetry()`. Returns `false` when
-    /// Checkout can't satisfy the request (empty cart, no saved address);
-    /// the composition root still switches to the Cart tab either way.
-    @discardableResult
-    public func handleDeepLinkToPaymentRetry() -> Bool {
-        checkoutModel.handleDeepLinkToPaymentRetry()
+    public func handleDeepLink(url: URL) -> Bool {
+        checkoutModel.handleDeepLink(url: url)
     }
 
     public var onOrderPlaced: ((PlacedOrder, Set<UUID>) -> Void)? {

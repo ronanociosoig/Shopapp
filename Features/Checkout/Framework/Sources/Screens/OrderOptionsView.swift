@@ -8,22 +8,34 @@ struct OrderOptionsView: View {
     @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
     var body: some View {
-        Form {
-            deliverySection
-            if model.hasGuaranteeEligibleItems {
-                guaranteeSection
+        VStack(spacing: 0) {
+            Form {
+                deliverySection
+                if model.hasGuaranteeEligibleItems {
+                    guaranteeSection
+                }
+                orderSummarySection
             }
-            orderSummarySection
+
+            continueButton
         }
         .navigationTitle(Strings.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(Strings.continueButton) {
-                    model.proceedToPaymentMethod(address: address)
-                }
+    }
+
+    /// Bottom-anchored, full-width — matches Cart's and Shipping Address's `PrimaryButton`
+    /// placement (see `Core/DesignSystem/README.md`: one shared button look, defined once,
+    /// no per-screen toolbar-vs-bottom divergence).
+    private var continueButton: some View {
+        VStack(spacing: 12) {
+            Divider()
+            PrimaryButton(Strings.continueButton) {
+                model.proceedToPaymentMethod(address: address)
             }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
         }
+        .background(Color.dsBackground)
     }
 
     // MARK: - Sections
