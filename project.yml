@@ -316,6 +316,10 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        CFBundleURLTypes:
+          - CFBundleURLName: com.shopapp.demo.checkout
+            CFBundleURLSchemes:
+              - checkoutscenarios
 
   CheckoutAppTests:
     type: bundle.unit-test

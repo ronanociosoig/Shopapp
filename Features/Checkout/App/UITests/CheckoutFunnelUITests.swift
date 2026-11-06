@@ -47,20 +47,24 @@ final class CheckoutFunnelUITests: XCTestCase {
         app.buttons["Proceed to Checkout"].tap()
 
         // ── 2. Shipping Address ───────────────────────────────────────────────
-        // proceedToAddress() auto-selects the default address, so "Continue" is
-        // enabled as soon as this screen appears. We tap the row explicitly so
-        // the test reads as a faithful description of the user journey.
+        // proceedToAddress() auto-selects the default address, so the bottom
+        // button is enabled as soon as this screen appears. We tap the row
+        // explicitly so the test reads as a faithful description of the user
+        // journey. The confirm action is a bottom PrimaryButton now, not a
+        // navigation-bar item — see AddressFormView.
         XCTAssertTrue(
             app.navigationBars["Shipping Address"].waitForExistence(timeout: 5)
         )
         app.staticTexts["Jane Appleseed"].firstMatch.tap()
-        app.navigationBars.buttons["Continue"].tap()
+        app.buttons["Use selected address"].tap()
 
         // ── 3. Delivery & Extras ──────────────────────────────────────────────
+        // Also a bottom PrimaryButton now, not a navigation-bar item — see
+        // OrderOptionsView.
         XCTAssertTrue(
             app.navigationBars["Delivery & Extras"].waitForExistence(timeout: 5)
         )
-        app.navigationBars.buttons["Continue"].tap()
+        app.buttons["Continue"].tap()
 
         // ── 4. Payment Method ─────────────────────────────────────────────────
         XCTAssertTrue(

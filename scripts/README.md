@@ -127,6 +127,28 @@ to travel with the link, the same way it already arrives from Store/Search/Sugge
 same cross-feature port those three already call through — not a new deep-link-specific method.
 Requires ShopApp to already be installed and running on the target simulator.
 
+## deep-link-checkout-scenario.sh
+
+Experiment: dispatches a real `checkoutscenarios://<scenario>` deep link to the **Checkout
+micro-app** (`com.shopapp.demo.checkout`, not the production ShopApp) via `simctl openurl` —
+the manual check used to confirm the micro-app's own deep-link support end-to-end, distinct
+from what `CheckoutScenarioTests.swift`'s `CheckoutScenarioDeepLinkTests` already proves at
+the unit level.
+
+```
+scripts/deep-link-checkout-scenario.sh [scenario-raw-value] [udid-or-booted]
+```
+
+This targets a different kind of destination than every other script in this file: a named
+`CheckoutScenario` (see `CheckoutScenario.swift`) — a freshly-constructed `CheckoutModel` from
+`CheckoutScenarioFactory`, not a live model's real cart/address state. There's no feature host
+to match the way `shopapp://` has (`promotions`, `checkout`, `orders`); the scenario's own
+`rawValue` is the URL host (`cart`, `emptyCart`, `addressSelection`, `orderOptions`,
+`paymentMethod`, `cardEntry`, `processing`, `confirmation`, `paymentFailed`). An unrecognized
+name decodes to `nil` and does nothing, same refusal shape as every other deep link in this
+app. Requires the Checkout micro-app to already be installed and running on the target
+simulator — this only dispatches the URL, it doesn't build, install, or launch.
+
 ## deep-link-order.sh
 
 Dispatches a real `shopapp://orders/<id>` deep link to a running simulator

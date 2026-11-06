@@ -53,6 +53,20 @@ enum CheckoutScenario: String, CaseIterable, Identifiable {
         case .paymentFailed:    return "Payment Failed"
         }
     }
+
+    /// Experiment: deep links into the micro-app itself, not the production
+    /// app. `checkoutscenarios://<rawValue>` — e.g. `checkoutscenarios://paymentFailed`
+    /// — names a case directly, the host being the only thing a URL into this
+    /// catalog could ever mean. `CheckoutApp` has no feature-selecting `host`
+    /// switch the way `AppModel.handle(url:)` does, because it only ever
+    /// points at one feature's own scenarios; there's nothing above this
+    /// decode step to route past. `nil` for an unrecognized or malformed
+    /// scenario name — the caller's job to decide that means "do nothing",
+    /// same as every other deep link in this app that doesn't resolve.
+    static func handleDeepLink(url: URL) -> CheckoutScenario? {
+        guard let host = url.host else { return nil }
+        return CheckoutScenario(rawValue: host)
+    }
 }
 
 /// Builds a `CheckoutModel` already configured for a given `CheckoutScenario`,
