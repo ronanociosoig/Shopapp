@@ -74,8 +74,17 @@ public final class AppModel {
         suggestionsRepository:   any SuggestionsRepository
     ) {
         self.destination = destination
+
+        // EXPERIMENT (agent-route branch): Debug-only launch route. Release has no
+        // such code, so `agentDestination` is always nil there.
+        #if DEBUG
+        let agentDestination = AppModel.agentAccountDestination()
+        self.selectedTab = agentDestination == nil ? selectedTab : .account
+        #else
+        let agentDestination: AccountModel.Destination? = nil
         self.selectedTab = selectedTab
-        
+        #endif
+
         let checkoutFactory    = DefaultCheckoutFactory(dependencies: CheckoutDependencies(repository: checkoutRepository))
         let pastPurchasesModel = PastPurchasesModel(repository: pastPurchasesRepository)
         let storeModel         = StoreModel(repository: storeRepository)
@@ -150,7 +159,7 @@ public final class AppModel {
         self.storeModel         = storeModel
         self.searchModel        = searchModel
         self.suggestionsModel   = suggestionsModel
-        self.accountModel       = AccountModel(repository: accountRepository)
+        self.accountModel       = AccountModel(repository: accountRepository, destination: agentDestination)
         self.promotionsModel    = PromotionsModel(repository: promotionsRepository)
         self.supportModel       = SupportModel()
     }
@@ -175,3 +184,27 @@ public final class AppModel {
         })
     }
 }
+
+// EXPERIMENT (agent-route branch). A coding agent opens a screen by launching with
+//   xcrun simctl launch booted com.shopapp.demo.app --agent-route account/saved-cards
+// Compiled only in Debug; no URL scheme, so nothing outside the launch can trigger it.
+#if DEBUG
+extension AppModel {
+    /// The value following `--agent-route` in the launch arguments, if present.
+    static var agentRouteArgument: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: "--agent-route"), args.indices.contains(index + 1) else {
+            return nil
+        }
+        return args[index + 1]
+    }
+
+    /// Maps an agent route to the Account destination it opens. Only one route for now.
+    static func agentAccountDestination() -> AccountModel.Destination? {
+        switch agentRouteArgument {
+        case "account/saved-cards": return .savedCards
+        default:                    return nil
+        }
+    }
+}
+#endif
