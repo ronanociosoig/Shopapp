@@ -61,6 +61,10 @@ struct ShopAppMain: App {
                 .onOpenURL { url in
                     Task { await appModel.handle(url: url) }
                 }
+                #if DEBUG
+                // EXPERIMENT (agent-route branch): routes that need a repository fetch.
+                .task { await appModel.dispatchAgentRoute() }
+                #endif
         }
     }
 }

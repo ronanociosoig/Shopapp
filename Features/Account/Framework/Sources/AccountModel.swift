@@ -60,6 +60,20 @@ public final class AccountModel {
     func showAddAddress() { destination = .addAddress }
     func showSavedCards() { destination = .savedCards }
 
+    // EXPERIMENT (agent-route branch). Debug-only: compiled out of Release.
+    #if DEBUG
+    /// Decodes the agent route segments after `account/`. Returns true when the route is this feature's.
+    public func handleAgentRoute(_ segments: [String]) -> Bool {
+        switch segments {
+        case ["saved-cards"]:
+            showSavedCards()
+            return true
+        default:
+            return false
+        }
+    }
+    #endif
+
     func updateDisplayName(_ name: String) {
         guard let current = profile, !name.isEmpty else { return }
         let updated = UserProfile(id: current.id, email: current.email,

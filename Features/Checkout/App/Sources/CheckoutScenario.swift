@@ -53,7 +53,6 @@ enum CheckoutScenario: String, CaseIterable, Identifiable {
         case .paymentFailed:    return "Payment Failed"
         }
     }
-
     /// Experiment: deep links into the micro-app itself, not the production
     /// app. `checkoutscenarios://<rawValue>` — e.g. `checkoutscenarios://paymentFailed`
     /// — names a case directly, the host being the only thing a URL into this
