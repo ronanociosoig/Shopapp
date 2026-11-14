@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "harmonize",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/perrystreetsoftware/Harmonize.git",
+      "state" : {
+        "revision" : "02bdbb7c41b0803458809f414302470ef3140560",
+        "version" : "2.0.0-beta.2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "050f1a346fbbac0ca2cfb15a95274f7bd1cf0ccf",
+        "version" : "604.0.0"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams.git",
+      "state" : {
+        "revision" : "3d6871d5b4a5cd519adf233fbb576e0a2af71c17",
+        "version" : "5.4.0"
+      }
+    }
+  ],
+  "version" : 2
+}

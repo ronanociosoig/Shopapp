@@ -36,6 +36,31 @@ jobs:
           command: |
             swift run --package-path tools/GraphTool graph-tool check --package-path .
 
+  # Harmonize architecture rules (ArchitectureRules/). Pure source analysis:
+  # no simulator, no app build, so it runs on the macOS host in parallel with
+  # the other jobs and fails fast on declaration-level architecture violations.
+  architecture-rules:
+    macos:
+      xcode: <<pipeline.parameters.xcode_version>>
+    resource_class: <<pipeline.parameters.global_resource_class>>
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - harmonize-rules-v1-{{ checksum "ArchitectureRules/Package.swift" }}
+
+      - run:
+          name: Run Harmonize architecture rules
+          command: |
+            set -o pipefail
+            swift test --package-path ArchitectureRules
+
+      - save_cache:
+          key: harmonize-rules-v1-{{ checksum "ArchitectureRules/Package.swift" }}
+          paths:
+            - ArchitectureRules/.build
+
   build-and-test:
     macos:
       xcode: <<pipeline.parameters.xcode_version>>
@@ -186,4 +211,5 @@ workflows:
   build-test:
     jobs:
       - check-dependency-graph
+      - architecture-rules
       - build-and-test
