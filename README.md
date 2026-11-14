@@ -412,6 +412,19 @@ This only works because `AppModel` is injected. Had `RootView` created its own `
 
 ---
 
+## Agent skills
+
+The `skills/` folder holds Claude Code skills that encode this project's rules for agents, so
+generated code follows the same constraints as handwritten code.
+
+| Skill | Covers | Use when |
+|---|---|---|
+| [`shopapp-module-boundaries-and-deeplinks`](skills/shopapp-module-boundaries-and-deeplinks/SKILL.md) | Module public API (minimal surface, `@_spi` groups, factories returning `some View`, dependency structs, module-scoped Environment keys) and feature-decoded deep links (host-only routing, `Void` vs `Bool` returns, debug-only routes, micro-app schemes) | Changing a feature's public surface, a factory, an `@_spi` import, a deep link, or a micro-app entry point |
+
+To use a skill with Claude Code, copy its folder into `~/.claude/skills/` or into the project's
+`.claude/skills/`. The skill is a summary: `AGENTS.md` is the canonical rules file, and the ADRs in
+`docs/adr/` record why each rule exists.
+
 ## Areas for improvement
 
 ### Composition-root wiring is untested
