@@ -86,4 +86,21 @@ public final class SearchModel {
     func addToCart(_ product: SearchProduct, wantsGuarantee: Bool = false) {
         onAddToCart?(product.id, product.name, product.price, wantsGuarantee)
     }
+
+    // EXPERIMENT (agent-route branch). Debug-only: compiled out of Release.
+    #if DEBUG
+    /// Decodes the agent route segments after `search/`: `category/<name>/product/<uuid>`.
+    /// Returns true when the route is this feature's. The product lookup goes through this
+    /// model's repository. A single `destination` holds one screen, so the category browse
+    /// screen is skipped.
+    public func handleAgentRoute(_ segments: [String]) async -> Bool {
+        guard segments.count == 4, segments[0] == "category", segments[2] == "product",
+              let id = UUID(uuidString: segments[3]) else { return false }
+        if let products = try? await repository.fetchByCategory(segments[1]),
+           let product = products.first(where: { $0.id == id }) {
+            destination = .productDetail(product)
+        }
+        return true
+    }
+    #endif
 }

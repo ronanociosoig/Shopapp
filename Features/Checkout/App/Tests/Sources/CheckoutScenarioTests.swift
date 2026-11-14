@@ -78,3 +78,33 @@ struct CheckoutScenarioTests {
         }
     }
 }
+
+/// Deep links into the micro-app itself — `checkoutscenarios://<rawValue>` —
+/// an experiment distinct from the production app's `shopapp://` links
+/// (DeepLinkTests.swift, ShopAppTests): this one targets a named scenario,
+/// not a live CheckoutModel's real state.
+@Suite("CheckoutScenario deep links")
+@MainActor
+struct CheckoutScenarioDeepLinkTests {
+
+    @Test(
+        "Every scenario's own deep link decodes back to that scenario",
+        arguments: CheckoutScenario.allCases
+    )
+    func roundTrips(_ scenario: CheckoutScenario) {
+        let url = URL(string: "checkoutscenarios://\(scenario.rawValue)")!
+        #expect(CheckoutScenario.handleDeepLink(url: url) == scenario)
+    }
+
+    @Test("An unrecognized scenario name decodes to nil")
+    func unrecognizedScenario() {
+        let url = URL(string: "checkoutscenarios://not-a-real-scenario")!
+        #expect(CheckoutScenario.handleDeepLink(url: url) == nil)
+    }
+
+    @Test("A URL with no host decodes to nil")
+    func noHost() {
+        let url = URL(string: "checkoutscenarios:///")!
+        #expect(CheckoutScenario.handleDeepLink(url: url) == nil)
+    }
+}

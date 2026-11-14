@@ -38,6 +38,9 @@ private struct ScenarioListView: View {
         .fullScreenCover(item: $selectedScenario) { scenario in
             ScenarioPreview(scenario: scenario)
         }
+        .onOpenURL { url in
+            selectedScenario = CheckoutScenario.handleDeepLink(url: url)
+        }
     }
 }
 

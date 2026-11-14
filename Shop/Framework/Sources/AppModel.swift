@@ -74,16 +74,7 @@ public final class AppModel {
         suggestionsRepository:   any SuggestionsRepository
     ) {
         self.destination = destination
-
-        // EXPERIMENT (agent-route branch): Debug-only launch route. Release has no
-        // such code, so `agentDestination` is always nil there.
-        #if DEBUG
-        let agentDestination = AppModel.agentAccountDestination()
-        self.selectedTab = agentDestination == nil ? selectedTab : .account
-        #else
-        let agentDestination: AccountModel.Destination? = nil
         self.selectedTab = selectedTab
-        #endif
 
         let checkoutFactory    = DefaultCheckoutFactory(dependencies: CheckoutDependencies(repository: checkoutRepository))
         let pastPurchasesModel = PastPurchasesModel(repository: pastPurchasesRepository)
@@ -159,7 +150,7 @@ public final class AppModel {
         self.storeModel         = storeModel
         self.searchModel        = searchModel
         self.suggestionsModel   = suggestionsModel
-        self.accountModel       = AccountModel(repository: accountRepository, destination: agentDestination)
+        self.accountModel       = AccountModel(repository: accountRepository)
         self.promotionsModel    = PromotionsModel(repository: promotionsRepository)
         self.supportModel       = SupportModel()
     }
@@ -199,12 +190,27 @@ extension AppModel {
         return args[index + 1]
     }
 
-    /// Maps an agent route to the Account destination it opens. Only one route for now.
-    static func agentAccountDestination() -> AccountModel.Destination? {
-        switch agentRouteArgument {
-        case "account/saved-cards": return .savedCards
-        default:                    return nil
+    /// Hands the launch argument to the feature named by its first segment. Each feature
+    /// decodes the rest itself; AppModel only picks the tab, as it does for deep links.
+    public func dispatchAgentRoute() async {
+        guard let route = AppModel.agentRouteArgument else { return }
+        var segments = route.split(separator: "/").map(String.init)
+        guard !segments.isEmpty else { return }
+        let feature = segments.removeFirst()
+        switch feature {
+        case AgentRouteFeature.account:
+            if accountModel.handleAgentRoute(segments) { selectedTab = .account }
+        case AgentRouteFeature.search:
+            if await searchModel.handleAgentRoute(segments) { selectedTab = .search }
+        default:
+            break
         }
     }
+}
+
+/// First segment of an agent route, e.g. `account` in `account/saved-cards`.
+enum AgentRouteFeature {
+    static let account = "account"
+    static let search  = "search"
 }
 #endif
