@@ -54,4 +54,5 @@ for scenario in "${SCENARIOS[@]}"; do
 done
 
 echo
-echo "Done. Last scenario opened: ${SCENARIOS[-1]}"
+# ${SCENARIOS[-1]} needs bash 4.3+; macOS's /bin/bash is 3.2 and aborts with "bad array subscript".
+echo "Done. Last scenario opened: ${SCENARIOS[${#SCENARIOS[@]}-1]}"
