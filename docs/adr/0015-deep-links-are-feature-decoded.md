@@ -25,11 +25,11 @@ of that feature's domain, the opposite of what ADR-0001's module boundary is for
 Five deep links exist now, each discovered through actually building and dispatching one, not
 through designing the mechanism up front:
 
-- `shopapp://promotions/<id>` — `PromotionsModel.handleDeepLink(promotionID:)`
+- `shopapp://promotions/<id>` — `PromotionsModel.handleDeepLink(url:)`
 - `shopapp://checkout/delivery`, `shopapp://checkout/payment-retry`, and
   `shopapp://checkout/add/<id>?name=...&price=...&guarantee=...` — all three decoded by one entry
   point, `CheckoutModel.handleDeepLink(url:)` / `DefaultCheckoutFactory.handleDeepLink(url:)`
-- `shopapp://orders/<id>` — `PastPurchasesModel.handleDeepLink(orderID:)`
+- `shopapp://orders/<id>` — `PastPurchasesModel.handleDeepLink(url:)`
 
 ## Decision
 
@@ -48,9 +48,9 @@ extension AppModel {
 
         switch host {
         case "promotions":
-            guard let idString = pathComponents.first, let id = UUID(uuidString: idString) else { return }
-            selectedTab = .store
-            await promotionsModel.handleDeepLink(promotionID: id)
+            if await promotionsModel.handleDeepLink(url: url) {
+                selectedTab = .store
+            }
 
         case "checkout":
             if checkoutFactory.handleDeepLink(url: url) {
@@ -58,9 +58,9 @@ extension AppModel {
             }
 
         case "orders":
-            guard let idString = pathComponents.first, let id = UUID(uuidString: idString) else { return }
-            selectedTab = .orders
-            await pastPurchasesModel.handleDeepLink(orderID: id)
+            if await pastPurchasesModel.handleDeepLink(url: url) {
+                selectedTab = .orders
+            }
 
         default:
             break
@@ -69,11 +69,10 @@ extension AppModel {
 }
 ```
 
-`AppModel` still parses the id string into a `UUID` before calling in — that much is unavoidable,
-since `AppModel` is the one holding the raw `URL` — but it never looks inside `Promotion` or
-`PastOrder` to do it, and it switches tabs itself because tab selection is `AppModel`'s own state,
-not any feature's. Everything that requires knowing what a `Promotion` or a `PastOrder` *is* happens
-on the other side of the call.
+`AppModel` doesn't parse the path at all. Every feature gets the whole `URL` and decodes its own path
+segments, including the id, so the composition root never needs to know that a promotion id is a
+`UUID` or that an order id has a particular format. It switches tabs itself, because tab selection is
+`AppModel`'s own state, not any feature's, and it switches only when the feature returns `true`.
 
 Each feature exposes its decoding entry point the way its existing public API already shapes that
 feature, rather than all three being forced into one new uniform mechanism:
@@ -84,19 +83,33 @@ feature, rather than all three being forced into one new uniform mechanism:
 
   ```swift
   // PromotionsModel
-  public func handleDeepLink(promotionID: UUID) async {
+  @discardableResult
+  public func handleDeepLink(url: URL) async -> Bool {
+      let segments = url.pathComponents.filter { $0 != "/" }
+      guard let idString = segments.first, let id = UUID(uuidString: idString) else { return false }
       if promotions.isEmpty { await load() }
-      guard let promotion = promotions.first(where: { $0.id == promotionID }) else { return }
-      destination = .promotionDetail(promotion)
+      if let promotion = promotions.first(where: { $0.id == id }) {
+          destination = .promotionDetail(promotion)
+      }
+      return true
   }
 
   // PastPurchasesModel — same shape
-  public func handleDeepLink(orderID: UUID) async {
+  @discardableResult
+  public func handleDeepLink(url: URL) async -> Bool {
+      let segments = url.pathComponents.filter { $0 != "/" }
+      guard let idString = segments.first, let id = UUID(uuidString: idString) else { return false }
       if orders.isEmpty { await load() }
-      guard let order = orders.first(where: { $0.id == orderID }) else { return }
-      destination = .orderDetail(order)
+      if let order = orders.first(where: { $0.id == id }) {
+          destination = .orderDetail(order)
+      }
+      return true
   }
   ```
+
+  The `Bool` means the same thing here as it does for Checkout: the URL is shaped like a link this
+  feature accepts. A well-formed id that matches nothing still returns `true`, so the tab switches as
+  it always has.
 
   Both load first if nothing's loaded yet, because a deep link can arrive at cold launch, before
   anything has populated the list the ordinary way — an ordering concern that only exists for a deep
@@ -137,7 +150,7 @@ feature, rather than all three being forced into one new uniform mechanism:
   too: `AppModel` never sees inside a `Promotion`, a `PastOrder`, or a `ShippingAddress` to route to
   one. Nothing about this feature's design required *weakening* that boundary to make deep links work.
 - Each feature's entry point reuses that feature's own existing machinery for reaching a screen
-  rather than a parallel path built just for URLs — `handleDeepLink(promotionID:)` calls the same
+  rather than a parallel path built just for URLs — `handleDeepLink(url:)` on `PromotionsModel` calls the same
   `load()` an ordinary screen view would trigger; `handleDeepLinkToDeliveryOptions()` calls the same
   `proceedToAddress()` a real funnel step would. A deep link is a different *caller* of the feature's
   logic, not different logic.
@@ -169,14 +182,14 @@ feature, rather than all three being forced into one new uniform mechanism:
   Acceptable here because the `switch` is still the one required stop for every URL; a feature can't
   add a deep link `AppModel` never routes to.
 - The entry points are not uniform in shape across features — two are `async` functions returning
-  `Void` on a bare model class, one is a synchronous `Bool`-returning protocol requirement taking the
+  `Bool` on a bare model class, one is a synchronous `Bool`-returning protocol requirement taking the
   raw `URL`. That's a direct consequence of respecting each feature's existing public-API shape
   (ADR-0014 for Checkout, nothing equivalent yet for the other two) rather than inventing one
   `DeepLinkHandling` protocol all features conform to — rejected because Promotions and PastPurchases
   have no factory type to hang it on today, and retrofitting one only for this would be exactly the
   kind of design-ahead-of-use ADR-0014 itself argues against (see its Negative: "not proposed for
   every feature module on day one").
-- `AppModel` still has to parse a path component into a `UUID` for Promotions and PastPurchases —
-  a minimal decoding duty that can't be pushed any further out for an id-lookup deep link, since
-  `AppModel` is the only place holding the raw `URL`. Checkout needs none of that: `AppModel` hands
-  the whole `URL` across without looking at anything past `host`.
+- Each feature now parses its own path segments, including ids. The composition root never does,
+  so the three entry points are the same shape: the whole `URL` in, a `Bool` out. The remaining
+  cost is that `Promotions` and `PastPurchases` each carry a small URL-parsing step they didn't
+  have before, which is the price of keeping ids out of `AppModel`.

@@ -39,15 +39,24 @@ public final class PromotionsModel {
     }
 
     /// The module's one public entry point for a deep link. Nobody outside
-    /// `Promotions` ever constructs a `Destination` directly — a caller
-    /// supplies the raw id from a URL, and this is where that id either
-    /// resolves to a real `Promotion` or doesn't.
+    /// `Promotions` ever constructs a `Destination` directly. The caller passes
+    /// the whole URL, and this method decodes the promotion id itself.
+    ///
+    /// Returns `false` when the URL doesn't name a promotion id, so the caller
+    /// can leave its own state alone. Returns `true` for any well-formed link,
+    /// even when no promotion matches the id: the link still belongs to this
+    /// feature, and the feature shows nothing rather than guessing.
     ///
     /// Loads first if nothing's loaded yet: a deep link can arrive at cold
     /// launch, before anything has populated `promotions` the ordinary way.
-    public func handleDeepLink(promotionID: UUID) async {
+    @discardableResult
+    public func handleDeepLink(url: URL) async -> Bool {
+        let segments = url.pathComponents.filter { $0 != "/" }
+        guard let idString = segments.first, let id = UUID(uuidString: idString) else { return false }
         if promotions.isEmpty { await load() }
-        guard let promotion = promotions.first(where: { $0.id == promotionID }) else { return }
-        destination = .promotionDetail(promotion)
+        if let promotion = promotions.first(where: { $0.id == id }) {
+            destination = .promotionDetail(promotion)
+        }
+        return true
     }
 }

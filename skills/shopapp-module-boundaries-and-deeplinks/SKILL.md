@@ -71,27 +71,30 @@ canonical rules file is `AGENTS.md`, and the decisions behind these rules are in
 
 1. **The composition root reads only the host.** `AppModel.handle(url:)`
    (`Shop/Framework/Sources/AppModel+DeepLinks.swift`) uses `url.host` to choose a feature and
-   passes the rest to that feature. It never constructs a feature's `Destination`.
+   passes the whole URL to that feature. It never parses a path segment, never reads an id, and
+   never constructs a feature's `Destination`.
    ```swift
    // Correct
    case "promotions":
-       guard let id = UUID(uuidString: pathComponents.first ?? "") else { return }
-       selectedTab = .store
-       await promotionsModel.handleDeepLink(promotionID: id)
+       if await promotionsModel.handleDeepLink(url: url) {
+           selectedTab = .store
+       }
 
    // Never
    case "promotions":
        promotionsModel.destination = .promotionDetail(Promotion(id: id, title: ..., ...))
    ```
-2. **Each feature decodes its own URL.** It exposes one public method per deep link. That method is
-   the only code outside the feature allowed to produce its `Destination`.
+2. **Each feature decodes its own URL.** It exposes one public method that takes the `URL`, decodes
+   its own path segments, and is the only code outside the feature allowed to produce its
+   `Destination`. A feature that adds routes changes its own decoding, not the composition root.
 3. **The feature's entry point follows its existing public API.** Do not invent a uniform
    `DeepLinkable` protocol. `CheckoutFactory` already is the contract, so Checkout's deep-link
    entry point belongs there. Add a factory only when a feature needs one for a real caller.
-4. **The return type reflects the failure mode.**
-   - `Void` when the deep link either finds its target or does nothing (id lookup).
-   - `Bool` when the link can be legitimately refused for a state reason (for example, delivery
-     options with no address yet). The caller can then tell "resolved" from "couldn't be satisfied".
+4. **The `Bool` return answers "is this URL shaped like a link this feature accepts?"** The
+   composition root switches tabs only on `true`. A well-formed link that matches nothing, or that is
+   refused for a state reason (for example, delivery options with no address yet), still returns
+   `true`, because the link belongs to the feature. Only a URL the feature doesn't recognize returns
+   `false`.
 5. **Test the failure path with the same care as success.** Name tests for what they prove
    (`unknownOrderID`, `checkoutDeliveryDeepLinkEmptyCart`), not for the method they call.
 6. **Gate deep links by build configuration, not by convention.** Routes that open unrestricted

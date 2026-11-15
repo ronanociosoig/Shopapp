@@ -20,32 +20,24 @@ extension AppModel {
         let pathComponents = url.pathComponents.filter { $0 != "/" }
 
         switch host {
+        // Every feature gets the whole URL and decodes its own path segments.
+        // A feature returns `false` for a link it doesn't accept, and the tab
+        // stays where it is. The composition root never reads an ID or any
+        // other part of the path.
         case DeepLinkFeature.promotions:
-            guard
-                let idString = pathComponents.first,
-                let id = UUID(uuidString: idString)
-            else { return }
-            selectedTab = .store
-            await promotionsModel.handleDeepLink(promotionID: id)
+            if await promotionsModel.handleDeepLink(url: url) {
+                selectedTab = .store
+            }
 
-        // Checkout gets the whole URL, unexamined past the host. It alone
-        // knows which path segments ("delivery", "payment-retry", "add")
-        // its deep links use — see `CheckoutModel.handleDeepLink(url:)`.
-        // `handleDeepLink` returns `false` for anything it doesn't
-        // recognize, so an unmatched checkout URL leaves the tab untouched,
-        // same as the two id-lookup cases above and below.
         case DeepLinkFeature.checkout:
             if checkoutFactory.handleDeepLink(url: url) {
                 selectedTab = .cart
             }
 
         case DeepLinkFeature.orders:
-            guard
-                let idString = pathComponents.first,
-                let id = UUID(uuidString: idString)
-            else { return }
-            selectedTab = .orders
-            await pastPurchasesModel.handleDeepLink(orderID: id)
+            if await pastPurchasesModel.handleDeepLink(url: url) {
+                selectedTab = .orders
+            }
 
         // Debug-only routes. These cases do not exist in a Release build, so the
         // same URL does nothing there. Each feature decodes its own path segments

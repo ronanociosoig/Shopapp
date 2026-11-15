@@ -46,16 +46,24 @@ public final class PastPurchasesModel {
     }
 
     /// The module's one public entry point for a deep link. Nobody outside
-    /// `PastPurchases` ever constructs a `Destination` directly — a caller
-    /// supplies the raw id from a URL, and this is where that id either
-    /// resolves to a real `PastOrder` or doesn't.
+    /// `PastPurchases` ever constructs a `Destination` directly. The caller passes
+    /// the whole URL, and this method decodes the order id itself.
+    ///
+    /// Returns `false` when the URL doesn't name an order id, so the caller can
+    /// leave its own state alone. Returns `true` for any well-formed link, even
+    /// when no order matches the id: the link still belongs to this feature.
     ///
     /// Loads first if nothing's loaded yet: a deep link can arrive at cold
     /// launch, before anything has populated `orders` the ordinary way.
-    public func handleDeepLink(orderID: UUID) async {
+    @discardableResult
+    public func handleDeepLink(url: URL) async -> Bool {
+        let segments = url.pathComponents.filter { $0 != "/" }
+        guard let idString = segments.first, let id = UUID(uuidString: idString) else { return false }
         if orders.isEmpty { await load() }
-        guard let order = orders.first(where: { $0.id == orderID }) else { return }
-        destination = .orderDetail(order)
+        if let order = orders.first(where: { $0.id == id }) {
+            destination = .orderDetail(order)
+        }
+        return true
     }
 
     func load() async {
