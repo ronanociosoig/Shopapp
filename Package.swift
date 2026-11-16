@@ -117,7 +117,8 @@ let package = Package(
                 "DesignSystem",
                 .product(name: "SwiftUINavigation", package: "swift-navigation"),
             ],
-            path: "Features/Checkout/Framework/Sources"
+            path: "Features/Checkout/Framework/Sources",
+            resources: [.process("Resources")]
         ),
         .target(
             name: "Support",

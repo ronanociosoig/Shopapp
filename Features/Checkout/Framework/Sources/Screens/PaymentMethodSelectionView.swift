@@ -7,6 +7,20 @@ struct PaymentMethodSelectionView: View {
     let address: ShippingAddress
     @Environment(\.checkoutCurrencyFormatter) private var currencyFormatter
 
+    /// Bizum has a brand logo bundled with Checkout; the other methods use SF Symbols.
+    @ViewBuilder
+    private func paymentIcon(_ method: PaymentMethod) -> some View {
+        if method == .bizum {
+            Image("bizum-logo", bundle: .module)
+                .resizable()
+                .scaledToFit()
+        } else {
+            Image(systemName: method.icon)
+                .font(.title3)
+                .foregroundStyle(.dsPrimary)
+        }
+    }
+
     var body: some View {
         List {
             Section(Strings.shippingToHeader) {
@@ -21,10 +35,8 @@ struct PaymentMethodSelectionView: View {
                         model.selectPaymentMethod(method, address: address)
                     } label: {
                         HStack(spacing: 14) {
-                            Image(systemName: method.icon)
-                                .font(.title3)
-                                .foregroundStyle(.dsPrimary)
-                                .frame(width: 32)
+                            paymentIcon(method)
+                                .frame(width: 32, height: 32)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(method.rawValue)
                                     .font(.subheadline.weight(.medium))
